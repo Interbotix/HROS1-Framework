@@ -1,0 +1,43 @@
+ 
+SHELL := /bin/sh
+
+.SUFFIXES:
+.SUFFIXES: .c .o .cpp
+
+DESTDIR = 
+
+prefix = /usr/local
+bindir = $(prefix)/bin
+srcdir = .
+
+INSTALL = install
+INSTALL_PROGRAM = $(INSTALL)
+
+PROGRAM := CommanderTest
+OBJFILES := CommanderTest.o SerialInputCommander.o
+
+CommanderTest: $(OBJFILES) 
+
+CommanderTest.o: CommanderTest.cpp CommanderEx.h
+
+CommanderEx.o: CommanderEx.cpp CommanderEx.h
+ 
+CFLAGS = -Wall -O2
+
+XCPLAY_CFLAGS := -pthread -g
+XCPLAY_LDFLAGS := -pthread -g
+
+all: $(PROGRAM)
+
+%.o: %.c
+	$(CC) -o $@ -c $< $(CFLAGS) $(XCPLAY_CFLAGS)
+
+%.o: %.cpp
+	g++ -o $@ -c $< $(CFLAGS) $(XCPLAY_CFLAGS)
+
+
+$(PROGRAM): $(OBJFILES)
+	$(CC) -o $@ $(LDFLAGS) $(XCPLAY_LDFLAGS) $(OBJFILES)
+
+clean:
+	rm -rf $(PROGRAM) dist *.o *.tar.gz

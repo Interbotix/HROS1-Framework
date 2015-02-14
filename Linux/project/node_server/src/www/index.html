@@ -1,0 +1,93 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Hello World!</title>
+
+    <script src="js/jquery1.11.1.js"></script>
+    <script src="js/21CRobot-API.min.js"></script>
+
+    <!--joystick scripts-->
+    <script src="js/virtualjoystick.js"></script>
+    <style>
+    #container {
+            width       : 700px;
+            height      : 1000px;
+            overflow    : hidden;
+            padding     : 0;
+            margin      : 0;
+            -webkit-user-select : none;
+            -moz-user-select    : none;
+        }
+    </style>
+</head>
+<body>
+    <script type="text/javascript">
+        var JSRobotCalls = new HROS_JS();
+
+        /**********************************************************
+        *****               Joystick
+        **********************************************************/
+        function startJoystick(){
+            joystick = new VirtualJoystick({
+                container:document.getElementById("container"),
+                mouseSupport: true,
+                limitStickTravel: true,
+                stickRadius: 50,
+                strokeStyle:"black"
+            });
+
+            initJoystick();
+        }
+
+        function initJoystick(){
+            requestAnimationFrame(initJoystick);
+            if(JSRobotCalls.CurrentActionStatus() === JSRobotCalls.ActionStates.WALKING){
+              var x = joystick.deltaX();
+              var y = joystick.deltaY();
+
+              // Send X, Y coordinates to Walk Position, 50 < x , y < 50
+              JSRobotCalls.WalkPosition(x,y);
+            }
+        }
+        /**********************************************************
+        *****               Walking UI Management
+        **********************************************************/
+        function toggleWalking() {
+            JSRobotCalls.ToggleWalk();
+            if(JSRobotCalls.CurrentActionStatus() === JSRobotCalls.ActionStates.WALKING) {
+                $("#walkToggle").text("Turn walk off");
+                $("#walkingOn").show("fast");
+                startJoystick();
+            }
+            else {
+                $("#walkToggle").text("Turn walk on");
+                $("#walkingOn").hide();
+                joystick.destroy();
+            }
+        }
+        /**************************************************
+        *****                 Speech                *******
+        /**************************************************/
+        function SaySomething() {
+            JSRobotCalls.SayString("Hello! My name is Robot.");
+        }
+    </script>
+        <!--=========================================
+            =connectionStatus: HROS looks for connectionStatus to update connection status
+            =buttons to call the actions using the object created on init
+            =========================================-->
+    <div id="actionCalls">
+        <button name="button" onclick="JSRobotCalls.PlayAction('stand')">Stand</button>
+        <button name="button" onclick="JSRobotCalls.PlayAction('sit')">Sit</button>
+        <button name="button" onclick="JSRobotCalls.PlayAction('wave')">Wave</button>
+        <button name="button" id="walkToggle" onclick="toggleWalking()">Turn walk on</button>
+        <button name="button" onclick="SaySomething()">Say Something</button> 
+    </div>
+    <div id="walkingOn" style="display:none">
+        <h3>Select anywhere to activate joystick</h3>
+        <div id="container"></div>
+    </div>
+</body>
+</html>

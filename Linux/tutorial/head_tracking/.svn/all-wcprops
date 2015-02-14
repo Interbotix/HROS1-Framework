@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/darwinop/!svn/ver/63/trunk/darwin/Linux/project/tutorial/head_tracking
+END
+config.ini
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/darwinop/!svn/ver/3/trunk/darwin/Linux/project/tutorial/head_tracking/config.ini
+END
+main.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/darwinop/!svn/ver/63/trunk/darwin/Linux/project/tutorial/head_tracking/main.cpp
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/darwinop/!svn/ver/30/trunk/darwin/Linux/project/tutorial/head_tracking/Makefile
+END

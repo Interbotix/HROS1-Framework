@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/darwinop/!svn/ver/71/trunk/darwin/Linux/project/walk_tuner
+END
+cmd_process.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/darwinop/!svn/ver/55/trunk/darwin/Linux/project/walk_tuner/cmd_process.cpp
+END
+main.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/darwinop/!svn/ver/71/trunk/darwin/Linux/project/walk_tuner/main.cpp
+END
+cmd_process.h
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/darwinop/!svn/ver/30/trunk/darwin/Linux/project/walk_tuner/cmd_process.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/darwinop/!svn/ver/71/trunk/darwin/Linux/project/walk_tuner/Makefile
+END
