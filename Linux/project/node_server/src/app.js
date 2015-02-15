@@ -16,7 +16,7 @@ var say = require('say')
 
 
 //library location of the shared objects
-var LIBLOC = '../../../../Linux/build/api_wrapper/apiwrapper';
+var LIBLOC = '../api_wrapper/apiwrapper';
 
 // core actions
 var actionList = {};
