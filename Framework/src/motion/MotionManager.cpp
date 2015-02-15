@@ -51,7 +51,7 @@ bool MotionManager::Initialize(CM730 *cm730, bool fadeIn)
 {
 	int value, error;
 
-	// usleep(10000);
+	usleep(100);
 	m_CM730 = cm730;
 	m_Enabled = false;
 	m_ProcessEnable = true;

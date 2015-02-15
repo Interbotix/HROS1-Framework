@@ -7,7 +7,7 @@
 #
 ###############################################################
 
-CC = g++
+CC = g++ -fPIC
 AR = ar
 ARFLAGS = cr
 
@@ -15,9 +15,9 @@ TARGET = darwin.a
 
 INCLUDE_DIRS = -I../include -I../../Framework/include 
 
-CXXFLAGS += -O2 -g -DDEBUG -DLINUX -D_GNU_SOURCE -fPIC -Wall -shared $(INCLUDE_DIRS)
-#CXXFLAGS += -O2 -g -DDEBUG -DLINUX -D_GNU_SOURCE -fPIC -Wall -shared $(INCLUDE_DIRS)
-LFLAGS += -g -lpthread -ldl -lbluetooth
+CXXFLAGS += -fPIC -shared -O2 -DLINUX -D_GNU_SOURCE -Wall -g $(INCLUDE_DIRS) 
+#CXXFLAGS += -O2 -DDEBUG -DLINUX -D_GNU_SOURCE -Wall -shared $(INCLUDE_DIRS)
+LFLAGS += -g -lpthread -ldl -lbluetooth -lncurses
 
 OBJS =  ../../Framework/src/CM730.o     	\
         ../../Framework/src/math/Matrix.o   \
