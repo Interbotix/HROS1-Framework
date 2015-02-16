@@ -1,0 +1,5 @@
+#!/bin/sh -e
+sleep 2
+sudo ./demo &
+sleep 3
+sudo pkill bluetoothd &
