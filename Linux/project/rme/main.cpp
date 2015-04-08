@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 
     while(1)
     {
-        while(!kbhit(true)) ProcessPS3(&cm730,apState);
+       // while(!kbhit(true)) ProcessPS3(&cm730,apState);
 				ch = _getch();
 
         if(ch == 0x1b)
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
 
           while(1)
             {
-						while(!kbhit(true))	ProcessPS3(&cm730,apState);
+						//while(!kbhit(true))	ProcessPS3(&cm730,apState);
             ch = _getch();
             if( ch == 0x0A ) // newline
               break;
