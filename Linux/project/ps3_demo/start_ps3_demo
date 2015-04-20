@@ -1,0 +1,5 @@
+#!/bin/sh -e
+sleep 2
+./demo &
+sleep 3
+killall bluetoothd &
