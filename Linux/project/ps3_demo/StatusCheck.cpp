@@ -509,10 +509,10 @@ void StatusCheck::Check(CM730 &cm730)
 				{
 				xd = (double)(x-dead_band)/256;
 				yd = (double)(y-dead_band)/256;
-				RLTurn = 60*xd;	
-				FBStep = 70*yd;//45	
+				RLTurn = 20*xd;	
+				FBStep = 40*yd;//45	
 				if(FBStep < 0)
-					FBStep = 45*yd;
+					FBStep = 10*yd;
 //				if(bLJState == false)
 //					RLStep = 52*xd;		
  				speedAdjSum += yd;
