@@ -1,5 +1,3 @@
 #!/bin/sh -e
 sleep 1
-sudo pkill demo &
-sleep 1
-sudo pkill bluetoothd &
+sudo killall demo &
