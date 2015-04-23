@@ -1,0 +1,25 @@
+Usage: 
+
+Plug in your PS3 controller to an available USB host port via USB-Mini-B cable. Then run the following to pair the controller:
+ 
+Edison:
+
+Ensure Bluetooth is active:
+
+$ rfkill unblock bluetooth
+
+$ ./sixpair_edison
+
+
+RPi:
+
+$ sudo ./sixpair_rpi
+
+
+
+To compile:
+
+
+$ gcc -o sixpair sixpair.c -lusb
+
+On Edison, lusb may not be properly linked and must be manually linked. More documentation on this to come. 
