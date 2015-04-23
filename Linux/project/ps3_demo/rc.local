@@ -10,8 +10,11 @@
 # bits.
 #
 # By default this script does nothing.
+sleep 1
+sudo killall bluetoothd &
 sleep 2
-sudo /HROS5-Framework/Linux/project/ps3_demo/demo &
+sudo /path/to/your/HROS1-Framework/Linux/project/ps3_demo/demo &
 sleep 3
-sudo pkill bluetoothd &
+sudo bluetoothd &
+
 exit 0
