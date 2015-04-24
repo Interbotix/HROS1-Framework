@@ -498,7 +498,7 @@ void StatusCheck::Check(CM730 &cm730)
 //////////////////////////////////////////////////////////////////////////////////////
 		if(Walking::GetInstance()->IsRunning() == true)
 			{
-			int x,y,x1,dead_band=4;			
+			int x,y,x1,dead_band=8;			
 			double FBStep=0,RLTurn=0,RLStep=0,xd,yd;
 			static double speedAdjSum=0;			
 			x = -(PS3.key.RJoyX-128);
@@ -509,8 +509,8 @@ void StatusCheck::Check(CM730 &cm730)
 				{
 				xd = (double)(x-dead_band)/256;
 				yd = (double)(y-dead_band)/256;
-				RLTurn = 30*xd;	
-				FBStep = 25*yd;//45	
+				RLTurn = 15*xd;	
+				FBStep = 20*yd;//45	
 				if(FBStep < 0)
 					FBStep = 15*yd;
 //				if(bLJState == false)
