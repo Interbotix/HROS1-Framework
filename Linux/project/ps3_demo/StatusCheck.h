@@ -11,28 +11,29 @@
 #include "CM730.h"
 #include "minIni.h"
 
-#define SCRIPT_FILE_PATH    "script.asc"
-#define SCRIPT_FILE_PATH1   "script1.asc"
-#define SCRIPT_FILE_PATH2   "script2.asc"
-#define SCRIPT_FILE_PATH3   "script3.asc"
-#define SCRIPT_FILE_PATH4   "script4.asc"
-#define SCRIPT_FILE_PATH5   "script5.asc"
-#define SCRIPT_FILE_PATH6   "script6.asc"
-#define SCRIPT_FILE_PATH7   "script7.asc"
-#define SCRIPT_FILE_PATH8   "script8.asc"
+#define SCRIPT_FILE_PATH_TRIANGLE    "action_scripts/Triangle.asc"
+#define SCRIPT_FILE_PATH_CIRCLE   "action_scripts/Circle.asc"
+#define SCRIPT_FILE_PATH_CROSS   "action_scripts/Cross.asc"
+#define SCRIPT_FILE_PATH_SQUARE   "action_scripts/Square.asc"
+#define SCRIPT_FILE_PATH_R1   "action_scripts/R1.asc"
+#define SCRIPT_FILE_PATH_R2   "action_scripts/R2.asc"
+#define SCRIPT_FILE_PATH_L1   "action_scripts/L1.asc"
+#define SCRIPT_FILE_PATH_L2   "action_scripts/L2.asc"
+#define SCRIPT_FILE_PATH_SELECT   "action_scripts/SelectButton.asc"
+#define SCRIPT_FILE_PATH_START	"action_scripts/StartButton.asc"
 
 namespace Robot
 {
 	enum {
         INITIAL,
         READY,
-				SITTING,
+		SITTING,
         SOCCER,
-				LINE_FOLLOWING,
-				ROBOT_FOLLOWING,
+		LINE_FOLLOWING,
+		ROBOT_FOLLOWING,
         MOTION,
         VISION,
-				STAIRS,
+		STAIRS,
         MAX_MODE
     };
 

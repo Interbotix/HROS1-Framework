@@ -24,14 +24,14 @@ Walking* Walking::m_UniqueInstance = new Walking();
 
 Walking::Walking()
 {
-	X_OFFSET_START = X_OFFSET = -15;
-	Y_OFFSET = 5;
-	Z_OFFSET = 20;
+	X_OFFSET_START = X_OFFSET = -10;
+	Y_OFFSET = 1;
+	Z_OFFSET = 30;
     R_OFFSET = 0;
 	P_OFFSET = 0;
     A_OFFSET = 0;
-    HIP_PITCH_OFFSET = 13.0;
-	PERIOD_TIME = 600;
+    HIP_PITCH_OFFSET_START = HIP_PITCH_OFFSET = 12.7;
+	PERIOD_TIME = 581;
 	DSP_RATIO = 0.1;
 	STEP_FB_RATIO = 0.28;
 	Z_MOVE_AMPLITUDE = 40;
@@ -39,10 +39,14 @@ Walking::Walking()
     Z_SWAP_AMPLITUDE = 5;
     PELVIS_OFFSET = 3.0;
     ARM_SWING_GAIN = 1.5;
-	BALANCE_KNEE_GAIN = 0.1;
-	BALANCE_ANKLE_PITCH_GAIN = 0.1;
-	BALANCE_HIP_ROLL_GAIN = 0.1;
-	BALANCE_ANKLE_ROLL_GAIN = 0.1;
+	BALANCE_KNEE_GAIN = 0.035000;
+	BALANCE_ANKLE_PITCH_GAIN = 0.035000;
+	BALANCE_HIP_ROLL_GAIN = 0.070000;
+	BALANCE_ANKLE_ROLL_GAIN = 0.070000;
+
+    BALANCE_ANGLE_GAIN = 0.300000;
+//    BALANCE_ANGLE_SMOOTH_GAIN = 0.91;
+    BALANCE_ANGLE_SMOOTH_GAIN = 0.600000;
 
 //	P_GAIN = JointData::P_GAIN_DEFAULT;
 //    I_GAIN = JointData::I_GAIN_DEFAULT;
@@ -53,18 +57,17 @@ Walking::Walking()
 	A_MOVE_AMPLITUDE = 0;	
 	A_MOVE_AIM_ON = false;
 	BALANCE_ENABLE = true;
-	LOWER_VELADJ_LIMIT = -8;
-	UPPER_VELADJ_LIMIT = 3;
+	LOWER_VELADJ_LIMIT = -3;
+	UPPER_VELADJ_LIMIT = 6;
 	speedAdj = 0;
 	
-	m_Joint.SetAngle(JointData::ID_R_SHOULDER_PITCH, -20.00);
-	m_Joint.SetAngle(JointData::ID_L_SHOULDER_PITCH, 20.00);
+	m_Joint.SetAngle(JointData::ID_R_SHOULDER_PITCH, -30.00);
+	m_Joint.SetAngle(JointData::ID_L_SHOULDER_PITCH, 30.00);
 	m_Joint.SetAngle(JointData::ID_R_SHOULDER_ROLL, -00.00);
     m_Joint.SetAngle(JointData::ID_L_SHOULDER_ROLL, 00.00);
 	m_Joint.SetAngle(JointData::ID_R_ELBOW, -15.000);
 	m_Joint.SetAngle(JointData::ID_L_ELBOW, 15.000);
-  BALANCE_ANGLE_GAIN = 0.1;
-  BALANCE_ANGLE_SMOOTH_GAIN = 0.91;
+
 
 	m_Joint.SetAngle(JointData::ID_HEAD_TILT, Kinematics::EYE_TILT_OFFSET_ANGLE);
 

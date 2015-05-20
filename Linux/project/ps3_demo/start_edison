@@ -1,4 +1,5 @@
 #!/bin/sh -e
+killall demo &
 killall bluetoothd &
 sleep 2
 ./demo &

@@ -142,7 +142,7 @@ namespace Robot
 		double ARM_SWING_GAIN;
 		double PELVIS_OFFSET;
 		double HIP_PITCH_OFFSET;
-
+		double HIP_PITCH_OFFSET_START;
 		double LEAN_FB;
     double LEAN_FB_ACCEL;
 		double LEAN_TURN;
