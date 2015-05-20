@@ -321,7 +321,7 @@ int LinuxCamera::v4l2SetControl(int control, int value)
 {
     struct v4l2_control control_s;
     struct v4l2_queryctrl queryctrl;
-    int min, max, step, val_def;
+    int min, max/*, step, val_def*/;
     int err;
 
     queryctrl.id = control;
@@ -332,8 +332,8 @@ int LinuxCamera::v4l2SetControl(int control, int value)
 
     min = queryctrl.minimum;
     max = queryctrl.maximum;
-    step = queryctrl.step;
-    val_def = queryctrl.default_value;
+    //step = queryctrl.step;
+    //val_def = queryctrl.default_value;
     if((value >= min) && (value <= max)) {
         control_s.id = control;
         control_s.value = value;
