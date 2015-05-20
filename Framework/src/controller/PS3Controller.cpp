@@ -29,6 +29,8 @@
 #include <bluetooth/sdp.h>
 #include <bluetooth/hidp.h>
 #include "../../include/PS3Controller.h"
+// Maybe ifdef out unneded code
+#define USE_JOY_MIXER
 
 #define DEFAULT_VIBE_DURATION 0x0f
 #define DEFAULT_VIBE_INTENSITY 0xff
@@ -71,7 +73,10 @@ static byte debug_enable;
 static void* PS3Thread( void *param );
 static void* PS3KeyServer(void *param);
 static void* PS3LEDServer(void *param);
+
+#ifdef USE_JOY_MIXER        
 static void* JoyMixer(void *param);
+#endif
 static int l2cap_listen(const bdaddr_t *bdaddr, unsigned short psm, int lm, int backlog);
 static int l2cap_accept(int sk, bdaddr_t *bdaddr);
 static void flush1(int sock);
@@ -81,8 +86,10 @@ static int StartPS3Server(void);
 static void StopPS3Server(void);
 static void StartPS3KeyServer(void);
 static void StopPS3KeyServer(void);
+#ifdef USE_JOY_MIXER        
 static void StartJoyMixer(void);
 static void StopJoyMixer(void);
+#endif
 static void StartPS3LEDServer(void);
 static void StopPS3LEDServer(void);
 
@@ -124,7 +131,9 @@ int PS3Controller_Start()
 	debug_enable=1;
 	if(StartPS3Server()==0)
 		return 0;
+#ifdef USE_JOY_MIXER        
 	StartJoyMixer();	
+#endif
 	ClearPS3Keys();	
 	StartPS3KeyServer();
 	return 1;
@@ -133,7 +142,9 @@ int PS3Controller_Start()
 void PS3Controller_Stop()
 {
 	StopPS3KeyServer();
+#ifdef USE_JOY_MIXER        
 	StopJoyMixer();
+#endif
 	StopPS3Server();
 }
 
@@ -311,10 +322,10 @@ void* PS3Thread( void *param )
 // returns 0 on failure, 1 on success
 int StartPS3Server(void)
 {
-	bdaddr_t bdaddr,bany={0,0,0,0,0,0};
+	bdaddr_t bdaddr,bany= {{0,0,0,0,0,0}};
 	char addr[18];
 	int lm = L2CAP_LM_MASTER;// was 0;
-	struct timespec     clock_resolution;
+//	struct timespec     clock_resolution;
 	int rc;
 
   bacpy(&bdaddr,&bany);
@@ -542,7 +553,7 @@ void StartPS3KeyServer(void)
 
 void* PS3KeyServer(void *param)
 {
-	unsigned int lcnt=0,flashChange=0;
+	unsigned int flashChange=0;
 	 
 	while(1)
 		{
@@ -573,7 +584,6 @@ void* PS3KeyServer(void *param)
       if(JKeys.key.ljx != 0) printf("ljx = %d\n",JKeys.key.ljx); 
       if(JKeys.key.ljy != 0) printf("ljy = %d\n",JKeys.key.ljy); 
 			*/
-			lcnt = 0;
 			flashChange = 0;			
 			if(flashChange == 1)
 				{
@@ -616,7 +626,8 @@ void SetPS3LEDFlashRate(int rate)
 		case 3:
 			z = 0x1e;
 			break;
-		case 4:
+		default:
+        //case 4:
 			z = 0x12;
 			break;
 		}
@@ -626,7 +637,7 @@ void SetPS3LEDFlashRate(int rate)
 	return;
 }
 
-
+#ifdef USE_JOY_MIXER        
 void StartJoyMixer(void)
 {
 	int rc;
@@ -643,10 +654,10 @@ void StartJoyMixer(void)
 
 void* JoyMixer(void *param)
 {
-	int c=128;
-	long n=0;
-	double FBStep;
-	double RLTurn,x,y;
+//	int c=128;
+//	long n=0;
+//	double FBStep;
+	double /*RLTurn,*/x,y;
 	/*
 	double FollowMaxFBStep = 25.0;
   double FollowMinFBStep = 5.0;
@@ -667,8 +678,8 @@ void* JoyMixer(void *param)
 			y = PS3.key.RJoyY-128;
 			if(abs(x) > 10 || abs(y) > 10)
 				{
-				RLTurn = 20*(x)/256;	
-				FBStep = 25*(y)/256;		
+				//RLTurn = 20*(x)/256;	
+				//FBStep = 25*(y)/256;		
 				//Walking::GetInstance()->X_MOVE_AMPLITUDE = FBStep;
 				//Walking::GetInstance()->A_MOVE_AMPLITUDE = RLTurn;			
 				}			
@@ -681,13 +692,13 @@ void* JoyMixer(void *param)
 
 		if(gJoyIMUMixEnable == 1) 
 			{
-			n = 0;
-			int accX,accY,accZ,zGyro;
+			//n = 0;
+			//int accX,accY,accZ,zGyro;
 			//have to change endianess
-			accX = ((PS3.key.accX & 0x3)<<8) | ((PS3.key.accX & 0xff00)>>8); 			
-			accY = ((PS3.key.accY & 0x3)<<8) | ((PS3.key.accY & 0xff00)>>8); 			
-			accZ = ((PS3.key.accZ & 0x3)<<8) | ((PS3.key.accZ & 0xff00)>>8); 			
-			zGyro = ((PS3.key.zGyro & 0x3)<<8) | ((PS3.key.zGyro & 0xff00)>>8); 			
+			//accX = ((PS3.key.accX & 0x3)<<8) | ((PS3.key.accX & 0xff00)>>8); 			
+			//accY = ((PS3.key.accY & 0x3)<<8) | ((PS3.key.accY & 0xff00)>>8); 			
+			//accZ = ((PS3.key.accZ & 0x3)<<8) | ((PS3.key.accZ & 0xff00)>>8); 			
+			//zGyro = ((PS3.key.zGyro & 0x3)<<8) | ((PS3.key.zGyro & 0xff00)>>8); 			
 
 			// xAccel mixing			
 			// yAccel mixing			
@@ -707,6 +718,7 @@ void StopJoyMixer(void)
 	pthread_join(JoyMixerThreadID, NULL);
 	return;
 }
+#endif
 
 void PS3Vibrate(void)
 {
@@ -726,7 +738,8 @@ void PS3Vibrate(void)
 		case 3:
 			z = 0x1e;
 			break;
-		case 4:
+        default:
+		//case 4:
 			z = 0x12;
 			break;
 		}
@@ -755,7 +768,8 @@ int ToggleRobotStandby(void)
 			case 3:
 				z = 0x1e;
 				break;
-			case 4:
+            default:
+			//case 4:
 				z = 0x12;
 				break;
 			}
