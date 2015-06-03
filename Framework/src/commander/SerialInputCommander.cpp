@@ -218,11 +218,11 @@ void *Commander::XBeeThreadProc(void *pv) {
 
     if ((pcmdr->fd = open(pcmdr->_pszDevice, O_RDWR | O_NOCTTY | O_SYNC | O_NONBLOCK)) == -1) {
         printf("Open Failed\n");
-        return false;
+        return (void*)1;
     }
 
     if ((pcmdr->pfile = fdopen(pcmdr->fd, "r+")) == NULL) {
-        return false;
+        return (void*)1;
     }
 
 
@@ -232,7 +232,7 @@ void *Commander::XBeeThreadProc(void *pv) {
 
     if (tcgetattr(pcmdr->fd, &tc)) {
         perror("tcgetattr()");
-        return false;
+        return (void*)1;
     }
 
     /* input flags */
@@ -275,18 +275,18 @@ void *Commander::XBeeThreadProc(void *pv) {
     /* set i/o baud rate */
     if (cfsetspeed(&tc, pcmdr->_baud)) {
         perror("cfsetspeed()");
-        return false;
+        return (void*)1;
     }
 
     if (tcsetattr(pcmdr->fd, TCSAFLUSH, &tc)) {
         perror("tcsetattr()");
-        return false;
+        return (void*)1;
     }
 
     /* enable input & output transmission */
     if (tcflow(pcmdr->fd, TCOON | TCION)) {
         perror("tcflow()");
-        return false;
+        return (void*)1;
     }
 
     fflush(pcmdr->pfile);

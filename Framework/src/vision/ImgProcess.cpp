@@ -260,8 +260,8 @@ void ImgProcess::HFlipYUV(Image* img)
 void ImgProcess::VFlipYUV(Image* img)
 {
     int sizeline = img->m_Width * 2; /* 2 bytes per pixel */
-    unsigned char *pframe;
-    pframe=img->m_ImageData;
+//    unsigned char *pframe;
+//    pframe=img->m_ImageData;
     unsigned char line1[sizeline];/*line1 buffer*/
     unsigned char line2[sizeline];/*line2 buffer*/
     for(int h = 0; h < img->m_Height/2; h++)

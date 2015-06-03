@@ -22,7 +22,7 @@ void EquivalenceTable::addEquivalence(int label1, int label2) {
 }
 
 void EquivalenceTable::traverseLinks() {
-  for (int i = 0; i < m_table.size(); i++) {
+  for (int i = 0; i < (int)m_table.size(); i++) {
     m_table[i] = m_table[m_table[i]];
   }
 }
@@ -30,7 +30,7 @@ void EquivalenceTable::traverseLinks() {
 void EquivalenceTable::removeGaps() {
   int next = 0;
   
-  for (int i = 0; i < m_table.size(); i++) {
+  for (int i = 0; i < (int)m_table.size(); i++) {
     int b = m_table[i];
     m_table[i] = (i == b) ? next++ : m_table[b];
   }
