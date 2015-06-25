@@ -36,6 +36,7 @@ namespace Robot
 		/////////// Need to implement below methods (Platform porting) //////////////
 		// Port control
 		virtual bool OpenPort() = 0;
+        	virtual bool SetBaud(int baud) = 0;
 		virtual void ClosePort() = 0;
 		virtual void ClearPort() = 0;
 		virtual int WritePort(unsigned char* packet, int numPacket) = 0;
@@ -174,6 +175,7 @@ namespace Robot
 		~CM730();
 
 		bool Connect();
+		bool ChangeBaud(int baud);
 		void Disconnect();
 		bool DXLPowerOn(bool state = true);
 
