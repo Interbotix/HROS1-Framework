@@ -460,7 +460,7 @@ int CM730::BulkRead()
         return TxRxPacket(m_BulkReadTxPacket, rxpacket, 0);
     else
     {
-				MakeBulkReadPacket();
+		MakeBulkReadPacket();
         return TX_FAIL;
     }
 }
@@ -492,6 +492,17 @@ bool CM730::Connect()
 	}
 
 	return DXLPowerOn();
+}
+
+bool CM730::ChangeBaud(int baud)
+{
+    if(m_Platform->SetBaud(baud) == false)
+    {
+        fprintf(stderr, "\n Fail to change baudrate\n");
+        return false;
+    }
+
+    return DXLPowerOn();
 }
 
 bool CM730::DXLPowerOn(bool state)

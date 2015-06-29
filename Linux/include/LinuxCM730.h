@@ -42,6 +42,7 @@ namespace Robot
 
 		///////////////// Platform Porting //////////////////////
 		bool OpenPort();
+        bool SetBaud(int baud);
 		void ClosePort();
 		void ClearPort();
 		int WritePort(unsigned char* packet, int numPacket);

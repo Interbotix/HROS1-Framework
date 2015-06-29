@@ -105,6 +105,36 @@ UART_OPEN_ERROR:
 	return false;
 }
 
+bool LinuxCM730::SetBaud(int baud)
+{
+    struct serial_struct serinfo;
+    int baudrate = (int)(2000000.0f / (float)(baud + 1));
+
+    if(m_Socket_fd == -1)
+        return false;
+
+    if(ioctl(m_Socket_fd, TIOCGSERIAL, &serinfo) < 0) {
+        fprintf(stderr, "Cannot get serial info\n");
+        return false;
+    }
+
+    serinfo.flags &= ~ASYNC_SPD_MASK;
+    serinfo.flags |= ASYNC_SPD_CUST;
+    serinfo.custom_divisor = serinfo.baud_base / baudrate;
+
+    if(ioctl(m_Socket_fd, TIOCSSERIAL, &serinfo) < 0) {
+        fprintf(stderr, "Cannot set serial info\n");
+        return false;
+    }
+
+    ClosePort();
+    OpenPort();
+
+    m_ByteTransferTime = (float)((1000.0f / baudrate) * 12.0f * 8);
+
+    return true;
+}
+
 void LinuxCM730::ClosePort()
 {
 	if(m_Socket_fd != -1)
