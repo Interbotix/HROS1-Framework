@@ -148,7 +148,7 @@ int CM730::TxRxPacket(unsigned char *txpacket, unsigned char *rxpacket, int prio
 					to_length = txpacket[PARAMETER+1] + 6;
 				else
 					to_length = 6;
-
+                m_Platform->FlushPort();
 				m_Platform->SetPacketTimeout(length);
 
 				int get_length = 0;

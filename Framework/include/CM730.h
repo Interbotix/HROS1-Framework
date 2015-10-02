@@ -41,6 +41,7 @@ namespace Robot
 		virtual void ClearPort() = 0;
 		virtual int WritePort(unsigned char* packet, int numPacket) = 0;
 		virtual int ReadPort(unsigned char* packet, int numPacket) = 0;
+        virtual void FlushPort() = 0;
 
 		// Using semaphore
 		virtual void LowPriorityWait() = 0;

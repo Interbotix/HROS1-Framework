@@ -142,6 +142,12 @@ void LinuxCM730::ClosePort()
     m_Socket_fd = -1;
 }
 
+void LinuxCM730::FlushPort()
+{
+	if(m_Socket_fd != -1)
+        tcdrain(m_Socket_fd);
+}
+
 void LinuxCM730::ClearPort()
 {
 	tcflush(m_Socket_fd, TCIFLUSH);

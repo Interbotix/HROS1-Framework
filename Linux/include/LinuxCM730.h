@@ -47,6 +47,7 @@ namespace Robot
 		void ClearPort();
 		int WritePort(unsigned char* packet, int numPacket);
 		int ReadPort(unsigned char* packet, int numPacket);
+        void FlushPort();
 
 		void LowPriorityWait();
 		void MidPriorityWait();
