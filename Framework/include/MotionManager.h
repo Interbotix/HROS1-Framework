@@ -40,24 +40,24 @@ namespace Robot
 
 		std::ofstream m_LogFileStream;
 
-	AngleEstimator m_angleEstimator;
-	bool m_fadeIn;
-	int m_torque_count;
+		AngleEstimator m_angleEstimator;
+		bool m_fadeIn;
+		int m_torque_count;
 
-	FILE* m_voltageLog;
+		FILE* m_voltageLog;
 
-	unsigned int m_torqueAdaptionCounter;
-	double m_voltageAdaptionFactor;
+		unsigned int m_torqueAdaptionCounter;
+		double m_voltageAdaptionFactor;
 
-	MotionManager();
+		MotionManager();
 	
-	void adaptTorqueToVoltage();
+		void adaptTorqueToVoltage();
 
 	protected:
 
 	public:
 		bool DEBUG_PRINT;
-    int m_Offset[JointData::NUMBER_OF_JOINTS];
+    	int m_Offset[JointData::NUMBER_OF_JOINTS];
 
 		~MotionManager();
 

@@ -93,7 +93,7 @@ namespace Robot
 		double m_Body_Swing_Y;
 		double m_Body_Swing_Z;
 
-    double m_balance_fb_angle;
+    	double m_balance_fb_angle;
 
 		FILE* m_balanceLog;
     
@@ -136,7 +136,7 @@ namespace Robot
 		double BALANCE_HIP_ROLL_GAIN;
 		double BALANCE_ANKLE_ROLL_GAIN;
 		double BALANCE_ANGLE_SMOOTH_GAIN;
-    double BALANCE_ANGLE_GAIN;
+    	double BALANCE_ANGLE_GAIN;
 		double Y_SWAP_AMPLITUDE;
 		double Z_SWAP_AMPLITUDE;
 		double ARM_SWING_GAIN;
@@ -144,9 +144,9 @@ namespace Robot
 		double HIP_PITCH_OFFSET;
 		double HIP_PITCH_OFFSET_START;
 		double LEAN_FB;
-    double LEAN_FB_ACCEL;
+    	double LEAN_FB_ACCEL;
 		double LEAN_TURN;
-    double START_STEP_FACTOR;
+    	double START_STEP_FACTOR;
 
 		int    P_GAIN;
 		int    I_GAIN;

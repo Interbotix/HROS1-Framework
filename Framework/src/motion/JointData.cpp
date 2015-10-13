@@ -20,10 +20,7 @@ JointData::JointData()
         m_Angle[i] = 0.0;
         m_CWSlope[i] = SLOPE_HARD;
         m_CCWSlope[i] = SLOPE_HARD;
-        m_PGain[i] = P_GAIN_DEFAULT;
-        m_IGain[i] = I_GAIN_DEFAULT;
-        m_DGain[i] = D_GAIN_DEFAULT;
-	m_Temp[i] = TEMP_DEFAULT;
+		m_Temp[i] = TEMP_DEFAULT;
     }
 }
 
@@ -51,7 +48,6 @@ void JointData::SetEnableHeadOnly(bool enable, bool exclusive)
 {
 	SetEnable(ID_HEAD_PAN,          enable, exclusive);
 	SetEnable(ID_HEAD_TILT,         enable, exclusive);
-//	SetEnable(ID_TORSO_ROTATE,	enable, exclusive);
 }
 
 void JointData::SetEnableRightArmOnly(bool enable)
@@ -64,9 +60,6 @@ void JointData::SetEnableRightArmOnly(bool enable, bool exclusive)
     SetEnable(ID_R_SHOULDER_PITCH,  enable, exclusive);
     SetEnable(ID_R_SHOULDER_ROLL,   enable, exclusive);
     SetEnable(ID_R_ELBOW,           enable, exclusive);
-//	SetEnable(ID_R_ELBOW_YAW, 	enable, exclusive);
-//	SetEnable(ID_R_WRIST_YAW,	enable, exclusive);
-//	SetEnable(ID_R_GRIPPER,		enable, exclusive);
 }
 
 void JointData::SetEnableLeftArmOnly(bool enable)
@@ -79,9 +72,6 @@ void JointData::SetEnableLeftArmOnly(bool enable, bool exclusive)
     SetEnable(ID_L_SHOULDER_PITCH,  enable, exclusive);
     SetEnable(ID_L_SHOULDER_ROLL,   enable, exclusive);
     SetEnable(ID_L_ELBOW,           enable, exclusive);
-//	SetEnable(ID_L_ELBOW_YAW, 	enable, exclusive);
-//	SetEnable(ID_L_WRIST_YAW,	enable, exclusive);
-//	SetEnable(ID_L_GRIPPER,		enable, exclusive);
 }
 
 void JointData::SetEnableRightLegOnly(bool enable)

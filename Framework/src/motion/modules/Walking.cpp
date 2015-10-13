@@ -86,12 +86,6 @@ Walking::Walking()
     assert(m_balanceLog);
 #endif
 
-    m_Joint.SetPGain(JointData::ID_R_SHOULDER_PITCH, 8);
-    m_Joint.SetPGain(JointData::ID_L_SHOULDER_PITCH, 8);
-    m_Joint.SetPGain(JointData::ID_R_SHOULDER_ROLL, 8);
-    m_Joint.SetPGain(JointData::ID_L_SHOULDER_ROLL, 8);
-    m_Joint.SetPGain(JointData::ID_R_ELBOW, 8);
-    m_Joint.SetPGain(JointData::ID_L_ELBOW, 8);
 }
 
 Walking::~Walking()
@@ -651,13 +645,6 @@ void Walking::Process()
 	m_Joint.SetSlope(id, JointData::SLOPE_HARD, JointData::SLOPE_HARD);
 	}
 
-
-//	for(int id = JointData::ID_R_HIP_YAW; id <= JointData::ID_L_ANKLE_ROLL; id++)
-//	{
-//	    m_Joint.SetPGain(id, P_GAIN);
-//      m_Joint.SetIGain(id, I_GAIN);
-//      m_Joint.SetDGain(id, D_GAIN);
-//	}
 }
 
 double Walking::splineBalance(double angle, double vel, double gain)

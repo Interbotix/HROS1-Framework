@@ -317,7 +317,7 @@ void Action::Process()
     if( m_Playing == false )
         return;
 
-    if( m_FirstDrivingStart == true ) // 처음 시작할때
+    if( m_FirstDrivingStart == true ) // 
     {
         m_FirstDrivingStart = false; //First Process end
         m_PlayingFinished = false;
@@ -345,12 +345,12 @@ void Action::Process()
     if( wUnitTimeCount < wUnitTimeNum ) // 현재 진행중이라면
     {
         wUnitTimeCount++;
-				if( bSection == PAUSE_SECTION )
-        {
-        }
-        else
-        {
-            for( bID=JointData::ID_MIN; bID<=JointData::ID_MAX; bID++ )
+			if( bSection == PAUSE_SECTION )
+        		{
+        		}
+        	else
+        		{
+            	for( bID=JointData::ID_MIN; bID<=JointData::ID_MAX; bID++ )
             {
                 // 현재 사용하는 관절만 계산
               if(m_Joint.GetEnable(bID) == true)
@@ -399,7 +399,6 @@ void Action::Process()
 					}
 
 					m_Joint.SetSlope(bID, 1 << (m_PlayPage.header.slope[bID]>>4), 1 << (m_PlayPage.header.slope[bID]&0x0f));                    
-                    m_Joint.SetPGain(bID, (256 >> (m_PlayPage.header.slope[bID]>>4)) << 2);
                 }
             }
         }

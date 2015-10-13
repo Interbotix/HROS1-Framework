@@ -86,7 +86,7 @@ void Head::LoadINISettings(minIni* ini, const std::string &section)
     if((value = ini->getd(section, "pan_home", INVALID_VALUE)) != INVALID_VALUE)    m_Pan_Home = value;
     if((value = ini->getd(section, "tilt_home", INVALID_VALUE)) != INVALID_VALUE)   m_Tilt_Home = value;
 
-		if((value = ini->getd(section, "top_limit_line_following", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit_line_following = value;
+	if((value = ini->getd(section, "top_limit_line_following", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit_line_following = value;
     if((value = ini->getd(section, "top_limit_robot_following", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit_robot_following = value;
     if((value = ini->getd(section, "top_limit_soccer", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit_soccer = value;
 }

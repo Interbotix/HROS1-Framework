@@ -50,9 +50,6 @@ void StatusCheck::Check(CM730 &cm730)
 			while(Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 			}
 		if(ToggleRobotStandby()==1)
-			{
-			//LinuxActionScript::PlayMP3("../../../Data/mp3/standby.mp3");
-			}		
 		// wait for key release
 		while(PS3.key.PS != 0) usleep(8000);
 		}
@@ -72,11 +69,12 @@ void StatusCheck::Check(CM730 &cm730)
 
      Action::GetInstance()->m_Joint.SetEnableBody(true, true);
 
+
     if(MotionStatus::FALLEN == FORWARD)
         Action::GetInstance()->Start(1);   // FORWARD GETUP 10
     else if(MotionStatus::FALLEN == BACKWARD)
         Action::GetInstance()->Start(1);   // BACKWARD GETUP 11
-    while(Action::GetInstance()->IsRunning() == 1) usleep(8000);
+     while(Action::GetInstance()->IsRunning() == 1) usleep(8000);
 
     Head::GetInstance()->m_Joint.SetEnableHeadOnly(true, true);
     Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true, true);
@@ -377,7 +375,7 @@ void StatusCheck::Check(CM730 &cm730)
 		fprintf(stderr, "STOPPING WALKING GAIT\n");		
 		resetLEDs(cm730);
 		Walking::GetInstance()->Stop();
-		while(Walking::GetInstance()->IsRunning() == 1) usleep(8000);
+		while(Walking::GetInstance()->IsRunning() == 1) usleep(8000);	
 		}
 //////////////////////////////////////////////////////////////////////////////////////
 

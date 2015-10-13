@@ -8,14 +8,12 @@
 #ifndef _MX_28_H_
 #define _MX_28_H_
 
-//#define MX28_1024
-
 namespace Robot
 {
 	class MX28
 	{
 	public:
-	static const int MIN_VALUE = 0;
+		static const int MIN_VALUE = 0;
         static const int CENTER_VALUE = 512;
         static const int MAX_VALUE = 1023;
         static const double MIN_ANGLE = -150.0; // degree

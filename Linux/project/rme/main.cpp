@@ -9,17 +9,16 @@
 #include "cmd_process.h"
 #include "PS3Controller.h"
 
-#ifdef MX28_1024
-#define MOTION_FILE_PATH    "../../../Data/motion_1024.bin"
-#else
 #define MOTION_FILE_PATH    "../../../Data/motion_4096.bin"
-#endif
+
+#define INI_FILE_PATH       "../../../Data/config.ini"
 
 using namespace Robot;
 
 LinuxCM730 linux_cm730("/dev/ttyUSB0");
 CM730 cm730(&linux_cm730);
 LinuxMotionTimer linuxMotionTimer;
+
 
 void change_current_dir()
 {
@@ -47,6 +46,8 @@ int main(int argc, char *argv[])
 
     int ch;
     char filename[128];
+
+    minIni* ini = new minIni(INI_FILE_PATH);
 
     change_current_dir();
     if(argc < 2)
@@ -81,6 +82,7 @@ int main(int argc, char *argv[])
         printf("Initializing Motion Manager failed!\n");
         exit(0);
     }
+	   MotionManager::GetInstance()->LoadINISettings(ini);
        MotionManager::GetInstance()->SetEnable(false);
        MotionManager::GetInstance()->AddModule((MotionModule*)Action::GetInstance());	
        linuxMotionTimer.Initialize(MotionManager::GetInstance());

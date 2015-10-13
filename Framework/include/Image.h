@@ -29,7 +29,8 @@ namespace Robot
         int m_NumberOfPixels;       /* number of pixels */
         int m_WidthStep;            /* size of aligned image row in bytes */
         int m_ImageSize;            /* image data size in bytes (=image->m_Height*image->m_WidthStep) */
-				unsigned int *y_table;
+		
+		unsigned int *y_table;
         Image(int width, int height, int pixelsize);
 		virtual ~Image();
 

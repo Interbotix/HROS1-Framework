@@ -16,7 +16,7 @@ namespace Robot
 	public:
 		enum
 		{
-			ID_MIN			= 1,
+			ID_MIN					= 1,
 			ID_R_SHOULDER_PITCH     = 1,
 			ID_L_SHOULDER_PITCH     = 2,
 			ID_R_SHOULDER_ROLL      = 3,
@@ -37,15 +37,8 @@ namespace Robot
 			ID_L_ANKLE_ROLL         = 18,
 			ID_HEAD_PAN             = 19,
 			ID_HEAD_TILT            = 20,
-//			ID_R_ELBOW_YAW		= 21,
-//			ID_L_ELBOW_YAW		= 22,
-//			ID_R_WRIST_YAW		= 23,
-//			ID_L_WRIST_YAW		= 24,
-//			ID_R_GRIPPER		= 25,
-//			ID_L_GRIPPER		= 26,
-//			ID_TORSO_ROTATE		= 23,
-			ID_MAX			= 20,
-			NUMBER_OF_JOINTS	= 21
+			ID_MAX					= 20,
+			NUMBER_OF_JOINTS		= 21
 		};
 
 		enum
@@ -76,9 +69,9 @@ namespace Robot
 		int m_CWSlope[NUMBER_OF_JOINTS];
 		int m_CCWSlope[NUMBER_OF_JOINTS];
 		int m_PGain[NUMBER_OF_JOINTS];
-    int m_IGain[NUMBER_OF_JOINTS];
-    int m_DGain[NUMBER_OF_JOINTS];
-    int m_Temp[NUMBER_OF_JOINTS];
+    	int m_IGain[NUMBER_OF_JOINTS];
+    	int m_DGain[NUMBER_OF_JOINTS];
+    	int m_Temp[NUMBER_OF_JOINTS];
 
 	public:
 		JointData();
