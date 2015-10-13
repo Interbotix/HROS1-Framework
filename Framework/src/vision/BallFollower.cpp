@@ -29,11 +29,11 @@ BallFollower::BallFollower()
 	m_KickRightAngle = -30.0;
 	m_KickLeftAngle = 30.0;
 
-	m_FollowMaxFBStep = 30.0;
-    m_FollowMinFBStep = 5.0;
-	m_FollowMaxRLTurn = 35.0;
-	m_FitFBStep = 3.0;
-	m_FitMaxRLTurn = 35.0;
+	m_FollowMaxFBStep = 8.0;
+    m_FollowMinFBStep = 1.0;
+	m_FollowMaxRLTurn = 30.0;
+	m_FitFBStep = 1.0;
+	m_FitMaxRLTurn = 30.0;
 	m_UnitFBStep = 0.3;
 	m_UnitRLTurn = 1.0;
 
@@ -63,7 +63,7 @@ void BallFollower::Process(Point2D ball_pos)
 			// can not find a ball
 			m_GoalFBStep = 0;
 			m_GoalRLTurn = 0;
-			Head::GetInstance()->MoveToHome();
+			//Head::GetInstance()->MoveToHome();
 
 			if(DEBUG_PRINT == true)
 				fprintf(stderr, "[NO BALL]");

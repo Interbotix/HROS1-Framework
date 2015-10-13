@@ -12,6 +12,7 @@
 #include "MotionManager.h"
 #include <unistd.h>
 #include <assert.h>
+#include <stdlib.h>
 
 using namespace Robot;
 
@@ -273,7 +274,7 @@ void MotionManager::Process()
         static int fb_array[ACCEL_WINDOW_SIZE] = {512,};
         static int buf_idx = 0;
         if(m_CM730->m_BulkReadData[CM730::ID_CM].error == 0)
-					{
+		{
           const double GYRO_ALPHA = 0.1;
           int gyroValFB = m_CM730->m_BulkReadData[CM730::ID_CM].ReadWord(CM730::P_GYRO_Y_L) - m_FBGyroCenter;
           int gyroValRL = m_CM730->m_BulkReadData[CM730::ID_CM].ReadWord(CM730::P_GYRO_X_L) - m_RLGyroCenter;
@@ -309,9 +310,17 @@ void MotionManager::Process()
         avr = sum / ACCEL_WINDOW_SIZE;
 
         if(avr < MotionStatus::FALLEN_F_LIMIT)
+        {
             MotionStatus::FALLEN = FORWARD;
+//DEBUG: 
+//printf( "I've fallen forward\r\n" );
+        }
         else if(avr > MotionStatus::FALLEN_B_LIMIT)
+        {
             MotionStatus::FALLEN = BACKWARD;
+//DEBUG: 
+//printf( "I've fallen backward\r\n" );
+        }
         else
             MotionStatus::FALLEN = STANDUP;
 
@@ -327,6 +336,9 @@ void MotionManager::Process()
                         MotionStatus::m_CurrentJoints.SetSlope(id, (*i)->m_Joint.GetCWSlope(id), (*i)->m_Joint.GetCCWSlope(id));
                         MotionStatus::m_CurrentJoints.SetValue(id, (*i)->m_Joint.GetValue(id));
 
+                        // MotionStatus::m_CurrentJoints.SetPGain(id, (*i)->m_Joint.GetPGain(id));
+                        // MotionStatus::m_CurrentJoints.SetIGain(id, (*i)->m_Joint.GetIGain(id));
+                        // MotionStatus::m_CurrentJoints.SetDGain(id, (*i)->m_Joint.GetDGain(id));
                     }
                 }
             }
@@ -346,7 +358,7 @@ void MotionManager::Process()
 
                 param[n++] = CM730::GetLowByte(MotionStatus::m_CurrentJoints.GetValue(id) + m_Offset[id]);
                 param[n++] = CM730::GetHighByte(MotionStatus::m_CurrentJoints.GetValue(id) + m_Offset[id]);
-				joint_num++;
+								joint_num++;
             }
 
             if(DEBUG_PRINT == true)
@@ -397,7 +409,7 @@ void MotionManager::Process()
     if(m_torque_count != DEST_TORQUE && --m_torqueAdaptionCounter == 0)
     {
         m_torqueAdaptionCounter = TORQUE_ADAPTION_CYCLES;
-//        adaptTorqueToVoltage();
+        adaptTorqueToVoltage();
     }
 }
 
@@ -439,9 +451,20 @@ void MotionManager::adaptTorqueToVoltage()
     if(m_CM730->ReadByte(CM730::ID_CM, CM730::P_VOLTAGE, &voltage, 0) != CM730::SUCCESS)
         return;
 
+    //Check if voltage has dropped too low; if so kill the servos and issue a poweroff command
+    if ( voltage < 108 )
+    {
+        printf( "MotionManager::adaptTorqueToVoltage: Voltage dropped below safe threshold. Shutting down." );
+        m_CM730->WriteByte(CM730::ID_BROADCAST, MX28::P_TORQUE_ENABLE, 0, 0); //kill torque
+        m_CM730->DXLPowerOn(false); //power off bus
+        system( "poweroff" );
+        while(1);
+    }
     voltage = (voltage > FULL_TORQUE_VOLTAGE) ? voltage : FULL_TORQUE_VOLTAGE;
     m_voltageAdaptionFactor = ((double)FULL_TORQUE_VOLTAGE) / voltage;
     int torque = m_voltageAdaptionFactor * DEST_TORQUE;
+
+//printf("adaptTorqueToVoltage: vdc %3d, torque%4d\r\n", voltage, torque);
 
 #if LOG_VOLTAGES
     fprintf(m_voltageLog, "%3d       %4d\n", voltage, torque);

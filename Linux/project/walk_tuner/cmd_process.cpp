@@ -223,9 +223,10 @@ void DrawScreen()
 	printf("Balance ankle pitch gain  \n"); // 2
 	printf("Balance hip roll gain     \n"); // 3
 	printf("Balance ankle roll gain   \n"); // 4
-    printf("P gain                    \n"); // 5
-    printf("I gain                    \n"); // 6
-    printf("D gain                    \n"); // 7
+    //printf("P gain                    \n"); // 5
+    printf("BalanceAngleGain          \n"); // 5
+    printf("BalanceAngleSmoothGain    \n"); // 6
+    printf("Lean FB Accel             \n"); // 7
     ClearCmd(); // 8
 
 	GoToCursor(PARAM_COL, WALKING_MODE_ROW);
@@ -313,13 +314,16 @@ void DrawScreen()
 	printf("%.2f    ", Walking::GetInstance()->BALANCE_ANKLE_ROLL_GAIN);
 
     GoToCursor(PARAM_COL, P_GAIN_ROW);
-    printf("%d    ", Walking::GetInstance()->P_GAIN);
-
+    //printf("%d    ", Walking::GetInstance()->P_GAIN);
+	printf("%.2f    ", Walking::GetInstance()->BALANCE_ANGLE_GAIN);
+	
     GoToCursor(PARAM_COL, I_GAIN_ROW);
-    printf("%d    ", Walking::GetInstance()->I_GAIN);
-
+    //printf("%d    ", Walking::GetInstance()->I_GAIN);
+	printf("%.2f    ", Walking::GetInstance()->BALANCE_ANGLE_SMOOTH_GAIN);
+	
     GoToCursor(PARAM_COL, D_GAIN_ROW);
-    printf("%d    ", Walking::GetInstance()->D_GAIN);
+    //printf("%d    ", Walking::GetInstance()->D_GAIN);
+    printf("%.2f    ", Walking::GetInstance()->LEAN_FB_ACCEL);
 
 	GoToCursor(old_col, old_row);
 }
@@ -557,26 +561,35 @@ void IncreaseValue(bool large)
 
     case P_GAIN_ROW:
         if(large == true)
-            Walking::GetInstance()->P_GAIN += 10;
+            //Walking::GetInstance()->P_GAIN += 10;
+            Walking::GetInstance()->BALANCE_ANGLE_GAIN += 0.1;
         else
-            Walking::GetInstance()->P_GAIN += 1;
-        printf("%d    ", Walking::GetInstance()->P_GAIN);
+            //Walking::GetInstance()->P_GAIN += 1;
+            Walking::GetInstance()->BALANCE_ANGLE_GAIN += 0.01;
+        //printf("%d    ", Walking::GetInstance()->P_GAIN);
+        printf("%.2f    ", Walking::GetInstance()->BALANCE_ANGLE_GAIN);
         break;
 
     case I_GAIN_ROW:
         if(large == true)
-            Walking::GetInstance()->I_GAIN += 10;
+            //Walking::GetInstance()->I_GAIN += 10;
+            Walking::GetInstance()->BALANCE_ANGLE_SMOOTH_GAIN += 0.1;
         else
-            Walking::GetInstance()->I_GAIN += 1;
-        printf("%d    ", Walking::GetInstance()->I_GAIN);
+            //Walking::GetInstance()->I_GAIN += 1;
+            Walking::GetInstance()->BALANCE_ANGLE_SMOOTH_GAIN += 0.01;
+        //printf("%d    ", Walking::GetInstance()->I_GAIN);
+        printf("%.2f    ", Walking::GetInstance()->BALANCE_ANGLE_SMOOTH_GAIN);
         break;
 
     case D_GAIN_ROW:
         if(large == true)
-            Walking::GetInstance()->D_GAIN += 10;
+            //Walking::GetInstance()->D_GAIN += 10;
+            Walking::GetInstance()->LEAN_FB_ACCEL += 0.1;
         else
-            Walking::GetInstance()->D_GAIN += 1;
-        printf("%d    ", Walking::GetInstance()->D_GAIN);
+            //Walking::GetInstance()->D_GAIN += 1;
+            Walking::GetInstance()->LEAN_FB_ACCEL += 0.01;
+        //printf("%d    ", Walking::GetInstance()->D_GAIN);
+        printf("%.2f    ", Walking::GetInstance()->LEAN_FB_ACCEL);
         break;
 	}
 
@@ -808,26 +821,35 @@ void DecreaseValue(bool large)
 
 	case P_GAIN_ROW:
 	    if(large == true)
-	        Walking::GetInstance()->P_GAIN -= 10;
+	        //Walking::GetInstance()->P_GAIN -= 10;
+	        Walking::GetInstance()->BALANCE_ANGLE_GAIN -= 0.1;
 	    else
-	        Walking::GetInstance()->P_GAIN -= 1;
-	    printf("%d    ", Walking::GetInstance()->P_GAIN);
+	        //Walking::GetInstance()->P_GAIN -= 1;
+	        Walking::GetInstance()->BALANCE_ANGLE_GAIN -= 0.01;
+	    //printf("%d    ", Walking::GetInstance()->P_GAIN);
+	    printf("%.2f    ", Walking::GetInstance()->BALANCE_ANGLE_GAIN);
 	    break;
 
     case I_GAIN_ROW:
         if(large == true)
-            Walking::GetInstance()->I_GAIN -= 10;
+            //Walking::GetInstance()->I_GAIN -= 10;
+            Walking::GetInstance()->BALANCE_ANGLE_SMOOTH_GAIN -= 0.1;
         else
-            Walking::GetInstance()->I_GAIN -= 1;
-        printf("%d    ", Walking::GetInstance()->I_GAIN);
+            //Walking::GetInstance()->I_GAIN -= 1;
+            Walking::GetInstance()->BALANCE_ANGLE_SMOOTH_GAIN -= 0.01;
+        //printf("%d    ", Walking::GetInstance()->I_GAIN);
+        printf("%.2f    ", Walking::GetInstance()->BALANCE_ANGLE_SMOOTH_GAIN);
         break;
 
     case D_GAIN_ROW:
         if(large == true)
-            Walking::GetInstance()->D_GAIN -= 10;
+            //Walking::GetInstance()->D_GAIN -= 10;
+            Walking::GetInstance()->LEAN_FB_ACCEL -= 0.1;
         else
-            Walking::GetInstance()->D_GAIN -= 1;
-        printf("%d    ", Walking::GetInstance()->D_GAIN);
+            //Walking::GetInstance()->D_GAIN -= 1;
+            Walking::GetInstance()->LEAN_FB_ACCEL -= 0.01;
+        //printf("%d    ", Walking::GetInstance()->D_GAIN);
+        printf("%.2f    ", Walking::GetInstance()->LEAN_FB_ACCEL);
         break;
 	}
 	

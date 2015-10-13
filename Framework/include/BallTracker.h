@@ -19,6 +19,7 @@ namespace Robot
 	class BallTracker
 	{
 	private:
+		bool m_trackingBall;
 		int NoBallCount;
 		static const int NoBallMaxCount = 15;
 
@@ -40,6 +41,9 @@ namespace Robot
         void SaveINISettings(minIni* ini, const std::string &section);
 
 		void Process(Image* camImg);
+		void Process(Point2D pos);
+
+		bool isTracking() { return m_trackingBall; }
 	};
 }
 

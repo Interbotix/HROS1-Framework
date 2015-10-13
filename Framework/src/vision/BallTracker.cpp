@@ -75,10 +75,15 @@ void BallTracker::Process(Image* camImg)
 			NoBallCount++;
 		}
 		else
+		{
 			Head::GetInstance()->InitTracking();
+			Head::GetInstance()->LookAround();
+			m_trackingBall = 0;
+		}
 	}
 	else
 	{
+		m_trackingBall = 1;
 		NoBallCount = 0;
 		Point2D center = Point2D(camImg->m_Width/2, camImg->m_Height/2);
 		Point2D offset = pos - center;
@@ -87,5 +92,47 @@ void BallTracker::Process(Image* camImg)
 		offset.Y *= (Camera::VIEW_V_ANGLE / (double)camImg->m_Height); // pixel per angle
 		ball_position = offset;
 		if(bMotionEnable == true)  Head::GetInstance()->MoveTracking(ball_position);
+	}
+}
+
+double fitRange(double input, double range)
+{
+	if(input>range)return range;
+	if(input<-range)return -range;
+	return input;
+}
+
+void BallTracker::Process(Point2D pos)
+{
+	if(pos.X < 0 || pos.Y < 0)
+	{
+		ball_position.X = -1;
+		ball_position.Y = -1;
+		if(NoBallCount < NoBallMaxCount)
+		{
+			Head::GetInstance()->MoveTracking();
+			NoBallCount++;
+		}
+		else
+		{
+			m_trackingBall = 0;
+			Head::GetInstance()->InitTracking();
+			Head::GetInstance()->LookAround();
+			//Head::GetInstance()->MoveToHome();
+		}
+	}
+	else
+	{
+		m_trackingBall = 1;
+		NoBallCount = 0;
+		Point2D center = Point2D((double)Camera::WIDTH/2.0, (double)Camera::HEIGHT/2.0);
+		Point2D offset = pos - center;
+		offset *= -1.0; // Inverse X-axis, Y-axis
+
+		offset.X *= (Camera::VIEW_H_ANGLE / (double)Camera::WIDTH); // pixel per angle
+		offset.Y *= (Camera::VIEW_V_ANGLE / (double)Camera::HEIGHT); // pixel per angle
+
+		ball_position = offset;
+		Head::GetInstance()->MoveTracking(ball_position);
 	}
 }

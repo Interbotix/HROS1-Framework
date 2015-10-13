@@ -52,6 +52,11 @@ namespace Robot
 		double m_TopLimit_line_following;
 		double m_TopLimit_robot_following;
 
+		double m_LookPanRate;
+		double m_LookTiltRate;
+		double m_LookPanDirection;
+		double m_LookTiltDirection;
+
 		void Initialize();
 		void Process();
 
@@ -74,6 +79,7 @@ namespace Robot
 		void InitTracking();
 		void MoveTracking(Point2D err); // For image processing
 		void MoveTracking();
+		void LookAround();
 
         void LoadINISettings(minIni* ini);
         void LoadINISettings(minIni* ini, const std::string &section);

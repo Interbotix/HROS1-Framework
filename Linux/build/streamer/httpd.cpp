@@ -480,10 +480,10 @@ Return Value: -
 ******************************************************************************/
 void httpd::command(int fd, char *parameter) {
   char buffer[BUFFER_SIZE] = {0}, *command=NULL, *svalue=NULL, *section=NULL;
-  int i=0, res=0, ivalue=0, len=0;
+  int i=0, res=0, /*ivalue=0,*/ len=0;
+  double dvalue=0;
 	 char ret_s[10] = {0};
 
-  DBG("parameter is: %s\n", parameter);
 
   /* sanity check of parameter-string */
   if ( parameter == NULL || strlen(parameter) >= 100 || strlen(parameter) == 0 ) {
@@ -511,16 +511,21 @@ void httpd::command(int fd, char *parameter) {
 
   /* find and convert optional parameter "value" */
   if ( (svalue = strstr(parameter, "value=")) != NULL ) {
+  
+  	
     svalue += strlen("value=");
-    len = strspn(svalue, "-1234567890");
+    len = strspn(svalue, "-1234567890.");
+    
     if ( (svalue = strndup(svalue, len)) == NULL ) {
       if (command != NULL) free(command);
       send_error(fd, 500, "could not allocate memory");
       LOG("could not allocate memory\n");
       return;
     }
-    ivalue = MAX(MIN(strtol(svalue, NULL, 10), 999), -999);
-    DBG("converted value form string %s to integer %d\n", svalue, ivalue);
+    //ivalue = MAX(MIN(strtol(svalue, NULL, 10), 999), -999);
+    dvalue=atof(svalue);
+    
+    DBG("converted value form string %s to integer %0.2f\n", svalue, dvalue);
     free(svalue);
   }
 
@@ -563,7 +568,7 @@ void httpd::command(int fd, char *parameter) {
       }
 */
 
-      input_cmd(in_cmd_mapping[i].cmd, ivalue, ret_s);
+      input_cmd(in_cmd_mapping[i].cmd, dvalue, ret_s);
       break;
     }
   }
@@ -581,7 +586,7 @@ void httpd::command(int fd, char *parameter) {
                   "Content-type: text/plain\r\n" \
                   STD_HEADER \
                   "\r\n" \
-                  "%s: %d", command, res);
+                  "%s: %s", command, ret_s);
 
   write(fd, buffer, strlen(buffer));
 
@@ -929,7 +934,7 @@ void* httpd::client_thread( void *arg ) {
     pb += strlen("GET /?action=command");
 
     /* only accept certain characters */
-    len = MIN(MAX(strspn(pb, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-=&1234567890"), 0), 100);
+    len = MIN(MAX(strspn(pb, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ._-=&1234567890"), 0), 100);
     req.parameter = (char*)malloc(len+1);
     if ( req.parameter == NULL ) {
       exit(EXIT_FAILURE);
@@ -1136,4 +1141,5 @@ void* httpd::server_thread( void *arg ) {
 
   return NULL;
 }
+
 

@@ -15,7 +15,7 @@ using namespace Robot;
 ColorFinder::ColorFinder() :
         m_center_point(Point2D()),
         m_hue(356),
-        m_hue_tolerance(15),
+        m_hue_tolerance(14),
         m_min_saturation(50),
         m_max_saturation(100),
         m_min_value(10),

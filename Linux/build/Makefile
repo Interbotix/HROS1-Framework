@@ -47,6 +47,9 @@ OBJS =  ../../Framework/src/CM730.o     	\
         ../../Framework/src/minIni/minIni.o	\
         ../../Framework/src/controller/PS3Controller.o	\
         ../../Framework/src/commander/SerialInputCommander.o	\
+        streamer/httpd.o           \
+        streamer/jpeg_utils.o      \
+        streamer/mjpg_streamer.o   \
         LinuxActionScript.o   \
         LinuxCamera.o   \
         LinuxCM730.o    \
