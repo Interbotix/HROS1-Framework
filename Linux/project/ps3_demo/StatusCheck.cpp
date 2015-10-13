@@ -50,6 +50,9 @@ void StatusCheck::Check(CM730 &cm730)
 			while(Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 			}
 		if(ToggleRobotStandby()==1)
+			{
+			//LinuxActionScript::PlayMP3("../../../Data/mp3/standby.mp3");
+			}		
 		// wait for key release
 		while(PS3.key.PS != 0) usleep(8000);
 		}
@@ -68,13 +71,12 @@ void StatusCheck::Check(CM730 &cm730)
 	 	while(Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 
      Action::GetInstance()->m_Joint.SetEnableBody(true, true);
-     while(Action::GetInstance()->IsRunning() == 1) usleep(8000);
-
 
     if(MotionStatus::FALLEN == FORWARD)
         Action::GetInstance()->Start(1);   // FORWARD GETUP 10
     else if(MotionStatus::FALLEN == BACKWARD)
         Action::GetInstance()->Start(1);   // BACKWARD GETUP 11
+    while(Action::GetInstance()->IsRunning() == 1) usleep(8000);
 
     Head::GetInstance()->m_Joint.SetEnableHeadOnly(true, true);
     Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true, true);
@@ -134,7 +136,7 @@ void StatusCheck::Check(CM730 &cm730)
 
       Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true);
       Action::GetInstance()->m_Joint.SetEnableBody(false);
-			usleep(5000);
+			usleep(500);
       Head::GetInstance()->m_Joint.SetEnableHeadOnly(true);
 			while(PS3.key.Triangle != 0) usleep(8000);			
 			}
@@ -376,7 +378,6 @@ void StatusCheck::Check(CM730 &cm730)
 		resetLEDs(cm730);
 		Walking::GetInstance()->Stop();
 		while(Walking::GetInstance()->IsRunning() == 1) usleep(8000);
-	
 		}
 //////////////////////////////////////////////////////////////////////////////////////
 
