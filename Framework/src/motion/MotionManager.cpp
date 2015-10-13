@@ -282,10 +282,11 @@ void MotionManager::Process()
           MotionStatus::FB_GYRO = (1.0 - GYRO_ALPHA) * MotionStatus::FB_GYRO + GYRO_ALPHA * gyroValFB;
           MotionStatus::RL_GYRO = (1.0 - GYRO_ALPHA) * MotionStatus::RL_GYRO + GYRO_ALPHA * gyroValRL;;
           MotionStatus::RL_ACCEL = m_CM730->m_BulkReadData[CM730::ID_CM].ReadWord(CM730::P_ACCEL_X_L);
-          MotionStatus::FB_ACCEL = m_CM730->m_BulkReadData[CM730::ID_CM].ReadWord(CM730::P_ACCEL_Y_L);
+          MotionStatus::FB_ACCEL = 1024 - m_CM730->m_BulkReadData[CM730::ID_CM].ReadWord(CM730::P_ACCEL_Y_L);
 
-					fb_array[buf_idx] = MotionStatus::FB_ACCEL;
-          if(++buf_idx >= ACCEL_WINDOW_SIZE) buf_idx = 0;
+	  fb_array[buf_idx] = MotionStatus::FB_ACCEL;
+          
+	if(++buf_idx >= ACCEL_WINDOW_SIZE) buf_idx = 0;
 
            const double TICKS_TO_RADIANS_PER_STEP = (M_PI/180.0) * 250.0/512.0 * (0.001 * MotionModule::TIME_UNIT);
            m_angleEstimator.predict(
