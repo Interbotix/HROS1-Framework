@@ -584,6 +584,7 @@ void* PS3KeyServer(void *param)
       if(JKeys.key.ljx != 0) printf("ljx = %d\n",JKeys.key.ljx); 
       if(JKeys.key.ljy != 0) printf("ljy = %d\n",JKeys.key.ljy); 
 			*/
+			int lcnt = 0;
 			flashChange = 0;			
 			if(flashChange == 1)
 				{
