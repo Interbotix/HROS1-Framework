@@ -651,7 +651,7 @@ void Walking::Process()
 
 	for(int id = JointData::ID_R_HIP_YAW; id <= JointData::ID_L_ANKLE_ROLL; id++)
 	{
-	m_Joint.SetSlope(id, JointData::SLOPE_HARD, JointData::SLOPE_HARD);
+	m_Joint.SetSlope(id, JointData::SLOPE_DEFAULT, JointData::SLOPE_DEFAULT);
 	}
 
 
