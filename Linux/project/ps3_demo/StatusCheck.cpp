@@ -326,10 +326,11 @@ void StatusCheck::Check(CM730 &cm730)
 			{
 				xd = (double)(rx-dead_band)/256;
 				yd = (double)(ry-dead_band)/256;
-				RLTurn = 50*xd;	
-				FBStep = 45*yd;
+				RLTurn = 60*xd;	
+				FBStep = 40*yd;
 //				fprintf(stderr, " (yd:%.1f)\n", yd);
-				Walking::GetInstance()->HIP_PITCH_OFFSET = Walking::GetInstance()->HIP_PITCH_OFFSET_START + yd/2;
+//				Walking::GetInstance()->HIP_PITCH_OFFSET = 
+Walking::GetInstance()->HIP_PITCH_OFFSET_START + yd/2;
 				if(FBStep < 0)
 				{
 					FBStep = 20*yd;
@@ -351,9 +352,10 @@ void StatusCheck::Check(CM730 &cm730)
 				}
 			}
 			Walking::GetInstance()->speedAdj = speedAdjSum;
-			Walking::GetInstance()->X_OFFSET = Walking::GetInstance()->X_OFFSET_START - speedAdjSum;
+//			Walking::GetInstance()->X_OFFSET = Walking::GetInstance()->X_OFFSET_START - 
+speedAdjSum;
 			
-			double hip_offset = Walking::GetInstance()->HIP_PITCH_OFFSET;
+//			double hip_offset = Walking::GetInstance()->HIP_PITCH_OFFSET;
 //			fprintf(stderr, " (hip offset:%.1f)\n", hip_offset);
 			Walking::GetInstance()->X_MOVE_AMPLITUDE = FBStep;
 			Walking::GetInstance()->Y_MOVE_AMPLITUDE = RLStep;
