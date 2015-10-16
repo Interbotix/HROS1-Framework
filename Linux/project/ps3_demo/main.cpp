@@ -21,7 +21,7 @@
 #else
 #define MOTION_FILE_PATH    ((char *)"../../../Data/motion_4096.bin")
 #endif
-#define INI_FILE_PATH       ((char *)"../../../Data/config.ini")
+#define INI_FILE_PATH       ((char *)"../../../Data/config_SMOOTH.ini")
 
 #define M_INI	((char *)"../../../Data/slow-walk.ini")
 #define SCRIPT_FILE_PATH    "script.asc"
