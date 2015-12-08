@@ -342,7 +342,7 @@ void Action::Process()
         }
     }
 
-    if( wUnitTimeCount < wUnitTimeNum ) // 현재 진행중이라면
+    if( wUnitTimeCount < wUnitTimeNum ) // 
     {
         wUnitTimeCount++;
 			if( bSection == PAUSE_SECTION )
@@ -352,7 +352,7 @@ void Action::Process()
         		{
             	for( bID=JointData::ID_MIN; bID<=JointData::ID_MAX; bID++ )
             {
-                // 현재 사용하는 관절만 계산
+                // 
               if(m_Joint.GetEnable(bID) == true)
                 {
 						if( ipMovingAngle1024[bID] == 0 )
@@ -376,7 +376,7 @@ void Action::Process()
 						{
 							if( wUnitTimeCount == (wUnitTimeNum-1) )
 							{
-								// 스텝 마지막 오차를 줄이기위해 그냥 목표 위치 값을 사용
+								// 
 								m_Joint.SetValue(bID, wpTargetAngle1024[bID]);
 							}
 							else
@@ -389,8 +389,8 @@ void Action::Process()
 								}
 								else // NONE_ZERO_FINISH
 								{
-									// MAIN Section과 동일하게 작동-동일
-									// step에서 어떤서보는 가고 어떤 서보는 서야하는 상황이 발생할 수 있으므로 이렇게 할 수밖에 없음
+									// MAIN Section
+									// step
 									m_Joint.SetValue(bID, wpStartAngle1024[bID] + (short int)(((long)(ipMainAngle1024[bID]) * wUnitTimeCount) / wUnitTimeNum));
 									ipGoalSpeed1024[bID] = ipMainSpeed1024[bID];
 								}
@@ -429,7 +429,7 @@ void Action::Process()
 				{
 					if( bpFinishType[bID] == NONE_ZERO_FINISH )
 					{
-						if( (wUnitTimeTotalNum - wAccelStep) == 0 ) // 등속 구간이 전혀 없다면
+						if( (wUnitTimeTotalNum - wAccelStep) == 0 ) // 
 							ipMainAngle1024[bID] = 0;
 						else
 							ipMainAngle1024[bID] = (short)((((long)(ipMovingAngle1024[bID] - ipAccelAngle1024[bID])) * wUnitTimeNum) / (wUnitTimeTotalNum - wAccelStep));
@@ -441,7 +441,7 @@ void Action::Process()
         }
         else if( bSection == MAIN_SECTION )
         {
-            // POST Section 준비
+            // POST Section 
             bSection = POST_SECTION;
             wUnitTimeNum = wAccelStep;
 
@@ -453,7 +453,7 @@ void Action::Process()
         }
         else if( bSection == POST_SECTION )
         {
-            // Pause time 유무에따라 달라짐
+            // Pause time 
             if( wPauseTime )
             {
                 bSection = PAUSE_SECTION;
@@ -466,7 +466,7 @@ void Action::Process()
         }
         else if( bSection == PAUSE_SECTION )
         {
-            // PRE Section 준비
+            // PRE Section
             bSection = PRE_SECTION;
 
             for( bID=JointData::ID_MIN; bID<=JointData::ID_MAX; bID++ )
@@ -476,10 +476,10 @@ void Action::Process()
 			}
         }
 
-        // PRE Section시에 모든 준비를 한다.
+        // PRE Section
         if( bSection == PRE_SECTION )
         {
-            if( m_PlayingFinished == true ) // 모션이 끝났다면
+            if( m_PlayingFinished == true ) // 
             {
                 m_Playing = false;
                 return;
@@ -487,9 +487,9 @@ void Action::Process()
 
             m_PageStepCount++;
 
-            if( m_PageStepCount > m_PlayPage.header.stepnum ) // 현재 페이지 재생이 끝났다면
+            if( m_PageStepCount > m_PlayPage.header.stepnum ) // 
             {
-                // 다음 페이지 복사
+                // 
                 m_PlayPage = m_NextPlayPage;
                 if( m_IndexPlayingPage != wNextPlayPage )
                     bPlayRepeatCount = m_PlayPage.header.repeat;
@@ -497,23 +497,23 @@ void Action::Process()
                 m_IndexPlayingPage = wNextPlayPage;
             }
 
-            if( m_PageStepCount == m_PlayPage.header.stepnum ) // 마지막 스텝이라면
+            if( m_PageStepCount == m_PlayPage.header.stepnum ) // 
             {
-                // 다음 페이지 로딩
-                if( m_StopPlaying == true ) // 모션 정지 명령이 있다면
+                // 
+                if( m_StopPlaying == true ) // 
                 {
-										wNextPlayPage = m_PlayPage.header.exit; // 다음 페이지는 Exit 페이지로
+										wNextPlayPage = m_PlayPage.header.exit; // 
                 }
                 else
                 {
                     bPlayRepeatCount--;
-                    if( bPlayRepeatCount > 0 ) // 반복 횟수가 남았다면
-                        wNextPlayPage = m_IndexPlayingPage; // 다음 페이지는 현재 페이지로
-                    else // 반복을 다했다면
-                        wNextPlayPage = m_PlayPage.header.next; // 다음 페이지는 Next 페이지로
+                    if( bPlayRepeatCount > 0 ) // 
+                        wNextPlayPage = m_IndexPlayingPage; //
+                    else //
+                        wNextPlayPage = m_PlayPage.header.next; // 
                 }
 
-                if( wNextPlayPage == 0 ) // 재생할 다음 페이지가 없다면 현재 스텝까지하고 종료
+                if( wNextPlayPage == 0 ) // 
                     {
 										if(m_SeqCount < m_StartingPageSeqCount && m_StopPlaying == false)
 											{
@@ -526,31 +526,31 @@ void Action::Process()
 										}
                 else
                 {
-                    // 다음페이지 로딩(같으면 메모리 복사, 다르면 파일 읽기)
+                    // 
                     if( m_IndexPlayingPage != wNextPlayPage )
                         LoadPage( wNextPlayPage, &m_NextPlayPage );
                     else
                         m_NextPlayPage = m_PlayPage;
 
-                    // 재생할 정보가 없다면 현재 스텝까지하고 종료
+                    // 
                     if( m_NextPlayPage.header.repeat == 0 || m_NextPlayPage.header.stepnum == 0 )
                         m_PlayingFinished = true;
                 }
             }
 
-            //////// Step 파라미터 계산
+            //////// Step 
             wPauseTime = (((unsigned short)m_PlayPage.step[m_PageStepCount-1].pause) << 5) / m_PlayPage.header.speed;
             wMaxSpeed256 = ((unsigned short)m_PlayPage.step[m_PageStepCount-1].time * (unsigned short)m_PlayPage.header.speed) >> 5;
             if( wMaxSpeed256 == 0 )
                 wMaxSpeed256 = 1;
             wMaxAngle1024 = 0;
 
-            ////////// Joint별 파라미터 계산
+            ////////// Joint
             for( bID=JointData::ID_MIN; bID<=JointData::ID_MAX; bID++ )
 			{
 				if(m_Joint.GetEnable(bID) == true)
 				{
-					// 이전, 현재, 미래를 바탕으로 궤적을 계산
+					//
 					ipAccelAngle1024[bID] = 0;
 
 					// Find current target angle
@@ -568,9 +568,9 @@ void Action::Process()
 					ipMovingAngle1024[bID] = (int)(wpTargetAngle1024[bID] - wpStartAngle1024[bID]);
 
 					// Find Next target angle
-					if( m_PageStepCount == m_PlayPage.header.stepnum ) // 현재 스텝이 마지막이라면
+					if( m_PageStepCount == m_PlayPage.header.stepnum ) //
 					{
-						if( m_PlayingFinished == true ) // 끝날 예정이라면
+						if( m_PlayingFinished == true ) //
 							wNextTargetAngle = wCurrentTargetAngle;
 						else
 						{
@@ -592,7 +592,7 @@ void Action::Process()
 					if( ((wPrevTargetAngle < wCurrentTargetAngle) && (wCurrentTargetAngle < wNextTargetAngle))
 						|| ((wPrevTargetAngle > wCurrentTargetAngle) && (wCurrentTargetAngle > wNextTargetAngle)) )
 					{
-						// 계속 증가하거나 감소하고, 혹은 같다면(즉, 불연속 점이 없다면)
+						// 
 						bDirectionChanged = 0;
 					}
 					else
@@ -624,9 +624,7 @@ void Action::Process()
 				}
             }
 
-            //시간을 계산해서 다시 7.8msec로 나누다(<<7)-그시간동안에 7.8msec가 몇개들어가는지 계산한 것
-            //단위 변환뒤에 각/속도를 구하고(시간)그 시간에 다시 7.8msec가 몇개들어가있는지 계산
-            //단위 변환 ---  각 :1024계->300도계,  속도: 256계 ->720계
+
             //wUnitTimeNum = ((wMaxAngle1024*300/1024) /(wMaxSpeed256 * 720/256)) /7.8msec;
             //             = ((128*wMaxAngle1024*300/1024) /(wMaxSpeed256 * 720/256)) ;    (/7.8msec == *128)
             //             = (wMaxAngle1024*40) /(wMaxSpeed256 *3);
@@ -644,7 +642,7 @@ void Action::Process()
                 {
                     wAccelStep = (wUnitTimeTotalNum - 1) >> 1;
                     if( wAccelStep == 0 )
-                        wUnitTimeTotalNum = 0; //움직이려면 적어도 가속,등속이 한 스텝이상씩은 존재해야
+                        wUnitTimeTotalNum = 0; //
                 }
             }
 

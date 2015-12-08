@@ -308,7 +308,8 @@ void StatusCheck::Check(CM730 &cm730)
 
 		if(Walking::GetInstance()->IsRunning() == true)
 			{
-			int rx,ry,dead_band=6;			
+			int rx = 128, ry = 128;
+			int dead_band=5;			
 			double FBStep=0,RLTurn=0,RLStep=0,xd,yd;
 			static double speedAdjSum=0;			
 
@@ -326,10 +327,15 @@ void StatusCheck::Check(CM730 &cm730)
 			{
 				xd = (double)(rx-dead_band)/256;
 				yd = (double)(ry-dead_band)/256;
-				RLTurn = 50*xd;	
-				FBStep = 45*yd;
+				RLTurn = 60*xd;	
+				FBStep = 20*yd;
+//For config_FAST.ini
+//				RLTurn = 50*xd;
+//				FBStep = 45*yd;
+
 //				fprintf(stderr, " (yd:%.1f)\n", yd);
-				Walking::GetInstance()->HIP_PITCH_OFFSET = Walking::GetInstance()->HIP_PITCH_OFFSET_START + yd/2;
+//				Walking::GetInstance()->HIP_PITCH_OFFSET = 
+Walking::GetInstance()->HIP_PITCH_OFFSET_START + yd/2;
 				if(FBStep < 0)
 				{
 					FBStep = 20*yd;
@@ -351,9 +357,10 @@ void StatusCheck::Check(CM730 &cm730)
 				}
 			}
 			Walking::GetInstance()->speedAdj = speedAdjSum;
-			Walking::GetInstance()->X_OFFSET = Walking::GetInstance()->X_OFFSET_START - speedAdjSum;
+//			Walking::GetInstance()->X_OFFSET = Walking::GetInstance()->X_OFFSET_START - 
+speedAdjSum;
 			
-			double hip_offset = Walking::GetInstance()->HIP_PITCH_OFFSET;
+//			double hip_offset = Walking::GetInstance()->HIP_PITCH_OFFSET;
 //			fprintf(stderr, " (hip offset:%.1f)\n", hip_offset);
 			Walking::GetInstance()->X_MOVE_AMPLITUDE = FBStep;
 			Walking::GetInstance()->Y_MOVE_AMPLITUDE = RLStep;
@@ -465,7 +472,8 @@ if(Walking::GetInstance()->IsRunning() == false && PS3.key.Up != 0)
 
 	if((PS3BallFollower::GetInstance()->bHeadAuto == false && (m_cur_mode == SOCCER || m_cur_mode == SITTING)) )
 		{
-		int lx,ly,dead_band=6;
+		int lx = 128, ly = 128;
+		int dead_band=5;
 		double pan,tilt;
 		pan = MotionStatus::m_CurrentJoints.GetAngle(JointData::ID_HEAD_PAN);
 		tilt = MotionStatus::m_CurrentJoints.GetAngle(JointData::ID_HEAD_TILT);	

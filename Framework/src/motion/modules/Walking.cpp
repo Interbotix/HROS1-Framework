@@ -649,18 +649,14 @@ void Walking::Process()
 	m_Joint.SetValue(JointData::ID_L_SHOULDER_PITCH,    outValue[13]);
 	m_Joint.SetAngle(JointData::ID_HEAD_PAN, A_MOVE_AMPLITUDE);
 
+
+// SET WALKING COMPLIANCE
+// TODO, MAKE PROGRAM ACCESSIBLE
 	for(int id = JointData::ID_R_HIP_YAW; id <= JointData::ID_L_ANKLE_ROLL; id++)
 	{
-	m_Joint.SetSlope(id, JointData::SLOPE_HARD, JointData::SLOPE_HARD);
+	m_Joint.SetSlope(id, JointData::SLOPE_DEFAULT, JointData::SLOPE_DEFAULT);
 	}
 
-
-//	for(int id = JointData::ID_R_HIP_YAW; id <= JointData::ID_L_ANKLE_ROLL; id++)
-//	{
-//	    m_Joint.SetPGain(id, P_GAIN);
-//      m_Joint.SetIGain(id, I_GAIN);
-//      m_Joint.SetDGain(id, D_GAIN);
-//	}
 }
 
 double Walking::splineBalance(double angle, double vel, double gain)

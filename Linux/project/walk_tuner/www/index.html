@@ -1,0 +1,612 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>DARwIn-OP walk_tuner</title>
+
+    <style type="text/css">
+    /* tab init */
+    .tabcontent {
+        display:none;
+    }
+    #control {
+        font-size: 12px;
+    }
+    </style>
+
+    <script language="javascript" type="text/javascript" src="/functions.js"></script>
+    <script language="javascript">
+
+      function send_command(cmd) {
+        document.getElementById('hints').firstChild.nodeValue = "Send command: " + cmd;
+        AJAX_get('/?action=command&command='+ cmd)
+      }
+
+      function AJAX_response(text) {
+        document.getElementById('hints').firstChild.nodeValue = "Got response: " + text;
+        var val = text.split(": ");
+        //document.getElementById('hints').firstChild.nodeValue = text;
+        document.getElementById(val[0]).firstChild.nodeValue = val[1];
+        
+        if ( getAllValueIndex != -1 ) getAllValues();
+      }
+
+      function KeyDown(ev) {
+        ev = ev || window.event;
+        pressed = ev.which || ev.keyCode;
+
+        switch (pressed) {
+          case 27: // ESC
+            break;
+          case 37: // LEFT
+            send_command('walk_step_dir&value=1');
+            break;
+          case 39: // RIGHT
+            send_command('walk_step_dir&value=-1');
+            break;
+          case 38: // UP
+            send_command('walk_step_fb&value=1');
+            break;
+          case 40: // DOWN
+            send_command('walk_step_fb&value=-1');
+            break;
+          case 32: // SPACE
+            if(document.form.walk_mode[0].checked)
+            {
+              document.form.walk_mode[1].checked = true;
+              send_command('walk_mode&value=0')
+            }
+            else if(document.form.walk_mode[1].checked)
+            {
+              document.form.walk_mode[0].checked = true;
+              send_command('walk_mode&value=1')
+            }
+            else
+              document.getElementById('hints').firstChild.nodeValue = "2 CHECKED";
+            break;     
+          default:
+            break;
+        }
+      }
+      
+      function loadvalue() {
+        AJAX_get('/?action=command&command=value_reload');
+      }
+
+      document.onkeydown = KeyDown;
+
+		var getAllValueIndex = 0;
+		var commands = ['walk_x_offset&value=0'
+			,'walk_y_offset&value=0'
+			,'walk_z_offset&value=0'
+			,'walk_roll_offset&value=0'
+			,'walk_pitch_offset&value=0'
+			,'walk_pitch_offset&value=0'
+			,'walk_yaw_offset&value=0'
+			,'walk_hip_offset&value=0'
+			,'walk_period_time&value=0'
+			,'walk_dsp_ratio&value=0'
+			,'walk_step_fb_ratio&value=0'
+			,'walk_step_fb&value=0'
+			,'walk_step_rl&value=0'
+			,'walk_step_dir&value=0'
+			,'walk_foot_height&value=0'
+			,'walk_swing_rl&value=0'
+			,'walk_swing_td&value=0'
+			,'walk_pelvis_offset&value=0'
+			,'walk_arm_swing_gain&value=0'
+			,'walk_b_knee_gain&value=0'
+			,'walk_b_ankle_pitch_gain&value=0'
+			,'walk_b_hip_roll_gain&value=0'
+			,'walk_b_ankle_roll_gain&value=0'
+			,'walk_p_gain&value=0'
+			,'walk_i_gain&value=0'
+			,'walk_d_gain&value=0'
+			];
+		function getAllValues()
+		{
+			send_command( commands[ getAllValueIndex++ ] );
+			if ( getAllValueIndex > sizeof( commands ) - 1 ) getAllValueIndex = -1;
+		}
+    </script>
+
+</head>
+<body onload="getAllValues();">
+
+<table width="830px">
+
+<tr><td>
+<div id="hints" style="background-color: yellow;">communication hints</div>
+</td></tr>
+<table>
+<br>
+
+
+<div id="walk_tuner">
+<form name="form">
+
+<table>
+<tr><td valign="top">
+
+<table width="400px" border="0" cellspacing="0" cellpadding="0">
+<tr>
+  <td align="right">
+  Walking Mode (on/off) :
+  </td>
+  <td colspan="3" align="center">
+  <input type="radio" name="walk_mode" value="1" onclick="send_command('walk_mode&value=1')">ON
+  <input type="radio" name="walk_mode" checked value="0" onclick="send_command('walk_mode&value=0')">OFF
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  X offset (mm) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_x_offset&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_x_offset&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_x_offset" ondblclick="send_command('walk_x_offset&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_x_offset&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_x_offset&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Y offset (mm) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_y_offset&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_y_offset&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_y_offset" ondblclick="send_command('walk_y_offset&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_y_offset&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_y_offset&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Z offset (mm) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_z_offset&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_z_offset&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_z_offset" ondblclick="send_command('walk_z_offset&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_z_offset&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_z_offset&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Roll(x) offset (degree) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_roll_offset&value=-1')">
+  <input type="button" value="<" onclick="send_command('walk_roll_offset&value=-0.1')">
+  </td>
+  <td align="center">
+  <div id="walk_roll_offset" ondblclick="send_command('walk_roll_offset&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_roll_offset&value=0.1')">
+  <input type="button" value=">>" onclick="send_command('walk_roll_offset&value=1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Pitch(y) offset (degree) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_pitch_offset&value=-1')">
+  <input type="button" value="<" onclick="send_command('walk_pitch_offset&value=-0.1')">
+  </td>
+  <td align="center">
+  <div id="walk_pitch_offset" ondblclick="send_command('walk_pitch_offset&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_pitch_offset&value=0.1')">
+  <input type="button" value=">>" onclick="send_command('walk_pitch_offset&value=1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Yaw(z) offset (degree) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_yaw_offset&value=-1')">
+  <input type="button" value="<" onclick="send_command('walk_yaw_offset&value=-0.1')">
+  </td>
+  <td align="center">
+  <div id="walk_yaw_offset" ondblclick="send_command('walk_yaw_offset&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_yaw_offset&value=0.1')">
+  <input type="button" value=">>" onclick="send_command('walk_yaw_offset&value=1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Hip pitch offset (degree) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_hip_offset&value=-1')">
+  <input type="button" value="<" onclick="send_command('walk_hip_offset&value=-0.1')">
+  </td>
+  <td align="center">
+  <div id="walk_hip_offset" ondblclick="send_command('walk_hip_offset&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_hip_offset&value=0.1')">
+  <input type="button" value=">>" onclick="send_command('walk_hip_offset&value=1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Auto balance (on/off) :
+  </td>
+  <td colspan="3" align="center">
+  <input type="radio" checked name="auto_balance" value="1" onclick="send_command('walk_auto_balance&value=1')">ON
+  <input type="radio" name="auto_balance" value="0" onclick="send_command('walk_auto_balance&value=0')">OFF
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Period time (msec) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_period_time&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_period_time&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_period_time" ondblclick="send_command('walk_period_time&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_period_time&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_period_time&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  DSP ratio :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_dsp_ratio&value=-0.1')">
+  <input type="button" value="<" onclick="send_command('walk_dsp_ratio&value=-0.01')">
+  </td>
+  <td align="center">
+  <div id="walk_dsp_ratio" ondblclick="send_command('walk_dsp_ratio&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_dsp_ratio&value=0.01')">
+  <input type="button" value=">>" onclick="send_command('walk_dsp_ratio&value=0.1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Step forward/back ratio :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_step_fb_ratio&value=-0.1')">
+  <input type="button" value="<" onclick="send_command('walk_step_fb_ratio&value=-0.01')">
+  </td>
+  <td align="center">
+  <div id="walk_step_fb_ratio" ondblclick="send_command('walk_step_fb_ratio&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_step_fb_ratio&value=0.01')">
+  <input type="button" value=">>" onclick="send_command('walk_step_fb_ratio&value=0.1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Step forward/back (mm) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_step_fb&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_step_fb&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_step_fb" ondblclick="send_command('walk_step_fb&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_step_fb&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_step_fb&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Step right/left (mm) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_step_rl&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_step_rl&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_step_rl" ondblclick="send_command('walk_step_rl&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_step_rl&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_step_rl&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Step direction (degree) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_step_dir&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_step_dir&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_step_dir" ondblclick="send_command('walk_step_dir&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_step_dir&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_step_dir&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+</table>
+
+</td>
+<td width="15"></td>
+<td valign="top">
+
+<table width="400px" border="0" cellspacing="0" cellpadding="0">
+<tr>
+  <td align="right">
+  Turning aim (on/off) :
+  </td>
+  <td colspan="3" align="center">
+  <input type="radio" name="turn_aim" value="1" onclick="send_command('walk_turn_aim&value=1')">ON
+  <input type="radio" name="turn_aim" checked value="0" onclick="send_command('walk_turn_aim&value=0')">OFF
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Foot height (mm) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_foot_height&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_foot_height&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_foot_height" ondblclick="send_command('walk_foot_height&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_foot_height&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_foot_height&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Swing right/left (mm) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_swing_rl&value=-1')">
+  <input type="button" value="<" onclick="send_command('walk_swing_rl&value=-0.1')">
+  </td>
+  <td align="center">
+  <div id="walk_swing_rl" ondblclick="send_command('walk_swing_rl&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_swing_rl&value=0.1')">
+  <input type="button" value=">>" onclick="send_command('walk_swing_rl&value=1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Swing top/down (mm) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_swing_td&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_swing_td&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_swing_td" ondblclick="send_command('walk_swing_td&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_swing_td&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_swing_td&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Pelvis offset (degree) :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_pelvis_offset&value=-1')">
+  <input type="button" value="<" onclick="send_command('walk_pelvis_offset&value=-0.1')">
+  </td>
+  <td align="center">
+  <div id="walk_pelvis_offset" ondblclick="send_command('walk_pelvis_offset&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_pelvis_offset&value=0.1')">
+  <input type="button" value=">>" onclick="send_command('walk_pelvis_offset&value=1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Arm swing gain :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_arm_swing_gain&value=-1')">
+  <input type="button" value="<" onclick="send_command('walk_arm_swing_gain&value=-0.1')">
+  </td>
+  <td align="center">
+  <div id="walk_arm_swing_gain" ondblclick="send_command('walk_arm_swing_gain&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_arm_swing_gain&value=0.1')">
+  <input type="button" value=">>" onclick="send_command('walk_arm_swing_gain&value=1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Balance knee gain :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_b_knee_gain&value=-0.1')">
+  <input type="button" value="<" onclick="send_command('walk_b_knee_gain&value=-0.01')">
+  </td>
+  <td align="center">
+  <div id="walk_b_knee_gain" ondblclick="send_command('walk_b_knee_gain&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_b_knee_gain&value=0.01')">
+  <input type="button" value=">>" onclick="send_command('walk_b_knee_gain&value=0.1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Balance ankle pitch gain :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_b_ankle_pitch_gain&value=-0.1')">
+  <input type="button" value="<" onclick="send_command('walk_b_ankle_pitch_gain&value=-0.01')">
+  </td>
+  <td align="center">
+  <div id="walk_b_ankle_pitch_gain" ondblclick="send_command('walk_b_ankle_pitch_gain&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_b_ankle_pitch_gain&value=0.01')">
+  <input type="button" value=">>" onclick="send_command('walk_b_ankle_pitch_gain&value=0.1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Balance hip roll gain :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_b_hip_roll_gain&value=-0.1')">
+  <input type="button" value="<" onclick="send_command('walk_b_hip_roll_gain&value=-0.01')">
+  </td>
+  <td align="center">
+  <div id="walk_b_hip_roll_gain" ondblclick="send_command('walk_b_hip_roll_gain&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_b_hip_roll_gain&value=0.01')">
+  <input type="button" value=">>" onclick="send_command('walk_b_hip_roll_gain&value=0.1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  Balance ankle roll gain :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_b_ankle_roll_gain&value=-0.1')">
+  <input type="button" value="<" onclick="send_command('walk_b_ankle_roll_gain&value=-0.01')">
+  </td>
+  <td align="center">
+  <div id="walk_b_ankle_roll_gain" ondblclick="send_command('walk_b_ankle_roll_gain&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_b_ankle_roll_gain&value=0.01')">
+  <input type="button" value=">>" onclick="send_command('walk_b_ankle_roll_gain&value=0.1')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  P Gain :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_p_gain&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_p_gain&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_p_gain" ondblclick="send_command('walk_p_gain&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_p_gain&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_p_gain&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  I Gain :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_i_gain&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_i_gain&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_i_gain" ondblclick="send_command('walk_i_gain&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_i_gain&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_i_gain&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+<tr>
+  <td align="right">
+  D Gain :
+  </td>
+  <td align="right">
+  <input type="button" value="<<" onclick="send_command('walk_d_gain&value=-10')">
+  <input type="button" value="<" onclick="send_command('walk_d_gain&value=-1')">
+  </td>
+  <td align="center">
+  <div id="walk_d_gain" ondblclick="send_command('walk_d_gain&value=0')"> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+  </td>
+  <td align="left">
+  <input type="button" value=">" onclick="send_command('walk_d_gain&value=1')">
+  <input type="button" value=">>" onclick="send_command('walk_d_gain&value=10')">
+  </td>
+</tr>
+<tr><td colspan="4" height="5px"><hr color="#CCCCCC" size="1px"></td></tr>
+
+</table>
+
+<br>
+<center>
+<button type="button" onclick="send_command('walk_save')" style="width:200px; height:45px;">
+<b><font size="5">SAVE</font></b>
+</button>
+
+</center>
+
+</td></tr>
+</table>
+
+</form>
+</div>
+
+</body>
+</html>
