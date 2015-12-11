@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "FSR.h"
-#include "MX28.h"
+#include "AXDXL.h"
 #include "MotionManager.h"
 #include <unistd.h>
 #include <assert.h>
@@ -69,7 +69,7 @@ bool MotionManager::Initialize(ArbotixPro *arbotixpro, bool fadeIn)
             if (DEBUG_PRINT == true)
                 fprintf(stderr, "ID:%d initializing...", id);
 
-            if (m_ArbotixPro->ReadWord(id, MX28::P_PRESENT_POSITION_L, &value, &error) == ArbotixPro::SUCCESS)
+            if (m_ArbotixPro->ReadWord(id, AXDXL::P_PRESENT_POSITION_L, &value, &error) == ArbotixPro::SUCCESS)
                 {
                     MotionStatus::m_CurrentJoints.SetValue(id, value);
                     MotionStatus::m_CurrentJoints.SetEnable(id, true);
@@ -89,7 +89,7 @@ bool MotionManager::Initialize(ArbotixPro *arbotixpro, bool fadeIn)
     if (fadeIn)
         {
             for (int i = JointData::ID_R_SHOULDER_PITCH; i < JointData::NUMBER_OF_JOINTS; i++)
-                arbotixpro->WriteWord(i, MX28::P_TORQUE_LIMIT_L, 0, 0);
+                arbotixpro->WriteWord(i, AXDXL::P_TORQUE_LIMIT_L, 0, 0);
         }
 
     m_fadeIn = fadeIn;
@@ -114,7 +114,7 @@ bool MotionManager::Reinitialize()
             if (DEBUG_PRINT == true)
                 fprintf(stderr, "ID:%d initializing...", id);
 
-            if (m_ArbotixPro->ReadWord(id, MX28::P_PRESENT_POSITION_L, &value, &error) == ArbotixPro::SUCCESS)
+            if (m_ArbotixPro->ReadWord(id, AXDXL::P_PRESENT_POSITION_L, &value, &error) == ArbotixPro::SUCCESS)
                 {
                     MotionStatus::m_CurrentJoints.SetValue(id, value);
                     MotionStatus::m_CurrentJoints.SetEnable(id, true);
@@ -200,7 +200,7 @@ void MotionManager::Process()
 {
     if (m_fadeIn && m_torque_count < DEST_TORQUE)
         {
-            m_ArbotixPro->WriteWord(ArbotixPro::ID_BROADCAST, MX28::P_TORQUE_LIMIT_L, m_torque_count, 0);
+            m_ArbotixPro->WriteWord(ArbotixPro::ID_BROADCAST, AXDXL::P_TORQUE_LIMIT_L, m_torque_count, 0);
             m_torque_count += 2;
         }
 
@@ -346,7 +346,7 @@ void MotionManager::Process()
                         }
                 }
 
-            int param[JointData::NUMBER_OF_JOINTS * MX28::PARAM_BYTES];
+            int param[JointData::NUMBER_OF_JOINTS * AXDXL::PARAM_BYTES];
             int n = 0;
             int joint_num = 0;
             for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
@@ -368,7 +368,7 @@ void MotionManager::Process()
                 }
 
             if (joint_num > 0)
-                m_ArbotixPro->SyncWrite(MX28::P_CW_COMPLIANCE_SLOPE, MX28::PARAM_BYTES, joint_num, param);
+                m_ArbotixPro->SyncWrite(AXDXL::P_CW_COMPLIANCE_SLOPE, AXDXL::PARAM_BYTES, joint_num, param);
 
             unsigned int ic = 0;
             while (ic < m_ArbotixPro->m_DelayedWords)
@@ -384,14 +384,14 @@ void MotionManager::Process()
         {
             if (MotionStatus::m_CurrentJoints.GetEnable(id) == true)
                 {
-                    int value = m_ArbotixPro->m_BulkReadData[id].ReadByte(MX28::P_PRESENT_TEMPERATURE);
+                    int value = m_ArbotixPro->m_BulkReadData[id].ReadByte(AXDXL::P_PRESENT_TEMPERATURE);
                     MotionStatus::m_CurrentJoints.SetTemp(id, value);
                 }
         }
     if (m_IsLogging)
         {
             for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
-                m_LogFileStream << MotionStatus::m_CurrentJoints.GetValue(id) << "," << m_ArbotixPro->m_BulkReadData[id].ReadWord(MX28::P_PRESENT_POSITION_L) << ",";
+                m_LogFileStream << MotionStatus::m_CurrentJoints.GetValue(id) << "," << m_ArbotixPro->m_BulkReadData[id].ReadWord(AXDXL::P_PRESENT_POSITION_L) << ",";
 
             m_LogFileStream << m_ArbotixPro->m_BulkReadData[ArbotixPro::ID_CM].ReadWord(ArbotixPro::P_GYRO_Y_L) << ",";
             m_LogFileStream << m_ArbotixPro->m_BulkReadData[ArbotixPro::ID_CM].ReadWord(ArbotixPro::P_GYRO_X_L) << ",";
@@ -419,7 +419,7 @@ void MotionManager::SetEnable(bool enable)
 {
     m_Enabled = enable;
     if (m_Enabled == true)
-        m_ArbotixPro->WriteWord(ArbotixPro::ID_BROADCAST, MX28::P_MOVING_SPEED_L, 0, 0);
+        m_ArbotixPro->WriteWord(ArbotixPro::ID_BROADCAST, AXDXL::P_MOVING_SPEED_L, 0, 0);
 }
 
 void MotionManager::AddModule(MotionModule *module)
@@ -457,7 +457,7 @@ void MotionManager::adaptTorqueToVoltage()
     if ( voltage < 108 )
         {
             printf( "MotionManager::adaptTorqueToVoltage: Voltage dropped below safe threshold. Shutting down." );
-            m_ArbotixPro->WriteByte(ArbotixPro::ID_BROADCAST, MX28::P_TORQUE_ENABLE, 0, 0); //kill torque
+            m_ArbotixPro->WriteByte(ArbotixPro::ID_BROADCAST, AXDXL::P_TORQUE_ENABLE, 0, 0); //kill torque
             m_ArbotixPro->DXLPowerOn(false); //power off bus
             system( "poweroff" );
             while (1);
@@ -472,5 +472,5 @@ void MotionManager::adaptTorqueToVoltage()
     fprintf(m_voltageLog, "%3d       %4d\n", voltage, torque);
 #endif
 
-    m_ArbotixPro->WriteWord(ArbotixPro::ID_BROADCAST, MX28::P_TORQUE_LIMIT_L, torque, 0);
+    m_ArbotixPro->WriteWord(ArbotixPro::ID_BROADCAST, AXDXL::P_TORQUE_LIMIT_L, torque, 0);
 }

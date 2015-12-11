@@ -16,7 +16,7 @@
 
 #include "StatusCheck.h"
 
-#ifdef MX28_1024
+#ifdef AXDXL_1024
 #define MOTION_FILE_PATH    ((char *)"../../../Data/motion_1024.bin")
 #else
 #define MOTION_FILE_PATH    ((char *)"../../../Data/motion_4096.bin")
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 
 	int firm_ver = 0, retry = 0;
 	//important but allow a few retries
-	while (arbotixpro.ReadByte(JointData::ID_HEAD_PAN, MX28::P_VERSION, &firm_ver, 0)  != ArbotixPro::SUCCESS)
+	while (arbotixpro.ReadByte(JointData::ID_HEAD_PAN, AXDXL::P_VERSION, &firm_ver, 0)  != ArbotixPro::SUCCESS)
 		{
 			fprintf(stderr, "Can't read firmware version from Dynamixel ID %d!! \n\n", JointData::ID_HEAD_PAN);
 			retry++;
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 		{
 			arbotixpro.DXLPowerOn(false);
 			//for(int id=JointData::ID_R_SHOULDER_PITCH; id<JointData::NUMBER_OF_JOINTS; id++)
-			//	arbotixpro.WriteByte(id, MX28::P_TORQUE_ENABLE, 0, 0);
+			//	arbotixpro.WriteByte(id, AXDXL::P_TORQUE_ENABLE, 0, 0);
 		}
 	else
 		{
@@ -226,11 +226,11 @@ int GetCurrentPosition(ArbotixPro &arbotixpro)
 		}
 	for (p = 0; p < 6; p++)
 		{
-			if (arbotixpro.ReadWord(rl[p], MX28::P_PRESENT_POSITION_L, &pos[rl[p]], 0) != ArbotixPro::SUCCESS)
+			if (arbotixpro.ReadWord(rl[p], AXDXL::P_PRESENT_POSITION_L, &pos[rl[p]], 0) != ArbotixPro::SUCCESS)
 				{
 					printf("Failed to read position %d", rl[p]);
 				}
-			if (arbotixpro.ReadWord(ll[p], MX28::P_PRESENT_POSITION_L, &pos[ll[p]], 0) != ArbotixPro::SUCCESS)
+			if (arbotixpro.ReadWord(ll[p], AXDXL::P_PRESENT_POSITION_L, &pos[ll[p]], 0) != ArbotixPro::SUCCESS)
 				{
 					printf("Failed to read position %d", ll[p]);
 				}
@@ -242,10 +242,10 @@ int GetCurrentPosition(ArbotixPro &arbotixpro)
 	dMaxAngle1 = dMaxAngle2 = dMaxAngle3 = 0;
 	for (p = 0; p < 6; p++)
 		{
-			dAngle = abs(MX28::Value2Angle(pos[rl[p]]) - MX28::Value2Angle(Page.step[j].position[rl[p]]));
+			dAngle = abs(AXDXL::Value2Angle(pos[rl[p]]) - AXDXL::Value2Angle(Page.step[j].position[rl[p]]));
 			if (dAngle > dMaxAngle1)
 				dMaxAngle1 = dAngle;
-			dAngle = abs(MX28::Value2Angle(pos[ll[p]]) - MX28::Value2Angle(Page.step[j].position[ll[p]]));
+			dAngle = abs(AXDXL::Value2Angle(pos[ll[p]]) - AXDXL::Value2Angle(Page.step[j].position[ll[p]]));
 			if (dAngle > dMaxAngle1)
 				dMaxAngle1 = dAngle;
 		}
@@ -254,10 +254,10 @@ int GetCurrentPosition(ArbotixPro &arbotixpro)
 	j = Page.header.stepnum - 1;
 	for (int p = 0; p < 6; p++)
 		{
-			dAngle = abs(MX28::Value2Angle(pos[rl[p]]) - MX28::Value2Angle(Page.step[j].position[rl[p]]));
+			dAngle = abs(AXDXL::Value2Angle(pos[rl[p]]) - AXDXL::Value2Angle(Page.step[j].position[rl[p]]));
 			if (dAngle > dMaxAngle2)
 				dMaxAngle2 = dAngle;
-			dAngle = abs(MX28::Value2Angle(pos[ll[p]]) - MX28::Value2Angle(Page.step[j].position[ll[p]]));
+			dAngle = abs(AXDXL::Value2Angle(pos[ll[p]]) - AXDXL::Value2Angle(Page.step[j].position[ll[p]]));
 			if (dAngle > dMaxAngle2)
 				dMaxAngle2 = dAngle;
 		}
@@ -266,10 +266,10 @@ int GetCurrentPosition(ArbotixPro &arbotixpro)
 	j = Page.header.stepnum - 1;
 	for (int p = 0; p < 6; p++)
 		{
-			dAngle = abs(MX28::Value2Angle(pos[rl[p]]) - MX28::Value2Angle(Page.step[j].position[rl[p]]));
+			dAngle = abs(AXDXL::Value2Angle(pos[rl[p]]) - AXDXL::Value2Angle(Page.step[j].position[rl[p]]));
 			if (dAngle > dMaxAngle3)
 				dMaxAngle3 = dAngle;
-			dAngle = abs(MX28::Value2Angle(pos[ll[p]]) - MX28::Value2Angle(Page.step[j].position[ll[p]]));
+			dAngle = abs(AXDXL::Value2Angle(pos[ll[p]]) - AXDXL::Value2Angle(Page.step[j].position[ll[p]]));
 			if (dAngle > dMaxAngle3)
 				dMaxAngle3 = dAngle;
 		}

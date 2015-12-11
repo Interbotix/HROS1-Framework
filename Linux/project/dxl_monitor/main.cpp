@@ -93,7 +93,7 @@ int main()
 						{
 							if (num_param == 0)
 								{
-									arbotixpro.WriteByte(gID, MX28::P_TORQUE_ENABLE, 1, 0);
+									arbotixpro.WriteByte(gID, AXDXL::P_TORQUE_ENABLE, 1, 0);
 									if (gID == ArbotixPro::ID_CM)
 										printf(" Dynamixel power on\n");
 								}
@@ -102,7 +102,7 @@ int main()
 									if (strcmp(param[0], "all") == 0)
 										{
 											for (int i = JointData::ID_R_SHOULDER_PITCH; i < JointData::NUMBER_OF_JOINTS; i++)
-												arbotixpro.WriteByte(i, MX28::P_TORQUE_ENABLE, 1, 0);
+												arbotixpro.WriteByte(i, AXDXL::P_TORQUE_ENABLE, 1, 0);
 										}
 									else
 										{
@@ -120,7 +120,7 @@ int main()
 						{
 							if (num_param == 0)
 								{
-									arbotixpro.WriteByte(gID, MX28::P_TORQUE_ENABLE, 0, 0);
+									arbotixpro.WriteByte(gID, AXDXL::P_TORQUE_ENABLE, 0, 0);
 									if (gID == ArbotixPro::ID_CM)
 										printf(" Dynamixel power off\n");
 								}
@@ -129,7 +129,7 @@ int main()
 									if (strcmp(param[0], "all") == 0)
 										{
 											for (int i = JointData::ID_R_SHOULDER_PITCH; i < JointData::NUMBER_OF_JOINTS; i++)
-												arbotixpro.WriteByte(i, MX28::P_TORQUE_ENABLE, 0, 0);
+												arbotixpro.WriteByte(i, AXDXL::P_TORQUE_ENABLE, 0, 0);
 										}
 									else
 										{
@@ -148,17 +148,17 @@ int main()
 					else if (strcmp(cmd, "reset") == 0)
 						{
 							int firm_ver = 0;
-							if (arbotixpro.ReadByte(JointData::ID_HEAD_PAN, MX28::P_VERSION, &firm_ver, 0)  != ArbotixPro::SUCCESS)
+							if (arbotixpro.ReadByte(JointData::ID_HEAD_PAN, AXDXL::P_VERSION, &firm_ver, 0)  != ArbotixPro::SUCCESS)
 								{
 									fprintf(stderr, "Can't read firmware version from Dynamixel ID %d!! \n\n", JointData::ID_HEAD_PAN);
 									exit(0);
 								}
 
-#ifdef MX28_1024
+#ifdef AXDXL_1024
 							if (27 <= firm_ver)
 								{
 									fprintf(stderr, "\n MX-28's firmware is not support 1024 resolution!! \n");
-									fprintf(stderr, " Remove '#define MX28_1024' from 'MX28.h' file and rebuild.\n\n");
+									fprintf(stderr, " Remove '#define AXDXL_1024' from 'AXDXL.h' file and rebuild.\n\n");
 									continue;
 								}
 #else

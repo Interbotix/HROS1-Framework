@@ -157,7 +157,7 @@ void DrawIntro(ArbotixPro *arbotixpro)
 			param[n++] = ArbotixPro::GetHighByte(wDistance);
 		}
 
-	arbotixpro->SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);
+	arbotixpro->SyncWrite(AXDXL::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);
 
 	int nrows, ncolumns;
 	setupterm(NULL, fileno(stdout), (int *)0);

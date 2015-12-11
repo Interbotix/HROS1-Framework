@@ -9,7 +9,7 @@
 #define _DARWIN_H_
 
 #include "ArbotixPro.h"
-#include "MX28.h"
+#include "AXDXL.h"
 #include "MotionModule.h"
 #include "MotionManager.h"
 #include "MotionStatus.h"

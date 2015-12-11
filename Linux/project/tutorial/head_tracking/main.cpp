@@ -15,7 +15,7 @@
 #include "mjpg_streamer.h"
 #include "LinuxDARwIn.h"
 
-#ifdef MX28_1024
+#ifdef AXDXL_1024
 #define MOTION_FILE_PATH    ((char *)"../../../Data/motion_1024.bin")
 #else
 #define MOTION_FILE_PATH    ((char *)"../../../Data/motion_4096.bin")

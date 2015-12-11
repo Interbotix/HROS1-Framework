@@ -8,7 +8,7 @@
 #ifndef _ARBOTIXPRO_H_
 #define _ARBOTIXPRO_H_
 
-#include "MX28.h"
+#include "AXDXL.h"
 
 #define MAXNUM_TXPARAM      (256)
 #define MAXNUM_RXPARAM      (1024)
@@ -21,7 +21,7 @@ namespace Robot
 			int start_address;
 			int length;
 			int error;
-			unsigned char table[MX28::MAXNUM_ADDRESS];
+			unsigned char table[AXDXL::MAXNUM_ADDRESS];
 
 			BulkReadData();
 			virtual ~BulkReadData() {}

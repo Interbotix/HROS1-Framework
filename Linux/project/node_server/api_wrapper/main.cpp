@@ -22,7 +22,7 @@
 #include "Action.h"
 #include "Head.h"
 #include "Walking.h"
-#include "MX28.h"
+#include "AXDXL.h"
 #include "MotionManager.h"
 #include "LinuxMotionTimer.h"
 #include "LinuxArbotixPro.h"

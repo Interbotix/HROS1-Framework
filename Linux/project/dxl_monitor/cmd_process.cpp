@@ -206,7 +206,7 @@ void Dump(ArbotixPro *arbotixpro, int id)
 		}
 	else // Actuator
 		{
-			if (arbotixpro->ReadTable(id, MX28::P_MODEL_NUMBER_L, MX28::P_PUNCH_H, &table[MX28::P_MODEL_NUMBER_L], 0) != ArbotixPro::SUCCESS)
+			if (arbotixpro->ReadTable(id, AXDXL::P_MODEL_NUMBER_L, AXDXL::P_PUNCH_H, &table[AXDXL::P_MODEL_NUMBER_L], 0) != ArbotixPro::SUCCESS)
 				{
 					printf(" Can not read table!\n");
 					return;
@@ -214,71 +214,71 @@ void Dump(ArbotixPro *arbotixpro, int id)
 
 			printf( "\n" );
 			printf( " [EEPROM AREA]\n" );
-			addr = MX28::P_MODEL_NUMBER_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_MODEL_NUMBER_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " MODEL_NUMBER            (R) [%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
-			addr = MX28::P_VERSION; value = table[addr];
+			addr = AXDXL::P_VERSION; value = table[addr];
 			printf( " VERSION                 (R) [%.3d]:%5d\n", addr, value);
-			addr = MX28::P_ID; value = table[addr];
+			addr = AXDXL::P_ID; value = table[addr];
 			printf( " ID                     (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_BAUD_RATE; value = table[addr];
+			addr = AXDXL::P_BAUD_RATE; value = table[addr];
 			printf( " BAUD_RATE              (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_RETURN_DELAY_TIME; value = table[addr];
+			addr = AXDXL::P_RETURN_DELAY_TIME; value = table[addr];
 			printf( " RETURN_DELAY_TIME      (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_CW_ANGLE_LIMIT_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_CW_ANGLE_LIMIT_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " CW_ANGLE_LIMIT         (R/W)[%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
-			addr = MX28::P_CCW_ANGLE_LIMIT_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_CCW_ANGLE_LIMIT_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " CCW_ANGLE_LIMIT        (R/W)[%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
-			addr = MX28::P_HIGH_LIMIT_TEMPERATURE; value = table[addr];
+			addr = AXDXL::P_HIGH_LIMIT_TEMPERATURE; value = table[addr];
 			printf( " HIGH_LIMIT_TEMPERATURE (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_LOW_LIMIT_VOLTAGE; value = table[addr];
+			addr = AXDXL::P_LOW_LIMIT_VOLTAGE; value = table[addr];
 			printf( " LOW_LIMIT_VOLTAGE      (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_HIGH_LIMIT_VOLTAGE; value = table[addr];
+			addr = AXDXL::P_HIGH_LIMIT_VOLTAGE; value = table[addr];
 			printf( " HIGH_LIMIT_VOLTAGE     (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_MAX_TORQUE_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_MAX_TORQUE_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " MAX_TORQUE             (R/W)[%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
-			addr = MX28::P_RETURN_LEVEL; value = table[addr];
+			addr = AXDXL::P_RETURN_LEVEL; value = table[addr];
 			printf( " RETURN_LEVEL           (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_ALARM_LED; value = table[addr];
+			addr = AXDXL::P_ALARM_LED; value = table[addr];
 			printf( " ALARM_LED              (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_ALARM_SHUTDOWN; value = table[addr];
+			addr = AXDXL::P_ALARM_SHUTDOWN; value = table[addr];
 			printf( " ALARM_SHUTDOWN         (R/W)[%.3d]:%5d\n", addr, value);
 			printf( "\n" );
 			printf( " [RAM AREA]\n" );
-			addr = MX28::P_TORQUE_ENABLE; value = table[addr];
+			addr = AXDXL::P_TORQUE_ENABLE; value = table[addr];
 			printf( " TORQUE_ENABLE          (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_LED; value = table[addr];
+			addr = AXDXL::P_LED; value = table[addr];
 			printf( " LED                    (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_CW_COMPLIANCE_MARGIN; value = table[addr];
+			addr = AXDXL::P_CW_COMPLIANCE_MARGIN; value = table[addr];
 			printf( " CW_COMPLIANCE_MARGIN   (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_CCW_COMPLIANCE_MARGIN; value = table[addr];
+			addr = AXDXL::P_CCW_COMPLIANCE_MARGIN; value = table[addr];
 			printf( " CCW_COMPLIANCE_MARGIN  (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_CW_COMPLIANCE_SLOPE; value = table[addr];
+			addr = AXDXL::P_CW_COMPLIANCE_SLOPE; value = table[addr];
 			printf( " CW_COMPLIANCE_SLOPE    (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_CCW_COMPLIANCE_SLOPE; value = table[addr];
+			addr = AXDXL::P_CCW_COMPLIANCE_SLOPE; value = table[addr];
 			printf( " CCW_COMPLIANCE_SLOPE   (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_GOAL_POSITION_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_GOAL_POSITION_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " GOAL_POSITION          (R/W)[%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
-			addr = MX28::P_MOVING_SPEED_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_MOVING_SPEED_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " MOVING_SPEED           (R/W)[%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
-			addr = MX28::P_TORQUE_LIMIT_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_TORQUE_LIMIT_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " TORQUE_LIMIT           (R/W)[%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
-			addr = MX28::P_PRESENT_POSITION_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_PRESENT_POSITION_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " PRESENT_POSITION       (R/W)[%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
-			addr = MX28::P_PRESENT_SPEED_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_PRESENT_SPEED_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " PRESENT_SPEED          (R/W)[%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
-			addr = MX28::P_PRESENT_LOAD_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_PRESENT_LOAD_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " PRESENT_LOAD           (R/W)[%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
-			addr = MX28::P_PRESENT_VOLTAGE; value = table[addr];
+			addr = AXDXL::P_PRESENT_VOLTAGE; value = table[addr];
 			printf( " PRESENT_VOLTAGE        (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_PRESENT_TEMPERATURE; value = table[addr];
+			addr = AXDXL::P_PRESENT_TEMPERATURE; value = table[addr];
 			printf( " PRESENT_TEMPERATURE    (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_REGISTERED_INSTRUCTION; value = table[addr];
+			addr = AXDXL::P_REGISTERED_INSTRUCTION; value = table[addr];
 			printf( " REGISTERED_INSTRUC     (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_MOVING; value = table[addr];
+			addr = AXDXL::P_MOVING; value = table[addr];
 			printf( " MOVING                 (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_LOCK; value = table[addr];
+			addr = AXDXL::P_LOCK; value = table[addr];
 			printf( " LOCK                   (R/W)[%.3d]:%5d\n", addr, value);
-			addr = MX28::P_PUNCH_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
+			addr = AXDXL::P_PUNCH_L; value = ArbotixPro::MakeWord(table[addr], table[addr + 1]);
 			printf( " PUNCH                  (R/W)[%.3d]:%5d (L:0x%.2X H:0x%.2X)\n", addr, value, table[addr], table[addr + 1]);
 
 			printf( "\n" );
@@ -300,7 +300,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 	FailCount = 0;
 	while (1)
 		{
-			if (arbotixpro->WriteByte(id, MX28::P_RETURN_DELAY_TIME, 0, 0) == ArbotixPro::SUCCESS)
+			if (arbotixpro->WriteByte(id, AXDXL::P_RETURN_DELAY_TIME, 0, 0) == ArbotixPro::SUCCESS)
 				break;
 
 			FailCount++;
@@ -315,7 +315,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 	FailCount = 0;
 	while (1)
 		{
-			if (arbotixpro->WriteByte(id, MX28::P_RETURN_LEVEL, 2, 0) == ArbotixPro::SUCCESS)
+			if (arbotixpro->WriteByte(id, AXDXL::P_RETURN_LEVEL, 2, 0) == ArbotixPro::SUCCESS)
 				break;
 
 			FailCount++;
@@ -329,8 +329,8 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 
 	if (id != ArbotixPro::ID_CM)
 		{
-			double cwLimit = MX28::MIN_ANGLE;
-			double ccwLimit = MX28::MAX_ANGLE;
+			double cwLimit = AXDXL::MIN_ANGLE;
+			double ccwLimit = AXDXL::MAX_ANGLE;
 
 			switch (id)
 				{
@@ -425,7 +425,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 			FailCount = 0;
 			while (1)
 				{
-					if (arbotixpro->WriteWord(id, MX28::P_CW_ANGLE_LIMIT_L, MX28::Angle2Value(cwLimit), 0) == ArbotixPro::SUCCESS)
+					if (arbotixpro->WriteWord(id, AXDXL::P_CW_ANGLE_LIMIT_L, AXDXL::Angle2Value(cwLimit), 0) == ArbotixPro::SUCCESS)
 						break;
 
 					FailCount++;
@@ -439,7 +439,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 			FailCount = 0;
 			while (1)
 				{
-					if (arbotixpro->WriteWord(id, MX28::P_CCW_ANGLE_LIMIT_L, MX28::Angle2Value(ccwLimit), 0) == ArbotixPro::SUCCESS)
+					if (arbotixpro->WriteWord(id, AXDXL::P_CCW_ANGLE_LIMIT_L, AXDXL::Angle2Value(ccwLimit), 0) == ArbotixPro::SUCCESS)
 						break;
 
 					FailCount++;
@@ -453,7 +453,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 			FailCount = 0;
 			while (1)
 				{
-					if (arbotixpro->WriteByte(id, MX28::P_HIGH_LIMIT_TEMPERATURE, 80, 0) == ArbotixPro::SUCCESS)
+					if (arbotixpro->WriteByte(id, AXDXL::P_HIGH_LIMIT_TEMPERATURE, 80, 0) == ArbotixPro::SUCCESS)
 						break;
 
 					FailCount++;
@@ -467,7 +467,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 			FailCount = 0;
 			while (1)
 				{
-					if (arbotixpro->WriteByte(id, MX28::P_LOW_LIMIT_VOLTAGE, 60, 0) == ArbotixPro::SUCCESS)
+					if (arbotixpro->WriteByte(id, AXDXL::P_LOW_LIMIT_VOLTAGE, 60, 0) == ArbotixPro::SUCCESS)
 						break;
 
 					FailCount++;
@@ -481,7 +481,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 			FailCount = 0;
 			while (1)
 				{
-					if (arbotixpro->WriteByte(id, MX28::P_HIGH_LIMIT_VOLTAGE, 140, 0) == ArbotixPro::SUCCESS)
+					if (arbotixpro->WriteByte(id, AXDXL::P_HIGH_LIMIT_VOLTAGE, 140, 0) == ArbotixPro::SUCCESS)
 						break;
 
 					FailCount++;
@@ -495,7 +495,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 			FailCount = 0;
 			while (1)
 				{
-					if (arbotixpro->WriteWord(id, MX28::P_MAX_TORQUE_L, MX28::MAX_VALUE, 0) == ArbotixPro::SUCCESS)
+					if (arbotixpro->WriteWord(id, AXDXL::P_MAX_TORQUE_L, AXDXL::MAX_VALUE, 0) == ArbotixPro::SUCCESS)
 						break;
 
 					FailCount++;
@@ -509,7 +509,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 			FailCount = 0;
 			while (1)
 				{
-					if (arbotixpro->WriteByte(id, MX28::P_ALARM_LED, 36, 0) == ArbotixPro::SUCCESS) // Overload, Overheat
+					if (arbotixpro->WriteByte(id, AXDXL::P_ALARM_LED, 36, 0) == ArbotixPro::SUCCESS) // Overload, Overheat
 						break;
 
 					FailCount++;
@@ -523,7 +523,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 			FailCount = 0;
 			while (1)
 				{
-					if (arbotixpro->WriteByte(id, MX28::P_ALARM_SHUTDOWN, 36, 0) == ArbotixPro::SUCCESS) // Overload, Overheat
+					if (arbotixpro->WriteByte(id, AXDXL::P_ALARM_SHUTDOWN, 36, 0) == ArbotixPro::SUCCESS) // Overload, Overheat
 						break;
 
 					FailCount++;
@@ -542,7 +542,7 @@ void Reset(Robot::ArbotixPro *arbotixpro, int id)
 void Write(Robot::ArbotixPro *arbotixpro, int id, int addr, int value)
 {
 	/*
-	if(addr == MX28::P_RETURN_DELAY_TIME || addr == MX28::P_RETURN_LEVEL)
+	if(addr == AXDXL::P_RETURN_DELAY_TIME || addr == AXDXL::P_RETURN_LEVEL)
 	{
 		printf( " Can not change this address[%d]\n", addr);
 		return;
@@ -570,13 +570,13 @@ void Write(Robot::ArbotixPro *arbotixpro, int id, int addr, int value)
 		}
 	else
 		{
-			if (addr >= MX28::MAXNUM_ADDRESS)
+			if (addr >= AXDXL::MAXNUM_ADDRESS)
 				{
 					printf( " Invalid address\n");
 					return;
 				}
 
-			if (addr == MX28::P_ID)
+			if (addr == AXDXL::P_ID)
 				{
 					if (arbotixpro->Ping(value, 0) == ArbotixPro::SUCCESS)
 						{
@@ -589,20 +589,20 @@ void Write(Robot::ArbotixPro *arbotixpro, int id, int addr, int value)
 							gID = value;
 						}
 				}
-			else if (addr == MX28::P_HIGH_LIMIT_TEMPERATURE
-			         || addr == MX28::P_LOW_LIMIT_VOLTAGE
-			         || addr == MX28::P_HIGH_LIMIT_VOLTAGE
-			         || addr == MX28::P_ALARM_LED
-			         || addr == MX28::P_ALARM_SHUTDOWN
-			         || addr == MX28::P_TORQUE_ENABLE
-			         || addr == MX28::P_LED
-			         || addr == MX28::P_CW_COMPLIANCE_MARGIN
-			         || addr == MX28::P_CCW_COMPLIANCE_MARGIN
-			         || addr == MX28::P_CW_COMPLIANCE_SLOPE
-			         || addr == MX28::P_CCW_COMPLIANCE_SLOPE
-			         || addr == MX28::P_LED
-			         || addr == MX28::P_LED
-			         || addr == MX28::P_BAUD_RATE)
+			else if (addr == AXDXL::P_HIGH_LIMIT_TEMPERATURE
+			         || addr == AXDXL::P_LOW_LIMIT_VOLTAGE
+			         || addr == AXDXL::P_HIGH_LIMIT_VOLTAGE
+			         || addr == AXDXL::P_ALARM_LED
+			         || addr == AXDXL::P_ALARM_SHUTDOWN
+			         || addr == AXDXL::P_TORQUE_ENABLE
+			         || addr == AXDXL::P_LED
+			         || addr == AXDXL::P_CW_COMPLIANCE_MARGIN
+			         || addr == AXDXL::P_CCW_COMPLIANCE_MARGIN
+			         || addr == AXDXL::P_CW_COMPLIANCE_SLOPE
+			         || addr == AXDXL::P_CCW_COMPLIANCE_SLOPE
+			         || addr == AXDXL::P_LED
+			         || addr == AXDXL::P_LED
+			         || addr == AXDXL::P_BAUD_RATE)
 				{
 					res = arbotixpro->WriteByte(id, addr, value, &error);
 				}
@@ -624,7 +624,7 @@ void Write(Robot::ArbotixPro *arbotixpro, int id, int addr, int value)
 			return;
 		}
 
-	//if(id == ArbotixPro::ID_CM && addr == MX28::P_BAUD_RATE)
+	//if(id == ArbotixPro::ID_CM && addr == AXDXL::P_BAUD_RATE)
 	//    arbotixpro->ChangeBaud(value);
 
 	printf(" Writing successful!\n");

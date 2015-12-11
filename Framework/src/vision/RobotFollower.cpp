@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "ImgProcess.h"
-#include "MX28.h"
+#include "AXDXL.h"
 #include "Head.h"
 #include "Action.h"
 #include "Walking.h"
@@ -157,7 +157,7 @@ void RobotFollower::Process(BallTracker &tracker)
 					//tracker.bMotionEnable = false;
 					//Head::GetInstance()->MoveByAngle();
 					//printf("width = %0.1f\n",tracker.finder.m_width_percent);
-					if (tilt <= (tilt_min + MX28::RATIO_VALUE2ANGLE) || (tracker.finder.m_width_percent > m_GoalWidthPercent || tracker.finder.m_height_percent > m_GoalHeightPercent))
+					if (tilt <= (tilt_min + AXDXL::RATIO_VALUE2ANGLE) || (tracker.finder.m_width_percent > m_GoalWidthPercent || tracker.finder.m_height_percent > m_GoalHeightPercent))
 						{
 							if (tracker.ball_position.Y > m_TopAngle || (tracker.finder.m_width_percent > m_GoalWidthPercent || tracker.finder.m_height_percent > m_GoalHeightPercent))
 								{
