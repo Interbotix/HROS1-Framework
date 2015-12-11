@@ -3,10 +3,10 @@
 
 inline double sgn(double a)
 {
-    if(a < 0)
-        return -1.0;
-    else
-        return 1.0;
+	if (a < 0)
+		return -1.0;
+	else
+		return 1.0;
 }
 
 // Instantiates a keyframe player with A=1.
@@ -42,12 +42,12 @@ double QuadraticStateTransform::totalTime()
 	double v0 = startState.v;
 	double x1 = targetState.x;
 	double v1 = targetState.v;
-	double dx = fabs(x1-x0);
-	v0 = sgn(x1-x0)*v0;
-	v1 = sgn(x1-x0)*v1;
+	double dx = fabs(x1 - x0);
+	v0 = sgn(x1 - x0) * v0;
+	v1 = sgn(x1 - x0) * v1;
 
-	int sign = (sqrt(v0*v0 + 2.0*A*dx) < v1 or sqrt(v1*v1 + 2.0*A*dx) < v0) ? -1 : 1;
-	double tt = (sqrt(2.0*(v0*v0 + v1*v1) + sign*4.0*A*dx) - sign*(v0+v1)) / A;
+	int sign = (sqrt(v0 * v0 + 2.0 * A * dx) < v1 or sqrt(v1 * v1 + 2.0 * A * dx) < v0) ? -1 : 1;
+	double tt = (sqrt(2.0 * (v0 * v0 + v1 * v1) + sign * 4.0 * A * dx) - sign * (v0 + v1)) / A;
 
 //	qDebug() << A << sign << tt << tt1 << tt2;
 
@@ -64,24 +64,24 @@ MotionState QuadraticStateTransform::evaluateAt(double t)
 	double v0 = startState.v;
 	double x1 = targetState.x;
 	double v1 = targetState.v;
-	double dx = fabs(x1-x0);
-	int dxsign = sgn(x1-x0);
-	v0 = dxsign*v0;
-	v1 = dxsign*v1;
+	double dx = fabs(x1 - x0);
+	int dxsign = sgn(x1 - x0);
+	v0 = dxsign * v0;
+	v1 = dxsign * v1;
 
-	int sign = (sqrt(v0*v0 + 2.0*A*dx) < v1 or sqrt(v1*v1 + 2.0*A*dx) < v0) ? -1 : 1;
-	double tt = (sqrt(2.0*(v0*v0 + v1*v1) + sign*4.0*A*dx) - sign*(v0+v1)) / A;
-	double tstar = (v1-v0+sign*A*tt)/(2*sign*A);
+	int sign = (sqrt(v0 * v0 + 2.0 * A * dx) < v1 or sqrt(v1 * v1 + 2.0 * A * dx) < v0) ? -1 : 1;
+	double tt = (sqrt(2.0 * (v0 * v0 + v1 * v1) + sign * 4.0 * A * dx) - sign * (v0 + v1)) / A;
+	double tstar = (v1 - v0 + sign * A * tt) / (2 * sign * A);
 
 	if (t < tstar)
-	{
-		transformState(dxsign*sign*A, t, state);
-	}
+		{
+			transformState(dxsign * sign * A, t, state);
+		}
 	else
-	{
-		transformState(dxsign*sign*A, tstar, state);
-		transformState(dxsign*-sign*A, t-tstar, state);
-	}
+		{
+			transformState(dxsign * sign * A, tstar, state);
+			transformState(dxsign * -sign * A, t - tstar, state);
+		}
 
 	state.t = tt;
 
@@ -92,6 +92,6 @@ void QuadraticStateTransform::transformState(double a, double t, MotionState& st
 {
 	st.a = a;
 	st.t += t;
-	st.x += 0.5*st.a*t*t + st.v*t;
-	st.v += st.a*t;
+	st.x += 0.5 * st.a * t * t + st.v * t;
+	st.v += st.a * t;
 }

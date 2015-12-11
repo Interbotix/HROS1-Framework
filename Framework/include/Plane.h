@@ -13,13 +13,13 @@ namespace Robot
 {
 	class Plane3D
 	{
-	private:
+		private:
 
-	protected:
+		protected:
 
-	public:
-		Plane3D();
-		~Plane3D();
+		public:
+			Plane3D();
+			~Plane3D();
 	};
 }
 

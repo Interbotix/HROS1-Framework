@@ -17,74 +17,75 @@
 
 namespace Robot
 {
-    class CameraSettings
-    {
-    private:
+	class CameraSettings
+	{
+		private:
 
-    protected:
+		protected:
 
-    public:
-        int brightness; /* 0 ~ 255 */
-        int contrast;   /* 0 ~ 255 */
-        int saturation; /* 0 ~ 255 */
-        int gain;       /* 0 ~ 255 */
-        int exposure;   /* 0 ~ 10000 */
+		public:
+			int brightness; /* 0 ~ 255 */
+			int contrast;   /* 0 ~ 255 */
+			int saturation; /* 0 ~ 255 */
+			int gain;       /* 0 ~ 255 */
+			int exposure;   /* 0 ~ 10000 */
 
-        CameraSettings() :
-            brightness(-1),
-            contrast(-1),
-            saturation(-1),
-            gain(255),
-            exposure(1000)
-        {}
-    };
+			CameraSettings() :
+				brightness(-1),
+				contrast(-1),
+				saturation(-1),
+				gain(255),
+				exposure(1000)
+			{}
+	};
 
 	class LinuxCamera
 	{
-	private:
-        static LinuxCamera* uniqueInstance;
+		private:
+			static LinuxCamera* uniqueInstance;
 
-        CameraSettings settings;
+			CameraSettings settings;
 
-	    int camera_fd;
-	    struct buffer {
-	        void * start;
-	        size_t length;
-	    };
-	    struct buffer * buffers;
-	    unsigned int n_buffers;
+			int camera_fd;
+			struct buffer
+			{
+				void * start;
+				size_t length;
+			};
+			struct buffer * buffers;
+			unsigned int n_buffers;
 
-        LinuxCamera();
+			LinuxCamera();
 
-        int ErrorExit(const char* s);
-	    int ReadFrame();
+			int ErrorExit(const char* s);
+			int ReadFrame();
 
-	protected:
+		protected:
 
-	public:
-		bool DEBUG_PRINT;
-        FrameBuffer* fbuffer;
+		public:
+			bool DEBUG_PRINT;
+			FrameBuffer* fbuffer;
 
-		~LinuxCamera();
+			~LinuxCamera();
 
-        static LinuxCamera* GetInstance() { return uniqueInstance; }
+			static LinuxCamera* GetInstance() { return uniqueInstance; }
 
-        int Initialize(int deviceIndex);
+			int Initialize(int deviceIndex);
 
-	    int v4l2GetControl(int control);
-	    int v4l2SetControl(int control, int value);
-	    int v4l2ResetControl(int control);
+			int v4l2GetControl(int control);
+			int v4l2SetControl(int control, int value);
+			int v4l2ResetControl(int control);
 
-	    void LoadINISettings(minIni* ini);
-	    void SaveINISettings(minIni* ini);
+			void LoadINISettings(minIni* ini);
+			void SaveINISettings(minIni* ini);
 
-	    void SetCameraSettings(const CameraSettings& newset);
-	    const CameraSettings& GetCameraSettings();
+			void SetCameraSettings(const CameraSettings& newset);
+			const CameraSettings& GetCameraSettings();
 
-	    void SetAutoWhiteBalance(int isAuto) { v4l2SetControl(V4L2_CID_AUTO_WHITE_BALANCE, isAuto); }
-	    unsigned char GetAutoWhiteBalance() { return (unsigned char)(v4l2GetControl(V4L2_CID_AUTO_WHITE_BALANCE)); }
+			void SetAutoWhiteBalance(int isAuto) { v4l2SetControl(V4L2_CID_AUTO_WHITE_BALANCE, isAuto); }
+			unsigned char GetAutoWhiteBalance() { return (unsigned char)(v4l2GetControl(V4L2_CID_AUTO_WHITE_BALANCE)); }
 
-	    int CaptureFrame();
+			int CaptureFrame();
 	};
 }
 

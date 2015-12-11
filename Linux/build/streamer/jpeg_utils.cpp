@@ -19,7 +19,8 @@ Description.:
 Input Value.:
 Return Value:
 ******************************************************************************/
-void jpeg_utils::init_destination(j_compress_ptr cinfo) {
+void jpeg_utils::init_destination(j_compress_ptr cinfo)
+{
   mjpg_dest_ptr dest = (mjpg_dest_ptr) cinfo->dest;
 
   /* Allocate the output buffer --- it will be released when done with image */
@@ -36,7 +37,8 @@ Description.: called whenever local jpeg buffer fills up
 Input Value.:
 Return Value:
 ******************************************************************************/
-boolean jpeg_utils::empty_output_buffer(j_compress_ptr cinfo) {
+boolean jpeg_utils::empty_output_buffer(j_compress_ptr cinfo)
+{
   mjpg_dest_ptr dest = (mjpg_dest_ptr) cinfo->dest;
 
   memcpy(dest->outbuffer_cursor, dest->buffer, OUTPUT_BUF_SIZE);
@@ -55,7 +57,8 @@ Description.: called by jpeg_finish_compress after all data has been written.
 Input Value.:
 Return Value:
 ******************************************************************************/
-void jpeg_utils::term_destination(j_compress_ptr cinfo) {
+void jpeg_utils::term_destination(j_compress_ptr cinfo)
+{
   mjpg_dest_ptr dest = (mjpg_dest_ptr) cinfo->dest;
   size_t datacount = OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
 
@@ -71,12 +74,14 @@ Input Value.: buffer is the already allocated buffer memory that will hold
               the compressed picture. "size" is the size in bytes.
 Return Value: -
 ******************************************************************************/
-void jpeg_utils::dest_buffer(j_compress_ptr cinfo, unsigned char *buffer, int size, int *written) {
+void jpeg_utils::dest_buffer(j_compress_ptr cinfo, unsigned char *buffer, int size, int *written)
+{
   mjpg_dest_ptr dest;
 
-  if (cinfo->dest == NULL) {
-    cinfo->dest = (struct jpeg_destination_mgr *)(*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(mjpg_destination_mgr));
-  }
+  if (cinfo->dest == NULL)
+    {
+      cinfo->dest = (struct jpeg_destination_mgr *)(*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(mjpg_destination_mgr));
+    }
 
   dest = (mjpg_dest_ptr) cinfo->dest;
   dest->pub.init_destination = init_destination;
@@ -90,127 +95,132 @@ void jpeg_utils::dest_buffer(j_compress_ptr cinfo, unsigned char *buffer, int si
 
 int jpeg_utils::compress_yuyv_to_jpeg(Image *src, unsigned char* buffer, int size, int quality)
 {
-    struct jpeg_compress_struct cinfo;
-    struct jpeg_error_mgr jerr;
-    JSAMPROW row_pointer[1];
-    unsigned char *line_buffer, *yuyv;
-    int z;
-    static int written;
+  struct jpeg_compress_struct cinfo;
+  struct jpeg_error_mgr jerr;
+  JSAMPROW row_pointer[1];
+  unsigned char *line_buffer, *yuyv;
+  int z;
+  static int written;
 
-    line_buffer = (unsigned char*)calloc (src->m_Width * 3, 1);
-    yuyv = src->m_ImageData;
+  line_buffer = (unsigned char*)calloc (src->m_Width * 3, 1);
+  yuyv = src->m_ImageData;
 
-    cinfo.err = jpeg_std_error (&jerr);
-    jpeg_create_compress (&cinfo);
-    /* jpeg_stdio_dest (&cinfo, file); */
-    dest_buffer(&cinfo, buffer, size, &written);
+  cinfo.err = jpeg_std_error (&jerr);
+  jpeg_create_compress (&cinfo);
+  /* jpeg_stdio_dest (&cinfo, file); */
+  dest_buffer(&cinfo, buffer, size, &written);
 
-    cinfo.image_width = src->m_Width;
-    cinfo.image_height = src->m_Height;
-    cinfo.input_components = 3;
-    cinfo.in_color_space = JCS_RGB;
+  cinfo.image_width = src->m_Width;
+  cinfo.image_height = src->m_Height;
+  cinfo.input_components = 3;
+  cinfo.in_color_space = JCS_RGB;
 
-    jpeg_set_defaults (&cinfo);
-    jpeg_set_quality (&cinfo, quality, TRUE);
+  jpeg_set_defaults (&cinfo);
+  jpeg_set_quality (&cinfo, quality, TRUE);
 
-    jpeg_start_compress (&cinfo, TRUE);
+  jpeg_start_compress (&cinfo, TRUE);
 
-    z = 0;
-    while (cinfo.next_scanline < src->m_Height) {
-        int x;
-        unsigned char *ptr = line_buffer;
+  z = 0;
+  while (cinfo.next_scanline < src->m_Height)
+    {
+      int x;
+      unsigned char *ptr = line_buffer;
 
-        for (x = 0; x < src->m_Width; x++) {
-            int r, g, b;
-            int y, u, v;
+      for (x = 0; x < src->m_Width; x++)
+        {
+          int r, g, b;
+          int y, u, v;
 
-            if (!z)
-                y = yuyv[0] << 8;
-            else
-                y = yuyv[2] << 8;
-            u = yuyv[1] - 128;
-            v = yuyv[3] - 128;
+          if (!z)
+            y = yuyv[0] << 8;
+          else
+            y = yuyv[2] << 8;
+          u = yuyv[1] - 128;
+          v = yuyv[3] - 128;
 
-            r = (y + (359 * v)) >> 8;
-            g = (y - (88 * u) - (183 * v)) >> 8;
-            b = (y + (454 * u)) >> 8;
+          r = (y + (359 * v)) >> 8;
+          g = (y - (88 * u) - (183 * v)) >> 8;
+          b = (y + (454 * u)) >> 8;
 
-            *(ptr++) = (r > 255) ? 255 : ((r < 0) ? 0 : r);
-            *(ptr++) = (g > 255) ? 255 : ((g < 0) ? 0 : g);
-            *(ptr++) = (b > 255) ? 255 : ((b < 0) ? 0 : b);
+          *(ptr++) = (r > 255) ? 255 : ((r < 0) ? 0 : r);
+          *(ptr++) = (g > 255) ? 255 : ((g < 0) ? 0 : g);
+          *(ptr++) = (b > 255) ? 255 : ((b < 0) ? 0 : b);
 
-            if (z++) {
-                z = 0;
-                yuyv += 4;
+          if (z++)
+            {
+              z = 0;
+              yuyv += 4;
             }
         }
 
-        row_pointer[0] = line_buffer;
-        jpeg_write_scanlines (&cinfo, row_pointer, 1);
+      row_pointer[0] = line_buffer;
+      jpeg_write_scanlines (&cinfo, row_pointer, 1);
     }
 
-    jpeg_finish_compress (&cinfo);
-    jpeg_destroy_compress (&cinfo);
+  jpeg_finish_compress (&cinfo);
+  jpeg_destroy_compress (&cinfo);
 
-    free (line_buffer);
+  free (line_buffer);
 
-    return (written);
+  return (written);
 }
 
 int jpeg_utils::compress_rgb_to_jpeg(Image *src, unsigned char* buffer, int size, int quality)
 {
-    struct jpeg_compress_struct cinfo;
-    struct jpeg_error_mgr jerr;
-    JSAMPROW row_pointer[1];
-    unsigned char *line_buffer, *rgb;
-    int z;
-    static int written;
+  struct jpeg_compress_struct cinfo;
+  struct jpeg_error_mgr jerr;
+  JSAMPROW row_pointer[1];
+  unsigned char *line_buffer, *rgb;
+  int z;
+  static int written;
 
-    line_buffer = (unsigned char*)calloc (src->m_Width * 3, 1);
-    rgb = src->m_ImageData;
+  line_buffer = (unsigned char*)calloc (src->m_Width * 3, 1);
+  rgb = src->m_ImageData;
 
-    cinfo.err = jpeg_std_error (&jerr);
-    jpeg_create_compress (&cinfo);
-    /* jpeg_stdio_dest (&cinfo, file); */
-    dest_buffer(&cinfo, buffer, size, &written);
+  cinfo.err = jpeg_std_error (&jerr);
+  jpeg_create_compress (&cinfo);
+  /* jpeg_stdio_dest (&cinfo, file); */
+  dest_buffer(&cinfo, buffer, size, &written);
 
-    cinfo.image_width = src->m_Width;
-    cinfo.image_height = src->m_Height;
-    cinfo.input_components = 3;
-    cinfo.in_color_space = JCS_RGB;
+  cinfo.image_width = src->m_Width;
+  cinfo.image_height = src->m_Height;
+  cinfo.input_components = 3;
+  cinfo.in_color_space = JCS_RGB;
 
-    jpeg_set_defaults (&cinfo);
-    jpeg_set_quality (&cinfo, quality, TRUE);
+  jpeg_set_defaults (&cinfo);
+  jpeg_set_quality (&cinfo, quality, TRUE);
 
-    jpeg_start_compress (&cinfo, TRUE);
+  jpeg_start_compress (&cinfo, TRUE);
 
-    z = 0;
-    while (cinfo.next_scanline < src->m_Height) {
-        int x;
-        unsigned char *ptr = line_buffer;
+  z = 0;
+  while (cinfo.next_scanline < src->m_Height)
+    {
+      int x;
+      unsigned char *ptr = line_buffer;
 
-        for (x = 0; x < src->m_Width; x++) {
-            int r, g, b;
+      for (x = 0; x < src->m_Width; x++)
+        {
+          int r, g, b;
 
-            r = rgb[0];
-            g = rgb[1];
-            b = rgb[2];
+          r = rgb[0];
+          g = rgb[1];
+          b = rgb[2];
 
-            *(ptr++) = (r > 255) ? 255 : ((r < 0) ? 0 : r);
-            *(ptr++) = (g > 255) ? 255 : ((g < 0) ? 0 : g);
-            *(ptr++) = (b > 255) ? 255 : ((b < 0) ? 0 : b);
+          *(ptr++) = (r > 255) ? 255 : ((r < 0) ? 0 : r);
+          *(ptr++) = (g > 255) ? 255 : ((g < 0) ? 0 : g);
+          *(ptr++) = (b > 255) ? 255 : ((b < 0) ? 0 : b);
 
-            rgb += 3;
+          rgb += 3;
         }
 
-        row_pointer[0] = line_buffer;
-        jpeg_write_scanlines (&cinfo, row_pointer, 1);
+      row_pointer[0] = line_buffer;
+      jpeg_write_scanlines (&cinfo, row_pointer, 1);
     }
 
-    jpeg_finish_compress (&cinfo);
-    jpeg_destroy_compress (&cinfo);
+  jpeg_finish_compress (&cinfo);
+  jpeg_destroy_compress (&cinfo);
 
-    free (line_buffer);
+  free (line_buffer);
 
-    return (written);
+  return (written);
 }

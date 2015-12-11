@@ -23,9 +23,9 @@ bool LinuxActionScript::m_is_running = 0;
 
 char* LinuxActionScript::SkipLeading(const char* str)
 {
-    if(str == NULL) return NULL;
+    if (str == NULL) return NULL;
 
-    while(*str != '\0' && *str <= ' ')
+    while (*str != '\0' && *str <= ' ')
         str++;
 
     return (char*)str;
@@ -39,21 +39,21 @@ int LinuxActionScript::ParseLine(const char* linebuffer, int* pagenumber, char* 
 
     sp = SkipLeading(linebuffer);
     ep = strchr(sp, ',');
-    len = ep-sp-1;
+    len = ep - sp - 1;
 
-    if(*sp != '(') return -1;
+    if (*sp != '(') return -1;
 
-    strncpy(page,sp+1,len);
-    page[len]='\0';
+    strncpy(page, sp + 1, len);
+    page[len] = '\0';
 
     *pagenumber = (int)atof(page);
 
     sp = ep;
     ep = strchr(sp, ')');
-    len = ep-sp-1;
+    len = ep - sp - 1;
 
-    strncpy(filepath, sp+1, len);
-    filepath[len]='\0';
+    strncpy(filepath, sp + 1, len);
+    filepath[len] = '\0';
 
     return 0;
 }
@@ -64,7 +64,7 @@ int LinuxActionScript::ScriptStart(const char* filename)
 
     m_pthread_id = -1;
     result = pthread_create(&m_pthread_id, NULL, ScriptThreadProc, (void*)filename);
-    if(result < 0)
+    if (result < 0)
         fprintf(stderr, "Main Routine thread start fail!!\n");
     pthread_detach(m_pthread_id);
 
@@ -79,34 +79,34 @@ void* LinuxActionScript::ScriptThreadProc(void* data)
     int pagenumber;
     char local_buffer[LINE_BUFFERSIZE], filepath[LINE_BUFFERSIZE];
 
-    if((fp = fopen((char*)data,"rt")) == NULL)
+    if ((fp = fopen((char*)data, "rt")) == NULL)
         return 0;  /* script file doesn't exist. */
 
-    while(fgets(local_buffer, LINE_BUFFERSIZE, fp) && (m_stop == 0))
-    {
-        if(ParseLine(local_buffer, &pagenumber, filepath) != -1)
+    while (fgets(local_buffer, LINE_BUFFERSIZE, fp) && (m_stop == 0))
         {
-            fprintf(stderr, "Page[%d] : MP3[%s] \n", pagenumber, filepath);
-            PlayMP3(filepath);
-            Action::GetInstance()->Start(pagenumber);
-            while(Action::GetInstance()->IsRunning())
-            {
-                if(m_stop == 1)
+            if (ParseLine(local_buffer, &pagenumber, filepath) != -1)
                 {
-                    Action::GetInstance()->Stop();
-                    while(Action::GetInstance()->IsRunning()) usleep(8000);
+                    fprintf(stderr, "Page[%d] : MP3[%s] \n", pagenumber, filepath);
+                    PlayMP3(filepath);
+                    Action::GetInstance()->Start(pagenumber);
+                    while (Action::GetInstance()->IsRunning())
+                        {
+                            if (m_stop == 1)
+                                {
+                                    Action::GetInstance()->Stop();
+                                    while (Action::GetInstance()->IsRunning()) usleep(8000);
 
-                    kill(mp3_pid, SIGKILL);
+                                    kill(mp3_pid, SIGKILL);
 
-                    m_is_running = 0;
-                    m_stop = 0;
-                    return 0;
+                                    m_is_running = 0;
+                                    m_stop = 0;
+                                    return 0;
+                                }
+                            else usleep(8000);
+                        }
+                    sleep(1);
                 }
-                else usleep(8000);
-            }
-            sleep(1);
         }
-    }
 
     m_is_running = 0;
     m_stop = 0;
@@ -115,50 +115,50 @@ void* LinuxActionScript::ScriptThreadProc(void* data)
 
 int LinuxActionScript::PlayMP3(const char* filename)
 {
-    if(mp3_pid != -1)
+    if (mp3_pid != -1)
         kill(mp3_pid, SIGKILL);
 
     mp3_pid = fork();
 
-    switch(mp3_pid)
-    {
-    case -1:
-        fprintf(stderr, "Fork failed!! \n");
-        break;
-    case 0:
-        fprintf(stderr, "Playing MPEG stream from \"%s\" ...\n", filename);
-        execl("/usr/bin/mplayer", "mplayer", filename, (char*)0);
-        fprintf(stderr, "exec failed!! \n");
-        break;
-    default:
-        break;
-    }
+    switch (mp3_pid)
+        {
+        case -1:
+            fprintf(stderr, "Fork failed!! \n");
+            break;
+        case 0:
+            fprintf(stderr, "Playing MPEG stream from \"%s\" ...\n", filename);
+            execl("/usr/bin/mplayer", "mplayer", filename, (char*)0);
+            fprintf(stderr, "exec failed!! \n");
+            break;
+        default:
+            break;
+        }
 
     return 1;
 }
 
 int LinuxActionScript::PlayMP3Wait(const char* filename)
 {
-    if(mp3_pid != -1)
+    if (mp3_pid != -1)
         kill(mp3_pid, SIGKILL);
 
     mp3_pid = fork();
 
-    switch(mp3_pid)
-    {
-    case -1:
-        fprintf(stderr, "Fork failed!! \n");
-        break;
-    case 0:
-        fprintf(stderr, "Playing MPEG stream from \"%s\" ...\n", filename);
-        execl("/usr/bin/mplayer", "mplayer", filename, (char*)0);
-        fprintf(stderr, "exec failed!! \n");
-        break;
-    default:
-        int status;
-        waitpid(mp3_pid, &status, 0);
-        break;
-    }
+    switch (mp3_pid)
+        {
+        case -1:
+            fprintf(stderr, "Fork failed!! \n");
+            break;
+        case 0:
+            fprintf(stderr, "Playing MPEG stream from \"%s\" ...\n", filename);
+            execl("/usr/bin/mplayer", "mplayer", filename, (char*)0);
+            fprintf(stderr, "exec failed!! \n");
+            break;
+        default:
+            int status;
+            waitpid(mp3_pid, &status, 0);
+            break;
+        }
 
     return 1;
 }

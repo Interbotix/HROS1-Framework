@@ -113,8 +113,8 @@ void GoCmd(Robot::CM730 *cm730, int index);
 void SaveCmd(int pageNum);
 void NameCmd();
 void MonitorServos(Robot::CM730 *cm730);
-void SetColor(int fg,int bg,int attrib);
+void SetColor(int fg, int bg, int attrib);
 int kbhit(bool bPushed);
-void ProcessPS3(Robot::CM730 *cm730,int *apState);
+void ProcessPS3(Robot::CM730 *cm730, int *apState);
 
 #endif
