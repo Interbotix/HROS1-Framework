@@ -5,7 +5,7 @@
  *
  */
 
-#include "MX28.h"
+#include "AXDXL.h"
 #include "JointData.h"
 #include "MotionManager.h"
 
@@ -13,15 +13,15 @@ using namespace Robot;
 
 JointData::JointData()
 {
-    for(int i=0; i<NUMBER_OF_JOINTS; i++)
-    {
-        m_Enable[i] = true;
-        m_Value[i] = MX28::CENTER_VALUE;
-        m_Angle[i] = 0.0;
-        m_CWSlope[i] = SLOPE_HARD;
-        m_CCWSlope[i] = SLOPE_HARD;
-		m_Temp[i] = TEMP_DEFAULT;
-    }
+    for (int i = 0; i < NUMBER_OF_JOINTS; i++)
+        {
+            m_Enable[i] = true;
+            m_Value[i] = AXDXL::CENTER_VALUE;
+            m_Angle[i] = 0.0;
+            m_CWSlope[i] = SLOPE_HARD;
+            m_CCWSlope[i] = SLOPE_HARD;
+            m_Temp[i] = TEMP_DEFAULT;
+        }
 }
 
 JointData::~JointData()
@@ -35,7 +35,7 @@ void JointData::SetEnable(int id, bool enable)
 
 void JointData::SetEnable(int id, bool enable, bool exclusive)
 {
-    if(enable && exclusive) MotionManager::GetInstance()->SetJointDisable(id);
+    if (enable && exclusive) MotionManager::GetInstance()->SetJointDisable(id);
     m_Enable[id] = enable;
 }
 
@@ -46,8 +46,8 @@ void JointData::SetEnableHeadOnly(bool enable)
 
 void JointData::SetEnableHeadOnly(bool enable, bool exclusive)
 {
-	SetEnable(ID_HEAD_PAN,          enable, exclusive);
-	SetEnable(ID_HEAD_TILT,         enable, exclusive);
+    SetEnable(ID_HEAD_PAN,          enable, exclusive);
+    SetEnable(ID_HEAD_TILT,         enable, exclusive);
 }
 
 void JointData::SetEnableRightArmOnly(bool enable)
@@ -146,7 +146,7 @@ void JointData::SetEnableBody(bool enable)
 
 void JointData::SetEnableBody(bool enable, bool exclusive)
 {
-    for(int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
+    for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
         SetEnable(id, enable, exclusive);
 }
 
@@ -157,13 +157,13 @@ bool JointData::GetEnable(int id)
 
 void JointData::SetValue(int id, int value)
 {
-    if(value < MX28::MIN_VALUE)
-        value = MX28::MIN_VALUE;
-    else if(value >= MX28::MAX_VALUE)
-        value = MX28::MAX_VALUE;
+    if (value < AXDXL::MIN_VALUE)
+        value = AXDXL::MIN_VALUE;
+    else if (value >= AXDXL::MAX_VALUE)
+        value = AXDXL::MAX_VALUE;
 
     m_Value[id] = value;
-    m_Angle[id] = MX28::Value2Angle(value);
+    m_Angle[id] = AXDXL::Value2Angle(value);
 }
 
 int JointData::GetValue(int id)
@@ -173,13 +173,13 @@ int JointData::GetValue(int id)
 
 void JointData::SetAngle(int id, double angle)
 {
-    if(angle < MX28::MIN_ANGLE)
-        angle = MX28::MIN_ANGLE;
-    else if(angle > MX28::MAX_ANGLE)
-        angle = MX28::MAX_ANGLE;
+    if (angle < AXDXL::MIN_ANGLE)
+        angle = AXDXL::MIN_ANGLE;
+    else if (angle > AXDXL::MAX_ANGLE)
+        angle = AXDXL::MAX_ANGLE;
 
     m_Angle[id] = angle;
-    m_Value[id] = MX28::Angle2Value(angle);
+    m_Value[id] = AXDXL::Angle2Value(angle);
 }
 
 double JointData::GetAngle(int id)

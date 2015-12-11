@@ -32,42 +32,42 @@
 
 class Commander
 {
-  public:
-    Commander();
-    bool Init ( void );
-    bool begin( char *pszComm, speed_t baud );
-    void ControlInput ( void );
-    void ControlTest ( void );    
-    void TurnRobotOff ( void );
-    void UseSouthPaw( void );     // enable southpaw configuration
-    int ReadMsgs( void );         // must be called regularly to clean out Serial buffer
-    // joystick values are -125 to 125
-    signed char RightV;      // vertical stick movement 
-    signed char RightH;      // horizontal stick movement 
-    signed char LeftV;      // vertical stick movement 
-    signed char LeftH;      // horizontal stick movement
-    // 0-1023, use in extended mode
-    int pan;
-    int tilt;
-    // buttons are 0 or 1 (PRESSED), and bitmapped
-    unsigned char buttons;  //
-    unsigned char ext;      // Extended function set
-  private:
-    // internal variables used for reading messages
-    unsigned char vals[6];  // temporary values, moved after we confirm checksum
-    int index;              // -1 = waiting for new packet
-    int checksum;
-    unsigned char status;
-    //Private stuff for Linux threading and file descriptor, and open file...
-    int fd;         // file descriptor
-    FILE *pfile;        // Pointer to file
-    pthread_t tid;      // Thread Id of our reader thread...
-    pthread_mutex_t lock;   // A lock to make sure we don't walk over ourself...
-    bool fValidPacket;      // Do we have a valid packet?
-    unsigned char bInBuf[7]; // Input buffer we use in the thread to process partial messages.
-    char *_pszDevice;
-    speed_t _baud;
-    static void *XBeeThreadProc(void *);
+    public:
+        Commander();
+        bool Init ( void );
+        bool begin( char *pszComm, speed_t baud );
+        void ControlInput ( void );
+        void ControlTest ( void );
+        void TurnRobotOff ( void );
+        void UseSouthPaw( void );     // enable southpaw configuration
+        int ReadMsgs( void );         // must be called regularly to clean out Serial buffer
+        // joystick values are -125 to 125
+        signed char RightV;      // vertical stick movement
+        signed char RightH;      // horizontal stick movement
+        signed char LeftV;      // vertical stick movement
+        signed char LeftH;      // horizontal stick movement
+        // 0-1023, use in extended mode
+        int pan;
+        int tilt;
+        // buttons are 0 or 1 (PRESSED), and bitmapped
+        unsigned char buttons;  //
+        unsigned char ext;      // Extended function set
+    private:
+        // internal variables used for reading messages
+        unsigned char vals[6];  // temporary values, moved after we confirm checksum
+        int index;              // -1 = waiting for new packet
+        int checksum;
+        unsigned char status;
+        //Private stuff for Linux threading and file descriptor, and open file...
+        int fd;         // file descriptor
+        FILE *pfile;        // Pointer to file
+        pthread_t tid;      // Thread Id of our reader thread...
+        pthread_mutex_t lock;   // A lock to make sure we don't walk over ourself...
+        bool fValidPacket;      // Do we have a valid packet?
+        unsigned char bInBuf[7]; // Input buffer we use in the thread to process partial messages.
+        char *_pszDevice;
+        speed_t _baud;
+        static void *XBeeThreadProc(void *);
 };
 
 

@@ -21,64 +21,64 @@ namespace Robot
 {
 	class LinuxSocket
 	{
-	private:
-		int m_sock;
-		sockaddr_in m_addr;
+		private:
+			int m_sock;
+			sockaddr_in m_addr;
 
-	public:
-		static const int MAXHOSTNAME = 200;
-		static const int MAXCONNECTIONS = 5;
-		static const int MAXRECV = 500;
+		public:
+			static const int MAXHOSTNAME = 200;
+			static const int MAXCONNECTIONS = 5;
+			static const int MAXRECV = 500;
 
-		LinuxSocket();
-		virtual ~LinuxSocket();
+			LinuxSocket();
+			virtual ~LinuxSocket();
 
-		// Server initialization
-		bool create();
-		bool bind ( const int port );
-		bool listen() const;
-		bool accept ( LinuxSocket& ) const;
+			// Server initialization
+			bool create();
+			bool bind ( const int port );
+			bool listen() const;
+			bool accept ( LinuxSocket& ) const;
 
-		// Client initialization
-		bool connect ( const std::string host, const int port );
+			// Client initialization
+			bool connect ( const std::string host, const int port );
 
-		// Data Transimission
-		bool send ( const std::string ) const;
-		bool send ( void* data, int length ) const;
-		int recv ( std::string& ) const;
-		int recv ( void* data, int length ) const;
+			// Data Transimission
+			bool send ( const std::string ) const;
+			bool send ( void* data, int length ) const;
+			int recv ( std::string& ) const;
+			int recv ( void* data, int length ) const;
 
-		void set_non_blocking ( const bool );
+			void set_non_blocking ( const bool );
 
-		bool is_valid() const { return m_sock != -1; }	
+			bool is_valid() const { return m_sock != -1; }
 	};
 
-	class LinuxSocketException  
+	class LinuxSocketException
 	{
-	private:
-		std::string m_s;
+		private:
+			std::string m_s;
 
-	public:
-		LinuxSocketException ( std::string s ) : m_s ( s ) {};
-		~LinuxSocketException (){};
-	    
-		std::string description() { return m_s; }	
+		public:
+			LinuxSocketException ( std::string s ) : m_s ( s ) {};
+			~LinuxSocketException () {};
+
+			std::string description() { return m_s; }
 	};
 
 	class LinuxServer : private LinuxSocket
 	{
-	public:
-		LinuxServer ( int port );
-		LinuxServer (){};
-		virtual ~LinuxServer();
+		public:
+			LinuxServer ( int port );
+			LinuxServer () {};
+			virtual ~LinuxServer();
 
-		const LinuxServer& operator << ( const std::string& ) const;
-		const LinuxServer& operator << ( const int& ) const;
-		const LinuxServer& operator >> ( std::string& ) const;
+			const LinuxServer& operator << ( const std::string& ) const;
+			const LinuxServer& operator << ( const int& ) const;
+			const LinuxServer& operator >> ( std::string& ) const;
 
-		void accept ( LinuxServer& );
-		bool send ( unsigned char *data, int length );
-		int recv ( unsigned char *data, int length );
+			void accept ( LinuxServer& );
+			bool send ( unsigned char *data, int length );
+			int recv ( unsigned char *data, int length );
 	};
 }
 

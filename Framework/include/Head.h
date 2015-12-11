@@ -21,70 +21,70 @@ namespace Robot
 {
 	class Head : public MotionModule
 	{
-	private:
-		static Head* m_UniqueInstance;
-		double m_LeftLimit;
-		double m_RightLimit;
-		double m_TopLimit;
-		double m_BottomLimit;
-		double m_Pan_Home;
-		double m_Tilt_Home;
-		double m_Pan_err;
-		double m_Pan_err_diff;
-		double m_Pan_p_gain;
-		double m_Pan_d_gain;
-		double m_Tilt_err;
-		double m_Tilt_err_diff;
-		double m_Tilt_p_gain;
-		double m_Tilt_d_gain;
-		double m_PanAngle;
-		double m_TiltAngle;
-		
-		Head();
-		void CheckLimit();
+		private:
+			static Head* m_UniqueInstance;
+			double m_LeftLimit;
+			double m_RightLimit;
+			double m_TopLimit;
+			double m_BottomLimit;
+			double m_Pan_Home;
+			double m_Tilt_Home;
+			double m_Pan_err;
+			double m_Pan_err_diff;
+			double m_Pan_p_gain;
+			double m_Pan_d_gain;
+			double m_Tilt_err;
+			double m_Tilt_err_diff;
+			double m_Tilt_p_gain;
+			double m_Tilt_d_gain;
+			double m_PanAngle;
+			double m_TiltAngle;
 
-	public:
-		static Head* GetInstance() { return m_UniqueInstance; }
-		
-		~Head();
+			Head();
+			void CheckLimit();
 
-		double m_TopLimit_soccer;
-		double m_TopLimit_line_following;
-		double m_TopLimit_robot_following;
+		public:
+			static Head* GetInstance() { return m_UniqueInstance; }
 
-		double m_LookPanRate;
-		double m_LookTiltRate;
-		double m_LookPanDirection;
-		double m_LookTiltDirection;
+			~Head();
 
-		void Initialize();
-		void Process();
+			double m_TopLimit_soccer;
+			double m_TopLimit_line_following;
+			double m_TopLimit_robot_following;
 
-		double GetTopLimitAngle()		{ return m_TopLimit; }
-		double GetBottomLimitAngle()	{ return m_BottomLimit; }
-		double GetRightLimitAngle()		{ return m_RightLimit; }
-		double GetLeftLimitAngle()		{ return m_LeftLimit; }
+			double m_LookPanRate;
+			double m_LookTiltRate;
+			double m_LookPanDirection;
+			double m_LookTiltDirection;
 
-		void SetTopLimitAngle(double d)		{ m_TopLimit = d; }
-		void SetBottomLimitAngle(double d)	{ m_BottomLimit = d; }
-		void SetRightLimitAngle(double d)		{ m_RightLimit = d; }
-		void SetLeftLimitAngle(double d)		{ m_LeftLimit = d; }
+			void Initialize();
+			void Process();
 
-		double GetPanAngle()		{ return m_PanAngle; }
-		double GetTiltAngle()		{ return m_TiltAngle; }
+			double GetTopLimitAngle()		{ return m_TopLimit; }
+			double GetBottomLimitAngle()	{ return m_BottomLimit; }
+			double GetRightLimitAngle()		{ return m_RightLimit; }
+			double GetLeftLimitAngle()		{ return m_LeftLimit; }
 
-		void MoveToHome();
-		void MoveByAngle(double pan, double tilt);
-		void MoveByAngleOffset(double pan, double tilt);
-		void InitTracking();
-		void MoveTracking(Point2D err); // For image processing
-		void MoveTracking();
-		void LookAround();
+			void SetTopLimitAngle(double d)		{ m_TopLimit = d; }
+			void SetBottomLimitAngle(double d)	{ m_BottomLimit = d; }
+			void SetRightLimitAngle(double d)		{ m_RightLimit = d; }
+			void SetLeftLimitAngle(double d)		{ m_LeftLimit = d; }
 
-        void LoadINISettings(minIni* ini);
-        void LoadINISettings(minIni* ini, const std::string &section);
-        void SaveINISettings(minIni* ini);
-        void SaveINISettings(minIni* ini, const std::string &section);
+			double GetPanAngle()		{ return m_PanAngle; }
+			double GetTiltAngle()		{ return m_TiltAngle; }
+
+			void MoveToHome();
+			void MoveByAngle(double pan, double tilt);
+			void MoveByAngleOffset(double pan, double tilt);
+			void InitTracking();
+			void MoveTracking(Point2D err); // For image processing
+			void MoveTracking();
+			void LookAround();
+
+			void LoadINISettings(minIni* ini);
+			void LoadINISettings(minIni* ini, const std::string &section);
+			void SaveINISettings(minIni* ini);
+			void SaveINISettings(minIni* ini, const std::string &section);
 	};
 }
 

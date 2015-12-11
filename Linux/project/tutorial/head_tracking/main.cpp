@@ -15,7 +15,7 @@
 #include "mjpg_streamer.h"
 #include "LinuxDARwIn.h"
 
-#ifdef MX28_1024
+#ifdef AXDXL_1024
 #define MOTION_FILE_PATH    ((char *)"../../../Data/motion_1024.bin")
 #else
 #define MOTION_FILE_PATH    ((char *)"../../../Data/motion_4096.bin")
@@ -29,21 +29,21 @@
 #define U2D_DEV_NAME1       "/dev/ttyUSB1"
 
 int isRunning = 1;
-LinuxCM730 linux_cm730(U2D_DEV_NAME0);
-CM730 cm730(&linux_cm730);
+LinuxArbotixPro linux_arbotixpro(U2D_DEV_NAME0);
+ArbotixPro arbotixpro(&linux_arbotixpro);
 
 // Define the exit signal handler
 void signal_callback_handler(int signum)
 {
     //LinuxCamera::~LinuxCamera();
-    printf("Exiting program; Caught signal %d\r\n",signum);
+    printf("Exiting program; Caught signal %d\r\n", signum);
     isRunning = 0;
 }
 
 void change_current_dir()
 {
     char exepath[1024] = {0};
-    if(readlink("/proc/self/exe", exepath, sizeof(exepath)) != -1)
+    if (readlink("/proc/self/exe", exepath, sizeof(exepath)) != -1)
         chdir(dirname(exepath));
 }
 
@@ -71,15 +71,15 @@ int main(void)
     BallTracker tracker = BallTracker();
 
 //////////////////// Framework Initialize ////////////////////////////
-    if(MotionManager::GetInstance()->Initialize(&cm730) == false)
-    {
-        linux_cm730.SetPortName(U2D_DEV_NAME1);
-        if(MotionManager::GetInstance()->Initialize(&cm730) == false)
+    if (MotionManager::GetInstance()->Initialize(&arbotixpro) == false)
         {
-            printf("Fail to initialize Motion Manager!\n");
-            return 0;
+            linux_arbotixpro.SetPortName(U2D_DEV_NAME1);
+            if (MotionManager::GetInstance()->Initialize(&arbotixpro) == false)
+                {
+                    printf("Fail to initialize Motion Manager!\n");
+                    return 0;
+                }
         }
-    }
 
     Walking::GetInstance()->LoadINISettings(ini);
     usleep(100);
@@ -91,38 +91,38 @@ int main(void)
     //MotionManager::GetInstance()->StartThread();
     //LinuxMotionTimer::Initialize(MotionManager::GetInstance());
     LinuxMotionTimer linuxMotionTimer;
-        linuxMotionTimer.Initialize(MotionManager::GetInstance());
-        linuxMotionTimer.Start();
+    linuxMotionTimer.Initialize(MotionManager::GetInstance());
+    linuxMotionTimer.Start();
 
-	MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(false);
-	MotionManager::GetInstance()->SetEnable(true);
-	/////////////////////////////////////////////////////////////////////
+    MotionStatus::m_CurrentJoints.SetEnableBodyWithoutHead(false);
+    MotionManager::GetInstance()->SetEnable(true);
+    /////////////////////////////////////////////////////////////////////
 
-	Head::GetInstance()->m_Joint.SetEnableHeadOnly(true, true);
+    Head::GetInstance()->m_Joint.SetEnableHeadOnly(true, true);
 
-	//Head::GetInstance()->m_Joint.SetPGain(JointData::ID_HEAD_PAN, 8);
-	//Head::GetInstance()->m_Joint.SetPGain(JointData::ID_HEAD_TILT, 8);
+    //Head::GetInstance()->m_Joint.SetPGain(JointData::ID_HEAD_PAN, 8);
+    //Head::GetInstance()->m_Joint.SetPGain(JointData::ID_HEAD_TILT, 8);
 
-    while(isRunning)
-    {
-        //usleep(10000);
-        Point2D pos;
-        LinuxCamera::GetInstance()->CaptureFrame();	
-
-        tracker.Process(ball_finder->GetPosition(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame));
-
-		rgb_ball = LinuxCamera::GetInstance()->fbuffer->m_RGBFrame;
-        for(int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
+    while (isRunning)
         {
-            if(ball_finder->m_result->m_ImageData[i] == 1)
-            {
-                rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 0] = 255;
-                rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 1] = 0;
-                rgb_ball->m_ImageData[i*rgb_ball->m_PixelSize + 2] = 0;
-            }
+            //usleep(10000);
+            Point2D pos;
+            LinuxCamera::GetInstance()->CaptureFrame();
+
+            tracker.Process(ball_finder->GetPosition(LinuxCamera::GetInstance()->fbuffer->m_HSVFrame));
+
+            rgb_ball = LinuxCamera::GetInstance()->fbuffer->m_RGBFrame;
+            for (int i = 0; i < rgb_ball->m_NumberOfPixels; i++)
+                {
+                    if (ball_finder->m_result->m_ImageData[i] == 1)
+                        {
+                            rgb_ball->m_ImageData[i * rgb_ball->m_PixelSize + 0] = 255;
+                            rgb_ball->m_ImageData[i * rgb_ball->m_PixelSize + 1] = 0;
+                            rgb_ball->m_ImageData[i * rgb_ball->m_PixelSize + 2] = 0;
+                        }
+                }
+            streamer->send_image(rgb_ball);
         }
-        streamer->send_image(rgb_ball);
-    }
 
     return 0;
 }

@@ -16,8 +16,9 @@ using namespace Robot;
 
 class jpeg_utils
 {
-private:
-    typedef struct {
+  private:
+    typedef struct
+    {
       struct jpeg_destination_mgr pub; /* public fields */
 
       JOCTET * buffer;    /* start of buffer */
@@ -36,7 +37,7 @@ private:
     static void term_destination(j_compress_ptr cinfo);
     static void dest_buffer(j_compress_ptr cinfo, unsigned char *buffer, int size, int *written);
 
-public:
+  public:
     static int compress_yuyv_to_jpeg(Image *src, unsigned char* buffer, int size, int quality);
     static int compress_rgb_to_jpeg(Image *src, unsigned char* buffer, int size, int quality);
 };

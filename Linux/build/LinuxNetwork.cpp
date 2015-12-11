@@ -43,39 +43,40 @@ bool LinuxSocket::create()
     return true;
 }
 
-bool LinuxSocket::bind ( const int port )  {
+bool LinuxSocket::bind ( const int port )
+{
     if ( ! is_valid() )
-    {
-        return false;
-    }
+        {
+            return false;
+        }
 
     m_addr.sin_family = AF_INET;
     m_addr.sin_addr.s_addr = INADDR_ANY;
     m_addr.sin_port = htons ( port );
 
     int bind_return = ::bind ( m_sock,
-                             ( struct sockaddr * ) &m_addr,
-                             sizeof ( m_addr ) );
+                               ( struct sockaddr * ) &m_addr,
+                               sizeof ( m_addr ) );
     if ( bind_return == -1 )
-    {
-        return false;
-    }
+        {
+            return false;
+        }
 
     return true;
 }
 bool LinuxSocket::listen() const
 {
     if ( ! is_valid() )
-    {
-        return false;
-    }
+        {
+            return false;
+        }
 
     int listen_return = ::listen ( m_sock, MAXCONNECTIONS );
 
     if ( listen_return == -1 )
-    {
-        return false;
-    }
+        {
+            return false;
+        }
     return true;
 }
 
@@ -94,26 +95,26 @@ bool LinuxSocket::send ( const std::string s ) const
 {
     int status = ::send ( m_sock, s.c_str(), s.size(), MSG_NOSIGNAL );
     if ( status == -1 )
-    {
-        return false;
-    }
+        {
+            return false;
+        }
     else
-    {
-        return true;
-    }
+        {
+            return true;
+        }
 }
 
 bool LinuxSocket::send ( void* data, int length ) const
 {
     int status = ::send ( m_sock, data, length, MSG_NOSIGNAL );
     if ( status == -1 )
-    {
-        return false;
-    }
+        {
+            return false;
+        }
     else
-    {
-        return true;
-    }
+        {
+            return true;
+        }
 }
 
 int LinuxSocket::recv ( std::string& s ) const
@@ -127,35 +128,35 @@ int LinuxSocket::recv ( std::string& s ) const
     int status = ::recv ( m_sock, buf, MAXRECV, 0 );
 
     if ( status == -1 )
-    {
-        cout << "status == -1   errno == " << errno << "  in Socket::recv\n";
-        return 0;
-    }
+        {
+            cout << "status == -1   errno == " << errno << "  in Socket::recv\n";
+            return 0;
+        }
     else if ( status == 0 )
-    {
-        return 0;
-    }
+        {
+            return 0;
+        }
     else
-    {
-        s = buf;
-        return status;
-    }
+        {
+            s = buf;
+            return status;
+        }
 }
 
 int LinuxSocket::recv ( void* data, int length ) const
 {
-	int status = ::recv ( m_sock, data, length, 0 );
+    int status = ::recv ( m_sock, data, length, 0 );
 
     if ( status == -1 )
-    {
-        cout << "status == -1   errno == " << errno << "  in Socket::recv\n";
-        return 0;
-    }
+        {
+            cout << "status == -1   errno == " << errno << "  in Socket::recv\n";
+            return 0;
+        }
     else if ( status == 0 )
-    {
-        return 0;
-    }
-    
+        {
+            return 0;
+        }
+
     return status;
 }
 
@@ -185,9 +186,9 @@ void LinuxSocket::set_non_blocking ( const bool b )
     opts = fcntl ( m_sock, F_GETFL );
 
     if ( opts < 0 )
-    {
-        return;
-    }
+        {
+            return;
+        }
 
     if ( b )
         opts = ( opts | O_NONBLOCK );
@@ -195,7 +196,7 @@ void LinuxSocket::set_non_blocking ( const bool b )
         opts = ( opts & ~O_NONBLOCK );
 
     fcntl ( m_sock,
-            F_SETFL,opts );
+            F_SETFL, opts );
 }
 
 
@@ -203,19 +204,19 @@ void LinuxSocket::set_non_blocking ( const bool b )
 LinuxServer::LinuxServer ( int port )
 {
     if ( ! LinuxSocket::create() )
-    {
-        throw LinuxSocketException ( "Could not create server socket." );
-    }
+        {
+            throw LinuxSocketException ( "Could not create server socket." );
+        }
 
     if ( ! LinuxSocket::bind ( port ) )
-    {
-        throw LinuxSocketException ( "Could not bind to port." );
-    }
+        {
+            throw LinuxSocketException ( "Could not bind to port." );
+        }
 
     if ( ! LinuxSocket::listen() )
-    {
-        throw LinuxSocketException ( "Could not listen to socket." );
-    }
+        {
+            throw LinuxSocketException ( "Could not listen to socket." );
+        }
 }
 
 LinuxServer::~LinuxServer()
@@ -223,11 +224,11 @@ LinuxServer::~LinuxServer()
 }
 
 const LinuxServer& LinuxServer::operator << ( const std::string& s ) const
-{	
+{
     if ( ! LinuxSocket::send ( s ) )
-    {
-        throw LinuxSocketException ( "Could not write to socket." );
-    }
+        {
+            throw LinuxSocketException ( "Could not write to socket." );
+        }
 
     return *this;
 }
@@ -238,9 +239,9 @@ const LinuxServer& LinuxServer::operator << ( const int& i ) const
     ss << i;
 
     if ( ! LinuxSocket::send ( ss.str() ) )
-    {
-        throw LinuxSocketException ( "Could not write to socket." );
-    }
+        {
+            throw LinuxSocketException ( "Could not write to socket." );
+        }
 
     return *this;
 }
@@ -248,9 +249,9 @@ const LinuxServer& LinuxServer::operator << ( const int& i ) const
 const LinuxServer& LinuxServer::operator >> ( std::string& s ) const
 {
     if ( ! LinuxSocket::recv ( s ) )
-    {
-        throw LinuxSocketException ( "Could not read from socket." );
-    }
+        {
+            throw LinuxSocketException ( "Could not read from socket." );
+        }
 
     return *this;
 }
@@ -258,17 +259,17 @@ const LinuxServer& LinuxServer::operator >> ( std::string& s ) const
 void LinuxServer::accept ( LinuxServer& sock )
 {
     if ( ! LinuxSocket::accept ( sock ) )
-    {
-        throw LinuxSocketException ( "Could not accept socket." );
-    }
+        {
+            throw LinuxSocketException ( "Could not accept socket." );
+        }
 }
 
 bool LinuxServer::send ( unsigned char* data, int length )
 {
-	return LinuxSocket::send(data, length);
+    return LinuxSocket::send(data, length);
 }
 
 int LinuxServer::recv ( unsigned char* data, int length )
 {
-	return LinuxSocket::recv(data, length);
+    return LinuxSocket::recv(data, length);
 }

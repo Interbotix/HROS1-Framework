@@ -75,7 +75,7 @@ void MoveLeftCursor();
 void MoveRightCursor();
 
 // Disp & Drawing
-void DrawIntro(Robot::CM730 *cm730);
+void DrawIntro(Robot::ArbotixPro *arbotixpro);
 void DrawEnding();
 void DrawPage();
 void DrawStep(int index);
@@ -85,10 +85,10 @@ void ClearCmd();
 void PrintCmd(const char *message);
 
 // Edit value
-void UpDownValue(Robot::CM730 *cm730, int offset);
-void SetValue(Robot::CM730 *cm730, int value);
+void UpDownValue(Robot::ArbotixPro *arbotixpro, int offset);
+void SetValue(Robot::ArbotixPro *arbotixpro, int value);
 int GetValue();
-void ToggleTorque(Robot::CM730 *cm730);
+void ToggleTorque(Robot::ArbotixPro *arbotixpro);
 int IndexPage(void);
 
 // Command process
@@ -100,21 +100,21 @@ void PrevCmd();
 void PageCmd(int index);
 void TimeCmd();
 void SpeedCmd();
-void PlayCmd(Robot::CM730 *cm730, int pageNum);
+void PlayCmd(Robot::ArbotixPro *arbotixpro, int pageNum);
 void ListCmd();
-void OnOffCmd(Robot::CM730 *cm730, bool on, int num_param, int *list, char lists[30][10]);
+void OnOffCmd(Robot::ArbotixPro *arbotixpro, bool on, int num_param, int *list, char lists[30][10]);
 void WriteStepCmd(int index);
 void DeleteStepCmd(int index);
 void InsertStepCmd(int index);
 void MoveStepCmd(int src, int dst);
 void CopyCmd(int index);
 void NewCmd();
-void GoCmd(Robot::CM730 *cm730, int index);
+void GoCmd(Robot::ArbotixPro *arbotixpro, int index);
 void SaveCmd(int pageNum);
 void NameCmd();
-void MonitorServos(Robot::CM730 *cm730);
-void SetColor(int fg,int bg,int attrib);
+void MonitorServos(Robot::ArbotixPro *arbotixpro);
+void SetColor(int fg, int bg, int attrib);
 int kbhit(bool bPushed);
-void ProcessPS3(Robot::CM730 *cm730,int *apState);
+void ProcessPS3(Robot::ArbotixPro *arbotixpro, int *apState);
 
 #endif

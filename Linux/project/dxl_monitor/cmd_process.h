@@ -7,9 +7,9 @@
 
 void Prompt(int id);
 void Help();
-void Scan(Robot::CM730 *cm730);
-void Dump(Robot::CM730 *cm730, int id);
-void Reset(Robot::CM730 *cm730, int id);
-void Write(Robot::CM730 *cm730, int id, int addr, int value);
+void Scan(Robot::ArbotixPro *arbotixpro);
+void Dump(Robot::ArbotixPro *arbotixpro, int id);
+void Reset(Robot::ArbotixPro *arbotixpro, int id);
+void Write(Robot::ArbotixPro *arbotixpro, int id, int addr, int value);
 
 #endif

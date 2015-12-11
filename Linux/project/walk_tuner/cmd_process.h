@@ -5,15 +5,16 @@
 #include "LinuxDARwIn.h"
 
 
-#define PROGRAM_VERSION	"v1.00"
-#define SCREEN_COL		35
+#define PROGRAM_VERSION "v1.00"
+#define SCREEN_COL      35
 
 // Position of Column
-#define CMD_COL			2
-#define PARAM_COL		27
+#define CMD_COL         2
+#define PARAM_COL       27
 
 // Position of Row
-enum {
+enum
+{
     WALKING_MODE_ROW,
     X_OFFSET_ROW,
     Y_OFFSET_ROW,
@@ -58,7 +59,7 @@ void MoveLeftCursor();
 void MoveRightCursor();
 
 // Disp & Drawing
-void DrawIntro(Robot::CM730 *cm730);
+void DrawIntro(Robot::ArbotixPro *arbotixpro);
 void DrawEnding();
 void DrawScreen();
 void ClearCmd();

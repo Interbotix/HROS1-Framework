@@ -72,38 +72,38 @@ int _getch()
 
 int kbhit(bool bPushed)
 {
-  struct termios oldt, newt;
-  int ch;
-  int oldf;
+	struct termios oldt, newt;
+	int ch;
+	int oldf;
 
-  tcgetattr(STDIN_FILENO, &oldt);
-  newt = oldt;
-  newt.c_lflag &= ~(ICANON | ECHO);
-  tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-  oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
-  fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
+	tcgetattr(STDIN_FILENO, &oldt);
+	newt = oldt;
+	newt.c_lflag &= ~(ICANON | ECHO);
+	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+	oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+	fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK);
 
-  ch = getchar();
+	ch = getchar();
 
-  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-  fcntl(STDIN_FILENO, F_SETFL, oldf);
+	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+	fcntl(STDIN_FILENO, F_SETFL, oldf);
 
-  if(ch != EOF && bPushed == true)
-  {
-    ungetc(ch, stdin);
-    return 1;
-  }
-  
-	if(ch != EOF && bPushed == false)
+	if (ch != EOF && bPushed == true)
+		{
+			ungetc(ch, stdin);
+			return 1;
+		}
+
+	if (ch != EOF && bPushed == false)
 		return 1;
-  
+
 	return 0;
 }
 
 struct termios oldterm, new_term;
 void set_stdin(void)
 {
-	tcgetattr(0,&oldterm);
+	tcgetattr(0, &oldterm);
 	new_term = oldterm;
 	new_term.c_lflag &= ~(ICANON | ECHO | ISIG); // 의미는 struct termios를 찾으면 됨.
 	new_term.c_cc[VMIN] = 1;
@@ -116,45 +116,45 @@ void reset_stdin(void)
 	tcsetattr(0, TCSANOW, &oldterm);
 }
 
-void ReadStep(CM730 *cm730)
+void ReadStep(ArbotixPro *arbotixpro)
 {
 	int value;
-	for(int id=0; id<31; id++)
-	{
-		if(id >= JointData::ID_MIN && id <= JointData::ID_MAX)
+	for (int id = 0; id < 31; id++)
 		{
-			if(cm730->ReadByte(id, MX28::P_TORQUE_ENABLE, &value, 0) == CM730::SUCCESS)
-			{
-				if(value == 1)
+			if (id >= JointData::ID_MIN && id <= JointData::ID_MAX)
 				{
-					if(cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
-						Step.position[id] = value;
+					if (arbotixpro->ReadByte(id, AXDXL::P_TORQUE_ENABLE, &value, 0) == ArbotixPro::SUCCESS)
+						{
+							if (value == 1)
+								{
+									if (arbotixpro->ReadWord(id, AXDXL::P_GOAL_POSITION_L, &value, 0) == ArbotixPro::SUCCESS)
+										Step.position[id] = value;
+									else
+										Step.position[id] = Action::INVALID_BIT_MASK;
+								}
+							else
+								Step.position[id] = Action::TORQUE_OFF_BIT_MASK;
+						}
 					else
 						Step.position[id] = Action::INVALID_BIT_MASK;
 				}
-				else
-					Step.position[id] = Action::TORQUE_OFF_BIT_MASK;
-			}
 			else
 				Step.position[id] = Action::INVALID_BIT_MASK;
 		}
-		else
-			Step.position[id] = Action::INVALID_BIT_MASK;
-	}
 }
 
 
 bool AskSave()
 {
-	if(bEdited == true)
-	{
-		PrintCmd("Are you sure? (y/n)");
-		if(_getch() != 'y')
+	if (bEdited == true)
 		{
-			ClearCmd();
-			return true;
+			PrintCmd("Are you sure? (y/n)");
+			if (_getch() != 'y')
+				{
+					ClearCmd();
+					return true;
+				}
 		}
-	}
 
 	return false;
 }
@@ -174,144 +174,144 @@ void GoToCursor(int col, int row)
 
 void MoveUpCursor()
 {
-	if(Col >= STP7_COL && Col <= CCWSLOPE_COL)
-	{
-		if( Row > ID_1_ROW )
-			GoToCursor(Col, Row-1);
-	}
+	if (Col >= STP7_COL && Col <= CCWSLOPE_COL)
+		{
+			if ( Row > ID_1_ROW )
+				GoToCursor(Col, Row - 1);
+		}
 	else
-	{
-		if( Row > PLAYCOUNT_ROW )
-			GoToCursor(Col, Row-1);
-	}
+		{
+			if ( Row > PLAYCOUNT_ROW )
+				GoToCursor(Col, Row - 1);
+		}
 }
 
 void MoveDownCursor()
 {
-	if(Col >= STP7_COL && Col <= STP6_COL)
-	{
-		if( Row < SPEED_ROW )
-			GoToCursor(Col, Row+1);
-	}
-	else if(Col <= CCWSLOPE_COL)
-	{
-		if( Row < ID_20_ROW )
-			GoToCursor(Col, Row+1);
-	}
+	if (Col >= STP7_COL && Col <= STP6_COL)
+		{
+			if ( Row < SPEED_ROW )
+				GoToCursor(Col, Row + 1);
+		}
+	else if (Col <= CCWSLOPE_COL)
+		{
+			if ( Row < ID_20_ROW )
+				GoToCursor(Col, Row + 1);
+		}
 	else
-	{
-		if( Row < SEQCOUNT_ROW )
-			GoToCursor(Col, Row+1);
-	}
+		{
+			if ( Row < SEQCOUNT_ROW )
+				GoToCursor(Col, Row + 1);
+		}
 }
 
 void MoveLeftCursor()
 {
-	switch(Col)
-	{
-	case STP0_COL:
-		GoToCursor(STP7_COL, Row);
-		break;
+	switch (Col)
+		{
+		case STP0_COL:
+			GoToCursor(STP7_COL, Row);
+			break;
 
-	case STP1_COL:
-		GoToCursor(STP0_COL, Row);
-		break;
+		case STP1_COL:
+			GoToCursor(STP0_COL, Row);
+			break;
 
-	case STP2_COL:
-		GoToCursor(STP1_COL, Row);
-		break;
+		case STP2_COL:
+			GoToCursor(STP1_COL, Row);
+			break;
 
-	case STP3_COL:
-		GoToCursor(STP2_COL, Row);
-		break;
+		case STP3_COL:
+			GoToCursor(STP2_COL, Row);
+			break;
 
-	case STP4_COL:
-		GoToCursor(STP3_COL, Row);
-		break;
+		case STP4_COL:
+			GoToCursor(STP3_COL, Row);
+			break;
 
-	case STP5_COL:
-		GoToCursor(STP4_COL, Row);
-		break;
+		case STP5_COL:
+			GoToCursor(STP4_COL, Row);
+			break;
 
-	case STP6_COL:
-		GoToCursor(STP5_COL, Row);
-		break;
+		case STP6_COL:
+			GoToCursor(STP5_COL, Row);
+			break;
 
-	case CWSLOPE_COL:
-		GoToCursor(STP6_COL, Row);
-		break;
+		case CWSLOPE_COL:
+			GoToCursor(STP6_COL, Row);
+			break;
 
-	case CCWSLOPE_COL:
-		GoToCursor(CWSLOPE_COL, Row);
-		break;
+		case CCWSLOPE_COL:
+			GoToCursor(CWSLOPE_COL, Row);
+			break;
 
-	case PAGEPARAM_COL:
-		GoToCursor(CCWSLOPE_COL, Row);
-		break;
-	}
+		case PAGEPARAM_COL:
+			GoToCursor(CCWSLOPE_COL, Row);
+			break;
+		}
 }
 
 void MoveRightCursor()
 {
-	switch(Col)
-	{
-	case STP7_COL:
-		GoToCursor(STP0_COL, Row);
-		break;
+	switch (Col)
+		{
+		case STP7_COL:
+			GoToCursor(STP0_COL, Row);
+			break;
 
-	case STP0_COL:
-		GoToCursor(STP1_COL, Row);
-		break;
+		case STP0_COL:
+			GoToCursor(STP1_COL, Row);
+			break;
 
-	case STP1_COL:
-		GoToCursor(STP2_COL, Row);
-		break;
+		case STP1_COL:
+			GoToCursor(STP2_COL, Row);
+			break;
 
-	case STP2_COL:
-		GoToCursor(STP3_COL, Row);
-		break;
+		case STP2_COL:
+			GoToCursor(STP3_COL, Row);
+			break;
 
-	case STP3_COL:
-		GoToCursor(STP4_COL, Row);
-		break;
+		case STP3_COL:
+			GoToCursor(STP4_COL, Row);
+			break;
 
-	case STP4_COL:
-		GoToCursor(STP5_COL, Row);
-		break;
+		case STP4_COL:
+			GoToCursor(STP5_COL, Row);
+			break;
 
-	case STP5_COL:
-		GoToCursor(STP6_COL, Row);
-		break;
+		case STP5_COL:
+			GoToCursor(STP6_COL, Row);
+			break;
 
-	case STP6_COL:
-		GoToCursor(CWSLOPE_COL, Row);
-		break;
+		case STP6_COL:
+			GoToCursor(CWSLOPE_COL, Row);
+			break;
 
-	case CWSLOPE_COL:
-		GoToCursor(CCWSLOPE_COL, Row);
-		break;
+		case CWSLOPE_COL:
+			GoToCursor(CCWSLOPE_COL, Row);
+			break;
 
-	case CCWSLOPE_COL:
-		if(Row >= PLAYCOUNT_ROW && Row <= EXIT_ROW)
-			GoToCursor(PAGEPARAM_COL, Row);
-		break;
-	}
+		case CCWSLOPE_COL:
+			if (Row >= PLAYCOUNT_ROW && Row <= EXIT_ROW)
+				GoToCursor(PAGEPARAM_COL, Row);
+			break;
+		}
 }
 
-void DrawIntro(CM730 *cm730)
+void DrawIntro(ArbotixPro *arbotixpro)
 {
-	int res,nrows, ncolumns;
-    setupterm(NULL, fileno(stdout), (int *)0);
-    nrows = tigetnum("lines");
-    ncolumns = tigetnum("cols");
+	int res, nrows, ncolumns;
+	setupterm(NULL, fileno(stdout), (int *)0);
+	nrows = tigetnum("lines");
+	ncolumns = tigetnum("cols");
 
-	res = system("clear");res = 0;
+	res = system("clear"); res = 0;
 	/*
 	printf("\n");
 	printf("[Action Editor for DARwIn %s]\n", PROGRAM_VERSION);
 	printf("\n");
 	printf(" *Terminal screen size must be %d(col)x%d(row).\n", SCREEN_COL, SCREEN_ROW);
-    printf(" *Current terminal has %d columns and %d rows.\n", ncolumns, nrows);
+	printf(" *Current terminal has %d columns and %d rows.\n", ncolumns, nrows);
 	printf("\n");
 	printf("\n");
 	printf("Press any key to start program...\n");
@@ -319,8 +319,8 @@ void DrawIntro(CM730 *cm730)
 	*/
 	Action::GetInstance()->LoadPage(indexPage, &Page);
 
-	SetColor(VTANSI_FG_WHITE,VTANSI_BG_DEFAULT,VTANSI_ATTRIB_BOLD);
-	ReadStep(cm730);	
+	SetColor(VTANSI_FG_WHITE, VTANSI_BG_DEFAULT, VTANSI_ATTRIB_BOLD);
+	ReadStep(arbotixpro);
 	Step.pause = 0;
 	Step.time = 0;
 
@@ -330,9 +330,9 @@ void DrawIntro(CM730 *cm730)
 void DrawEnding()
 {
 	int res;
-	
-	SetColor(VTANSI_FG_WHITE,VTANSI_BG_DEFAULT,VTANSI_ATTRIB_RESET);
-	res = system("clear");res = 0;
+
+	SetColor(VTANSI_FG_WHITE, VTANSI_BG_DEFAULT, VTANSI_ATTRIB_RESET);
+	res = system("clear"); res = 0;
 	printf("\n");
 	printf("Program Exit.");
 	printf("\n");
@@ -343,7 +343,7 @@ void DrawPage()
 	int old_col = Col;
 	int old_row = Row;
 
-	int res = system("clear");res = 0;
+	int res = system("clear"); res = 0;
 	// 80    01234567890123456789012345678901234567890123456789012345678901234567890123456789     //24
 	printf( "ID: 1(R_SHO_PITCH)[    ]                                                       \n" );//0
 	printf( "ID: 2(L_SHO_PITCH)[    ]                                       Page Number:    \n" );//1
@@ -367,23 +367,23 @@ void DrawPage()
 	printf( "ID:20(HEAD_TILT)  [    ]                                                       \n" );//9
 	printf( "   PauseTime      [    ]                                                       \n" );//7
 
-	if( Page.header.schedule == Action::SPEED_BASE_SCHEDULE )
+	if ( Page.header.schedule == Action::SPEED_BASE_SCHEDULE )
 		printf( "   Speed          [    ]                                                       \n" );//1
-	else if( Page.header.schedule == Action::TIME_BASE_SCHEDULE )
+	else if ( Page.header.schedule == Action::TIME_BASE_SCHEDULE )
 		printf( "   Time(x 8msec)  [    ]                                                       \n" );//1
-	
+
 	printf( "                   STP7  STP0 STP1 STP2 STP3 STP4 STP5 STP6                    \n" );//2
 	printf( "]                                                                              " );  // 3
 
-	for(int i=0; i<=Action::MAXNUM_STEP; i++ )
+	for (int i = 0; i <= Action::MAXNUM_STEP; i++ )
 		DrawStep(i);
 
 	// Draw Compliance slope
-	for( int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++ )
-	{
-		GoToCursor(CWSLOPE_COL, id -1);
-		printf( "%.1d%.1d", Page.header.slope[id]>>4, Page.header.slope[id]&0x0f );
-	}
+	for ( int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++ )
+		{
+			GoToCursor(CWSLOPE_COL, id - 1);
+			printf( "%.1d%.1d", Page.header.slope[id] >> 4, Page.header.slope[id] & 0x0f );
+		}
 
 	// Draw Page parameter
 	GoToCursor( PAGEPARAM_COL, PLAYCOUNT_ROW );
@@ -391,7 +391,7 @@ void DrawPage()
 
 	GoToCursor( PAGEPARAM_COL, STEPNUM_ROW );
 	printf( "%.3d", Page.header.stepnum );
-		
+
 	GoToCursor( PAGEPARAM_COL, PLAYSPEED_ROW );
 	printf( "%.3d", Page.header.speed );
 
@@ -414,7 +414,7 @@ void DrawPage()
 	printf( "%.4d", indexPage );
 
 	GoToCursor(ADDR_COL, ADDR_ROW);
-	printf( "0x%.5X", (int)(indexPage*sizeof(Action::PAGE)) );
+	printf( "0x%.5X", (int)(indexPage * sizeof(Action::PAGE)) );
 
 	DrawStepLine(false);
 
@@ -428,69 +428,69 @@ void DrawStep(int index)
 	Action::STEP *step;
 	int col;
 
-	switch(index)
-	{
-	case 0:
-		col = STP0_COL;
-		step = &Page.step[0];
-		break;
+	switch (index)
+		{
+		case 0:
+			col = STP0_COL;
+			step = &Page.step[0];
+			break;
 
-	case 1:
-		col = STP1_COL;
-		step = &Page.step[1];
-		break;
+		case 1:
+			col = STP1_COL;
+			step = &Page.step[1];
+			break;
 
-	case 2:
-		col = STP2_COL;
-		step = &Page.step[2];
-		break;
+		case 2:
+			col = STP2_COL;
+			step = &Page.step[2];
+			break;
 
-	case 3:
-		col = STP3_COL;
-		step = &Page.step[3];
-		break;
+		case 3:
+			col = STP3_COL;
+			step = &Page.step[3];
+			break;
 
-	case 4:
-		col = STP4_COL;
-		step = &Page.step[4];
-		break;
+		case 4:
+			col = STP4_COL;
+			step = &Page.step[4];
+			break;
 
-	case 5:
-		col = STP5_COL;
-		step = &Page.step[5];
-		break;
+		case 5:
+			col = STP5_COL;
+			step = &Page.step[5];
+			break;
 
-	case 6:
-		col = STP6_COL;
-		step = &Page.step[6];
-		break;
+		case 6:
+			col = STP6_COL;
+			step = &Page.step[6];
+			break;
 
-	case 7:
-		col = STP7_COL;
-		step = &Step;
-		break;
+		case 7:
+			col = STP7_COL;
+			step = &Step;
+			break;
 
-	default:
-		return;
-	}
+		default:
+			return;
+		}
 
-	for( int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++ )
-	{
-		GoToCursor(col, id -1);
-		if(step->position[id] & Action::INVALID_BIT_MASK)
-			printf("----");
-		else if(step->position[id] & Action::TORQUE_OFF_BIT_MASK)
-			printf("????");
-		else
-			printf("%.4d", step->position[id]);
-	}
+	for ( int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++ )
+		{
+			GoToCursor(col, id - 1);
+			if (step->position[id] & Action::INVALID_BIT_MASK)
+				printf("----");
+			else if (step->position[id] & Action::TORQUE_OFF_BIT_MASK)
+				printf("????");
+			else
+				printf("%.4d", step->position[id]);
+		}
 
 	GoToCursor(col, PAUSE_ROW);
 	printf("%4.3d", step->pause);
 
 	GoToCursor(col, SPEED_ROW);
 	printf("%4.3d", step->time);
-	
+
 	GoToCursor( old_col, old_row );
 }
 
@@ -500,53 +500,53 @@ void DrawStepLine(bool erase)
 	int old_row = Row;
 	int col;
 
-	switch(Page.header.stepnum)
-	{
-	case 0:
-		col = STP0_COL;
-		break;
+	switch (Page.header.stepnum)
+		{
+		case 0:
+			col = STP0_COL;
+			break;
 
-	case 1:
-		col = STP1_COL;
-		break;
+		case 1:
+			col = STP1_COL;
+			break;
 
-	case 2:
-		col = STP2_COL;
-		break;
+		case 2:
+			col = STP2_COL;
+			break;
 
-	case 3:
-		col = STP3_COL;
-		break;
+		case 3:
+			col = STP3_COL;
+			break;
 
-	case 4:
-		col = STP4_COL;
-		break;
+		case 4:
+			col = STP4_COL;
+			break;
 
-	case 5:
-		col = STP5_COL;
-		break;
+		case 5:
+			col = STP5_COL;
+			break;
 
-	case 6:
-		col = STP6_COL;
-		break;
+		case 6:
+			col = STP6_COL;
+			break;
 
-	case 7:
-		col = CWSLOPE_COL;
-		break;
+		case 7:
+			col = CWSLOPE_COL;
+			break;
 
-	default:
-		return;
-	}
+		default:
+			return;
+		}
 	col--;
 
-	for( int id=JointData::ID_MIN; id<=(JointData::ID_MAX + 2); id++ )
-	{
-		GoToCursor(col, id - 1);
-		if(erase == true)
-			printf( " " );
-		else
-			printf( "|" );
-	}
+	for ( int id = JointData::ID_MIN; id <= (JointData::ID_MAX + 2); id++ )
+		{
+			GoToCursor(col, id - 1);
+			if (erase == true)
+				printf( " " );
+			else
+				printf( "|" );
+		}
 
 	GoToCursor(old_col, old_row);
 }
@@ -560,9 +560,9 @@ void DrawName()
 	printf( "                " );
 	GoToCursor(NAME_COL, NAME_ROW);
 
-	for(int i=0; i<Action::MAXNUM_NAME; i++)
+	for (int i = 0; i < Action::MAXNUM_NAME; i++)
 		printf("%c", (char)Page.header.name[i]);
-	
+
 	GoToCursor( old_col, old_row );
 }
 
@@ -577,350 +577,350 @@ void PrintCmd(const char *message)
 	GoToCursor(0, CMD_ROW);
 
 	printf( "] %s", message);
-	for(int i=0; i<(SCREEN_COL - (len + 2)); i++)
+	for (int i = 0; i < (SCREEN_COL - (len + 2)); i++)
 		printf(" ");
 
 	GoToCursor(len + 2, CMD_ROW);
 }
 
-void UpDownValue(CM730 *cm730, int offset)
+void UpDownValue(ArbotixPro *arbotixpro, int offset)
 {
-	SetValue(cm730, GetValue() + offset);
+	SetValue(arbotixpro, GetValue() + offset);
 }
 
 int GetValue()
 {
 	int col;
 	int row;
-	if(bBeginCommandMode == true)
-	{
-		col = Old_Col;
-		row = Old_Row;
-	}
-	else
-	{
-		col = Col;
-		row = Row;
-	}
-
-	if( col == STP7_COL )
-	{
-		if( row == PAUSE_ROW )
-			return Step.pause;
-		else if( row == SPEED_ROW )
-			return Step.time;
-		else
-			return Step.position[row + 1];
-	}
-	else if( col <= STP6_COL )
-	{
-		int i=0;
-		switch(col)
+	if (bBeginCommandMode == true)
 		{
-		case STP0_COL:
-			i = 0;
-			break;
-
-		case STP1_COL:
-			i = 1;
-			break;
-
-		case STP2_COL:
-			i = 2;
-			break;
-
-		case STP3_COL:
-			i = 3;
-			break;
-
-		case STP4_COL:
-			i = 4;
-			break;
-
-		case STP5_COL:
-			i = 5;
-			break;
-
-		case STP6_COL:
-			i = 6;
-			break;
+			col = Old_Col;
+			row = Old_Row;
+		}
+	else
+		{
+			col = Col;
+			row = Row;
 		}
 
-		if( row == PAUSE_ROW )
-			return Page.step[i].pause;
-		else if( row == SPEED_ROW )
-			return Page.step[i].time;
-		else
-			return Page.step[i].position[row + 1];
-	}
-	else if(col == CWSLOPE_COL)
+	if ( col == STP7_COL )
+		{
+			if ( row == PAUSE_ROW )
+				return Step.pause;
+			else if ( row == SPEED_ROW )
+				return Step.time;
+			else
+				return Step.position[row + 1];
+		}
+	else if ( col <= STP6_COL )
+		{
+			int i = 0;
+			switch (col)
+				{
+				case STP0_COL:
+					i = 0;
+					break;
+
+				case STP1_COL:
+					i = 1;
+					break;
+
+				case STP2_COL:
+					i = 2;
+					break;
+
+				case STP3_COL:
+					i = 3;
+					break;
+
+				case STP4_COL:
+					i = 4;
+					break;
+
+				case STP5_COL:
+					i = 5;
+					break;
+
+				case STP6_COL:
+					i = 6;
+					break;
+				}
+
+			if ( row == PAUSE_ROW )
+				return Page.step[i].pause;
+			else if ( row == SPEED_ROW )
+				return Page.step[i].time;
+			else
+				return Page.step[i].position[row + 1];
+		}
+	else if (col == CWSLOPE_COL)
 		return (Page.header.slope[row + 1] >> 4);
-	else if(col == CCWSLOPE_COL)
+	else if (col == CCWSLOPE_COL)
 		return (Page.header.slope[row + 1] & 0x0f);
-	else if(col == PAGEPARAM_COL)
-	{
-		if(row == PLAYCOUNT_ROW)
-			return Page.header.repeat;
-		else if(row == STEPNUM_ROW)
-			return Page.header.stepnum;
-		else if(row == PLAYSPEED_ROW)
-			return Page.header.speed;
-		else if(row == ACCEL_ROW)
-			return Page.header.accel;
-		else if(row == NEXT_ROW)
-			return Page.header.next;
-		else if(row == EXIT_ROW)
-			return Page.header.exit;
-		else if(row == SEQCOUNT_ROW)
-			return Page.header.seq_repeats;
-	}
+	else if (col == PAGEPARAM_COL)
+		{
+			if (row == PLAYCOUNT_ROW)
+				return Page.header.repeat;
+			else if (row == STEPNUM_ROW)
+				return Page.header.stepnum;
+			else if (row == PLAYSPEED_ROW)
+				return Page.header.speed;
+			else if (row == ACCEL_ROW)
+				return Page.header.accel;
+			else if (row == NEXT_ROW)
+				return Page.header.next;
+			else if (row == EXIT_ROW)
+				return Page.header.exit;
+			else if (row == SEQCOUNT_ROW)
+				return Page.header.seq_repeats;
+		}
 
 	return -1;
 }
 
-void SetValue(CM730 *cm730, int value)
+void SetValue(ArbotixPro *arbotixpro, int value)
 {
 	int col;
 	int row;
-	if(bBeginCommandMode == true)
-	{
-		col = Old_Col;
-		row = Old_Row;
-	}
+	if (bBeginCommandMode == true)
+		{
+			col = Old_Col;
+			row = Old_Row;
+		}
 	else
-	{
-		col = Col;
-		row = Row;
-	}
+		{
+			col = Col;
+			row = Row;
+		}
 
 	GoToCursor(col, row);
 
-	if( col == STP7_COL )
-	{
-		if( row == PAUSE_ROW )
+	if ( col == STP7_COL )
 		{
-			if(value >= 0 && value <= 255)
-			{
-				Step.pause = value;
-				printf( "%4.3d", value );
-				bEdited = true;
-			}
-		}
-		else if( row == SPEED_ROW )
-		{
-			if(value >= 0 && value <= 255)
-			{
-				Step.time = value;
-				printf( "%4.3d", value );
-				bEdited = true;
-			}
-		}
-		else
-		{
-			if(value >= 0 && value <= MX28::MAX_VALUE)
-			{
-				if(!(Step.position[row + 1] & Action::INVALID_BIT_MASK) && !(Step.position[row + 1] & Action::TORQUE_OFF_BIT_MASK))
+			if ( row == PAUSE_ROW )
 				{
-					int error;
-					if(cm730->WriteWord(row + 1, MX28::P_GOAL_POSITION_L, value, &error) == CM730::SUCCESS)
-					{
-						if(!(error & CM730::ANGLE_LIMIT))
+					if (value >= 0 && value <= 255)
 						{
-							Step.position[row + 1] = value;
-							printf( "%.4d", value );
+							Step.pause = value;
+							printf( "%4.3d", value );
 							bEdited = true;
 						}
-					}
 				}
-			}
-		}
-	}
-	else if( col <= STP6_COL )
-	{
-		int i=0;
-		switch(col)
-		{
-		case STP0_COL:
-			i = 0;
-			break;
-
-		case STP1_COL:
-			i = 1;
-			break;
-
-		case STP2_COL:
-			i = 2;
-			break;
-
-		case STP3_COL:
-			i = 3;
-			break;
-
-		case STP4_COL:
-			i = 4;
-			break;
-
-		case STP5_COL:
-			i = 5;
-			break;
-
-		case STP6_COL:
-			i = 6;
-			break;
-		}
-
-		if( row == PAUSE_ROW )
-		{
-			if(value >= 0 && value <= 255)
-			{
-				Page.step[i].pause = value;
-				printf( "%4.3d", value );
-				bEdited = true;
-			}
-		}
-		else if( row == SPEED_ROW )
-		{
-			if(value >= 0 && value <= 255)
-			{
-				Page.step[i].time = value;
-				printf( "%4.3d", value );
-				bEdited = true;
-			}
-		}
-		else
-		{
-			//	printf("value = %d\n\n",Page.step[i].position[row + 1]);
-			if(value >= 0 && value <= MX28::MAX_VALUE)
-			{
-				if(!(Page.step[i].position[row + 1] & Action::INVALID_BIT_MASK))
+			else if ( row == SPEED_ROW )
 				{
-					Page.step[i].position[row + 1] = value;
-					printf( "%.4d", value );
+					if (value >= 0 && value <= 255)
+						{
+							Step.time = value;
+							printf( "%4.3d", value );
+							bEdited = true;
+						}
+				}
+			else
+				{
+					if (value >= 0 && value <= AXDXL::MAX_VALUE)
+						{
+							if (!(Step.position[row + 1] & Action::INVALID_BIT_MASK) && !(Step.position[row + 1] & Action::TORQUE_OFF_BIT_MASK))
+								{
+									int error;
+									if (arbotixpro->WriteWord(row + 1, AXDXL::P_GOAL_POSITION_L, value, &error) == ArbotixPro::SUCCESS)
+										{
+											if (!(error & ArbotixPro::ANGLE_LIMIT))
+												{
+													Step.position[row + 1] = value;
+													printf( "%.4d", value );
+													bEdited = true;
+												}
+										}
+								}
+						}
+				}
+		}
+	else if ( col <= STP6_COL )
+		{
+			int i = 0;
+			switch (col)
+				{
+				case STP0_COL:
+					i = 0;
+					break;
+
+				case STP1_COL:
+					i = 1;
+					break;
+
+				case STP2_COL:
+					i = 2;
+					break;
+
+				case STP3_COL:
+					i = 3;
+					break;
+
+				case STP4_COL:
+					i = 4;
+					break;
+
+				case STP5_COL:
+					i = 5;
+					break;
+
+				case STP6_COL:
+					i = 6;
+					break;
+				}
+
+			if ( row == PAUSE_ROW )
+				{
+					if (value >= 0 && value <= 255)
+						{
+							Page.step[i].pause = value;
+							printf( "%4.3d", value );
+							bEdited = true;
+						}
+				}
+			else if ( row == SPEED_ROW )
+				{
+					if (value >= 0 && value <= 255)
+						{
+							Page.step[i].time = value;
+							printf( "%4.3d", value );
+							bEdited = true;
+						}
+				}
+			else
+				{
+					//	printf("value = %d\n\n",Page.step[i].position[row + 1]);
+					if (value >= 0 && value <= AXDXL::MAX_VALUE)
+						{
+							if (!(Page.step[i].position[row + 1] & Action::INVALID_BIT_MASK))
+								{
+									Page.step[i].position[row + 1] = value;
+									printf( "%.4d", value );
+									bEdited = true;
+								}
+						}
+				}
+		}
+	else if (col == CWSLOPE_COL)
+		{
+			if (value >= 1 && value <= 7)
+				{
+					Page.header.slope[row + 1] = (value << 4) + (Page.header.slope[row + 1] & 0x0f);
+					printf( "%.1d", value );
 					bEdited = true;
 				}
-			}
-		}		
-	}
-	else if(col == CWSLOPE_COL)
-	{
-		if(value >= 1 && value <= 7)
-		{
-			Page.header.slope[row + 1] = (value << 4) + (Page.header.slope[row + 1] & 0x0f);
-			printf( "%.1d", value );
-			bEdited = true;
 		}
-	}
-	else if(col == CCWSLOPE_COL)
-	{
-		if(value >= 1 && value <= 7)
+	else if (col == CCWSLOPE_COL)
 		{
-			Page.header.slope[row + 1] = (Page.header.slope[row + 1] & 0xf0) + (value & 0x0f);
-			printf( "%.1d", value );
-			bEdited = true;
-		}
-	}
-	else if(col == PAGEPARAM_COL)
-	{
-		if(row == PLAYCOUNT_ROW)
-		{
-			if(value >= 0 && value <= 255)
-			{
-				Page.header.repeat = value;
-				printf( "%.3d", value );
-				bEdited = true;
-			}
-		}
-		else if(row == STEPNUM_ROW)
-		{
-			if(value >= 0 && value <= Action::MAXNUM_STEP)
-			{
-				if(Page.header.stepnum != value)
+			if (value >= 1 && value <= 7)
 				{
-					DrawStepLine(true);
-					Page.header.stepnum = value;
-					DrawStepLine(false);
-					printf( "%.3d", value );
+					Page.header.slope[row + 1] = (Page.header.slope[row + 1] & 0xf0) + (value & 0x0f);
+					printf( "%.1d", value );
 					bEdited = true;
 				}
-			}
 		}
-		else if(row == PLAYSPEED_ROW)
+	else if (col == PAGEPARAM_COL)
 		{
-			if(value >= 0 && value <= 255)
-			{
-				Page.header.speed = value;
-				printf( "%.3d", value );
-				bEdited = true;
-			}
+			if (row == PLAYCOUNT_ROW)
+				{
+					if (value >= 0 && value <= 255)
+						{
+							Page.header.repeat = value;
+							printf( "%.3d", value );
+							bEdited = true;
+						}
+				}
+			else if (row == STEPNUM_ROW)
+				{
+					if (value >= 0 && value <= Action::MAXNUM_STEP)
+						{
+							if (Page.header.stepnum != value)
+								{
+									DrawStepLine(true);
+									Page.header.stepnum = value;
+									DrawStepLine(false);
+									printf( "%.3d", value );
+									bEdited = true;
+								}
+						}
+				}
+			else if (row == PLAYSPEED_ROW)
+				{
+					if (value >= 0 && value <= 255)
+						{
+							Page.header.speed = value;
+							printf( "%.3d", value );
+							bEdited = true;
+						}
+				}
+			else if (row == ACCEL_ROW)
+				{
+					if (value >= 0 && value <= 255)
+						{
+							Page.header.accel = value;
+							printf( "%.3d", value );
+							bEdited = true;
+						}
+				}
+			else if (row == NEXT_ROW)
+				{
+					if (value >= 0 && value <= 255)
+						{
+							Page.header.next = value;
+							printf( "%.3d", value );
+							bEdited = true;
+						}
+				}
+			else if (row == EXIT_ROW)
+				{
+					if (value >= 0 && value <= 255)
+						{
+							Page.header.exit = value;
+							printf( "%.3d", value );
+							bEdited = true;
+						}
+				}
+			else if (row == SEQCOUNT_ROW)
+				{
+					if (value >= 0 && value <= 255)
+						{
+							Page.header.seq_repeats = value;
+							printf( "%.3d", value );
+							bEdited = true;
+						}
+				}
 		}
-		else if(row == ACCEL_ROW)
-		{
-			if(value >= 0 && value <= 255)
-			{
-				Page.header.accel = value;
-				printf( "%.3d", value );
-				bEdited = true;
-			}
-		}
-		else if(row == NEXT_ROW)
-		{
-			if(value >= 0 && value <= 255)
-			{
-				Page.header.next = value;
-				printf( "%.3d", value );
-				bEdited = true;
-			}
-		}
-		else if(row == EXIT_ROW)
-		{
-			if(value >= 0 && value <= 255)
-			{
-				Page.header.exit = value;
-				printf( "%.3d", value );
-				bEdited = true;
-			}
-		}
-		else if(row == SEQCOUNT_ROW)
-		{
-			if(value >= 0 && value <= 255)
-			{
-				Page.header.seq_repeats = value;
-				printf( "%.3d", value );
-				bEdited = true;
-			}
-		}
-	}
 
-	GoToCursor(col, row);	
+	GoToCursor(col, row);
 }
 
-void ToggleTorque(CM730 *cm730)
+void ToggleTorque(ArbotixPro *arbotixpro)
 {
-	if(Col != STP7_COL || Row > ID_20_ROW)
+	if (Col != STP7_COL || Row > ID_20_ROW)
 		return;
 
 	int id = Row + 1;
 
-	if(Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
-	{
-		if(cm730->WriteByte(id, MX28::P_TORQUE_ENABLE, 1, 0) != CM730::SUCCESS)
-			return;
+	if (Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
+		{
+			if (arbotixpro->WriteByte(id, AXDXL::P_TORQUE_ENABLE, 1, 0) != ArbotixPro::SUCCESS)
+				return;
 
-		int value;
-		if(cm730->ReadWord(id, MX28::P_PRESENT_POSITION_L, &value, 0) != CM730::SUCCESS)
-			return;
+			int value;
+			if (arbotixpro->ReadWord(id, AXDXL::P_PRESENT_POSITION_L, &value, 0) != ArbotixPro::SUCCESS)
+				return;
 
-		Step.position[id] = value;
-		printf("%.4d", value);
-	}
+			Step.position[id] = value;
+			printf("%.4d", value);
+		}
 	else
-	{
-		if(cm730->WriteByte(id, MX28::P_TORQUE_ENABLE, 0, 0) != CM730::SUCCESS)
-			return;
+		{
+			if (arbotixpro->WriteByte(id, AXDXL::P_TORQUE_ENABLE, 0, 0) != ArbotixPro::SUCCESS)
+				return;
 
-		Step.position[id] = Action::TORQUE_OFF_BIT_MASK;
-		printf("????");
-	}
+			Step.position[id] = Action::TORQUE_OFF_BIT_MASK;
+			printf("????");
+		}
 
 	GoToCursor(Col, Row);
 }
@@ -942,7 +942,7 @@ void EndCommandMode()
 
 void HelpCmd()
 {
-	int res = system("clear");res = 0;
+	int res = system("clear"); res = 0;
 	printf(" exit               Exits the program.\n");
 	printf(" re                 Refreshes the screen.\n");
 	printf(" b                  Move to previous page.\n");
@@ -954,7 +954,7 @@ void HelpCmd()
 	printf(" set [value]        Sets value on cursor [value].\n");
 	printf(" save               Saves changes.\n");
 	printf(" play               Motion playback of current page.\n");
-    printf(" g [index]          Motion playback of STP[index].\n");
+	printf(" g [index]          Motion playback of STP[index].\n");
 	printf(" name               Name for current page or changes the name of current page.\n");
 	printf(" time               Change time base playing.\n");
 	printf(" speed              Change speed base playing.\n");
@@ -968,8 +968,8 @@ void HelpCmd()
 	       "                    Pushes data from STP[index] to STP[index-1].\n");
 	printf(" on/off             Turn On/Off torque from ALL actuators.\n");
 	printf(" on/off [index1] [index2] ...  \n" \
-				 "        [index1]-[index2] ...  from one index to another\n" \
-				 "        ra la rl ll h ... right arm, left arm, right leg, left leg, head\n"); 
+	       "        [index1]-[index2] ...  from one index to another\n" \
+	       "        ra la rl ll h ... right arm, left arm, right leg, left leg, head\n");
 	printf("\n");
 	printf(" Press any key to continue...");
 	_getch();
@@ -994,18 +994,18 @@ void PrevCmd()
 
 void PageCmd(int index)
 {
-	if(AskSave() == true)
+	if (AskSave() == true)
 		return;
 
-	if(index >= 0 && index < Action::MAXNUM_PAGE)
-	{
-		indexPage = index;
-		Action::GetInstance()->LoadPage(indexPage, &Page);
+	if (index >= 0 && index < Action::MAXNUM_PAGE)
+		{
+			indexPage = index;
+			Action::GetInstance()->LoadPage(indexPage, &Page);
 
-		Col = STP7_COL;
-		Row = ID_1_ROW;
-		DrawPage();
-	}
+			Col = STP7_COL;
+			Row = ID_1_ROW;
+			DrawPage();
+		}
 	else
 		PrintCmd("Invalid page index");
 
@@ -1026,114 +1026,114 @@ void SpeedCmd()
 	DrawPage();
 }
 
-void MonitorServos(CM730 *cm730)
+void MonitorServos(ArbotixPro *arbotixpro)
 {
-	int value,j;
-	int colors[]={VTANSI_FG_BLUE,VTANSI_FG_CYAN,VTANSI_FG_YELLOW,VTANSI_FG_RED};
-	int t1[]={35,45,55,65};  
-	for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
+	int value, j;
+	int colors[] = {VTANSI_FG_BLUE, VTANSI_FG_CYAN, VTANSI_FG_YELLOW, VTANSI_FG_RED};
+	int t1[] = {35, 45, 55, 65};
+	for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
 		{
-		value = MotionStatus::m_CurrentJoints.GetTemp(id);
-		for(j=0;j<3;j++)
-			{
-			if(value<t1[j])
+			value = MotionStatus::m_CurrentJoints.GetTemp(id);
+			for (j = 0; j < 3; j++)
 				{
-				break;					
+					if (value < t1[j])
+						{
+							break;
+						}
 				}
-			}
-		GoToCursor(15, id -1);
-		SetColor(colors[j],VTANSI_BG_DEFAULT,VTANSI_ATTRIB_BOLD);
-		printf("%2d",value);
-		SetColor(VTANSI_FG_WHITE,VTANSI_BG_DEFAULT,VTANSI_ATTRIB_BOLD);
+			GoToCursor(15, id - 1);
+			SetColor(colors[j], VTANSI_BG_DEFAULT, VTANSI_ATTRIB_BOLD);
+			printf("%2d", value);
+			SetColor(VTANSI_FG_WHITE, VTANSI_BG_DEFAULT, VTANSI_ATTRIB_BOLD);
 		}
 	GoToCursor(CMD_COL, CMD_ROW);
 }
 
-void PlayCmd(CM730 *cm730,int pageNum)
+void PlayCmd(ArbotixPro *arbotixpro, int pageNum)
 {
-	int value,oldIndex=0;	
+	int value, oldIndex = 0;
 	Action::PAGE page;
 
 	oldIndex = indexPage;
-	if(pageNum != indexPage)
+	if (pageNum != indexPage)
 		{
-		memcpy(&page,&Page,sizeof(Action::PAGE));
-		indexPage = pageNum;
-		if(Action::GetInstance()->LoadPage(indexPage, &Page) != true)
+			memcpy(&page, &Page, sizeof(Action::PAGE));
+			indexPage = pageNum;
+			if (Action::GetInstance()->LoadPage(indexPage, &Page) != true)
 				{
-				memcpy(&Page,&page,sizeof(Action::PAGE));
-				indexPage = oldIndex;
-				return;
+					memcpy(&Page, &page, sizeof(Action::PAGE));
+					indexPage = oldIndex;
+					return;
 				}
 		}
-	for(int i=0; i<Page.header.stepnum; i++)
-	{
-		for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
+	for (int i = 0; i < Page.header.stepnum; i++)
 		{
-			if(Page.step[i].position[id] & Action::INVALID_BIT_MASK)
-			{
-				PrintCmd("Exist invalid joint value");
-				//return;
-			}
+			for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
+				{
+					if (Page.step[i].position[id] & Action::INVALID_BIT_MASK)
+						{
+							PrintCmd("Exist invalid joint value");
+							//return;
+						}
+				}
 		}
-	}
 
-	for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
-	{
-		if(cm730->ReadByte(id, MX28::P_TORQUE_ENABLE, &value, 0) == CM730::SUCCESS)
+	for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
 		{
-			if(value == 0)
-			{
-				if(cm730->ReadWord(id, MX28::P_PRESENT_POSITION_L, &value, 0) == CM730::SUCCESS)
-					MotionStatus::m_CurrentJoints.SetValue(id, value);
-			}
-			else
-			{
-				if(cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
-					MotionStatus::m_CurrentJoints.SetValue(id, value);
-			}
+			if (arbotixpro->ReadByte(id, AXDXL::P_TORQUE_ENABLE, &value, 0) == ArbotixPro::SUCCESS)
+				{
+					if (value == 0)
+						{
+							if (arbotixpro->ReadWord(id, AXDXL::P_PRESENT_POSITION_L, &value, 0) == ArbotixPro::SUCCESS)
+								MotionStatus::m_CurrentJoints.SetValue(id, value);
+						}
+					else
+						{
+							if (arbotixpro->ReadWord(id, AXDXL::P_GOAL_POSITION_L, &value, 0) == ArbotixPro::SUCCESS)
+								MotionStatus::m_CurrentJoints.SetValue(id, value);
+						}
+				}
 		}
-	}
 	PrintCmd("Playing... ('s' to stop, 'b' to brake)");
 
 	//MotionManager::GetInstance()->StartThread();
 	linuxMotionTimer.Start();
 	Action::GetInstance()->m_Joint.SetEnableBody(true, true);
 	MotionManager::GetInstance()->SetEnable(true);
-	if(Action::GetInstance()->Start(pageNum, &Page) == false)
-	{
-		PrintCmd("Failed to play this page!");
-		MotionManager::GetInstance()->SetEnable(false);
-		linuxMotionTimer.Stop();
-		return;
-	}
-
-	set_stdin();	
-	while(1)
-	{
-		if(Action::GetInstance()->IsRunning() == false)
-			break;
-
-		if(kbhit(true))
+	if (Action::GetInstance()->Start(pageNum, &Page) == false)
 		{
-			int key = _getch();
-			GoToCursor(CMD_COL, CMD_ROW);
-			if(key == 's')
-			{
-				Action::GetInstance()->Stop();
-				fprintf(stderr, "\r] Stopping...                                  ");
-			}
-			else if(key == 'b')
-			{
-				Action::GetInstance()->Brake();
-				fprintf(stderr, "\r] Braking...                                   ");
-			}
-			else
-				fprintf(stderr, "\r] Playing... ('s' to stop, 'b' to brake)");
+			PrintCmd("Failed to play this page!");
+			MotionManager::GetInstance()->SetEnable(false);
+			linuxMotionTimer.Stop();
+			return;
 		}
 
-		usleep(8000);	
-	}
+	set_stdin();
+	while (1)
+		{
+			if (Action::GetInstance()->IsRunning() == false)
+				break;
+
+			if (kbhit(true))
+				{
+					int key = _getch();
+					GoToCursor(CMD_COL, CMD_ROW);
+					if (key == 's')
+						{
+							Action::GetInstance()->Stop();
+							fprintf(stderr, "\r] Stopping...                                  ");
+						}
+					else if (key == 'b')
+						{
+							Action::GetInstance()->Brake();
+							fprintf(stderr, "\r] Braking...                                   ");
+						}
+					else
+						fprintf(stderr, "\r] Playing... ('s' to stop, 'b' to brake)");
+				}
+
+			usleep(8000);
+		}
 	reset_stdin();
 
 	MotionManager::GetInstance()->SetEnable(false);
@@ -1142,22 +1142,23 @@ void PlayCmd(CM730 *cm730,int pageNum)
 
 	GoToCursor(CMD_COL, CMD_ROW);
 	PrintCmd("Done.");
-	
+
 	usleep(10000);
-	if(oldIndex != indexPage)
+	if (oldIndex != indexPage)
 		{
-		memcpy(&Page,&page,sizeof(Action::PAGE));
-		indexPage = oldIndex;
+			memcpy(&Page, &page, sizeof(Action::PAGE));
+			indexPage = oldIndex;
 		}
 
-	ReadStep(cm730);
+	ReadStep(arbotixpro);
 	DrawStep(7);
 }
 
-struct DIR_RECORD {
+struct DIR_RECORD
+{
 	char	name[20];
-	byte	pageNum;	
-	};
+	byte	pageNum;
+};
 
 void ListCmd()
 {
@@ -1165,10 +1166,10 @@ void ListCmd()
 	int old_row = Row;
 	int index = 0;
 	Action::PAGE page;
-	int x=0,y=0,width=19;
+	int x = 0, y = 0, width = 19;
 	struct DIR_RECORD table[Action::MAXNUM_PAGE];
-	int cf,cf1,cf2,cb,ca;
-	int df,db,da,da1;
+	int cf, cf1, cf2, cb, ca;
+	int df, db, da, da1;
 	bool bActive;
 
 	cf = VTANSI_FG_WHITE;//text that cannot be edited
@@ -1180,335 +1181,335 @@ void ListCmd()
 	db = VTANSI_BG_BLACK;
 	da = VTANSI_ATTRIB_DIM;//dim for fixed vaules
 	da1 = VTANSI_ATTRIB_REVERSE;
-	SetColor(VTANSI_FG_WHITE,VTANSI_BG_DEFAULT,VTANSI_ATTRIB_RESET);
-	while(1)
+	SetColor(VTANSI_FG_WHITE, VTANSI_BG_DEFAULT, VTANSI_ATTRIB_RESET);
+	while (1)
 		{
-		int res = system("clear");res = 0;
-		GoToCursor(0,0);
-		for(int i=0; i<22; i++)
-			{
-			for(int j=0; j<4; j++)
+			int res = system("clear"); res = 0;
+			GoToCursor(0, 0);
+			for (int i = 0; i < 22; i++)
 				{
-				int k = (index * 88) + (j*22 + i);				
-				if(k<Action::MAXNUM_PAGE)
-					{
-					if(Action::GetInstance()->LoadPage(k, &page) == true)
+					for (int j = 0; j < 4; j++)
 						{
-						printf(" |%.3d.", k);
-						table[k].pageNum=k;
-						for(int n=0; n<Action::MAXNUM_NAME; n++)
-							{
-							table[k].name[n] = page.header.name[n];
-							if((char)page.header.name[n] >= ' ' && (char)page.header.name[n] <= '~')
-								printf("%c", (char)page.header.name[n]);
-							else
-								printf(" ");
-							}
+							int k = (index * 88) + (j * 22 + i);
+							if (k < Action::MAXNUM_PAGE)
+								{
+									if (Action::GetInstance()->LoadPage(k, &page) == true)
+										{
+											printf(" |%.3d.", k);
+											table[k].pageNum = k;
+											for (int n = 0; n < Action::MAXNUM_NAME; n++)
+												{
+													table[k].name[n] = page.header.name[n];
+													if ((char)page.header.name[n] >= ' ' && (char)page.header.name[n] <= '~')
+														printf("%c", (char)page.header.name[n]);
+													else
+														printf(" ");
+												}
+										}
+									else
+										{
+											printf(" |                ");
+										}
+								}
 						}
-					else
-						{
-						printf(" |                ");
-						}
-					}
+					printf("\n");
 				}
-			printf("\n");
-			}
 
-		int pageNum = 0;			
-		GoToCursor(x*width,y);
-		SetColor(cf,cb,da1);		
-		printf(" |");
-		SetColor(cf2,cb,da1);		
-		printf("%.3d.", pageNum);
-		SetColor(cf1,cb,da1);		
-		printf("%-14.14s",table[pageNum].name);
-		SetColor(cf,cb,da1);		
-		GoToCursor(0,23);//this cursor is at the right edge of the selected item       
+			int pageNum = 0;
+			GoToCursor(x * width, y);
+			SetColor(cf, cb, da1);
+			printf(" |");
+			SetColor(cf2, cb, da1);
+			printf("%.3d.", pageNum);
+			SetColor(cf1, cb, da1);
+			printf("%-14.14s", table[pageNum].name);
+			SetColor(cf, cb, da1);
+			GoToCursor(0, 23); //this cursor is at the right edge of the selected item
 
-		printf("Action Page List (%d/3) - Press key n(Next), b(Prev), q(Quit)", index + 1);
-		bActive = true;
-		while(bActive == true)
-			{
-			int ch = _getch();
-			pageNum = index*88 + x*22 + y;
-			if(pageNum<Action::MAXNUM_PAGE)
+			printf("Action Page List (%d/3) - Press key n(Next), b(Prev), q(Quit)", index + 1);
+			bActive = true;
+			while (bActive == true)
 				{
-				GoToCursor(x*width,y);
-				SetColor(cf,cb,ca);		
-				printf(" |");
-				SetColor(cf2,cb,ca);		
-				printf("%.3d.", pageNum);
-				SetColor(cf1,cb,ca);		
-				printf("%-14.14s",table[pageNum].name);
-				SetColor(cf,cb,ca);		
-				GoToCursor(x*width,y);//this cursor is at the right edge of the selected item       
+					int ch = _getch();
+					pageNum = index * 88 + x * 22 + y;
+					if (pageNum < Action::MAXNUM_PAGE)
+						{
+							GoToCursor(x * width, y);
+							SetColor(cf, cb, ca);
+							printf(" |");
+							SetColor(cf2, cb, ca);
+							printf("%.3d.", pageNum);
+							SetColor(cf1, cb, ca);
+							printf("%-14.14s", table[pageNum].name);
+							SetColor(cf, cb, ca);
+							GoToCursor(x * width, y); //this cursor is at the right edge of the selected item
+						}
+					switch (ch)
+						{
+						case 'n':
+							if (index < 2)
+								{
+									index++;
+								}
+							bActive = false;
+							break;
+						case 'b':
+							if (index > 0)
+								{
+									index--;
+								}
+							bActive = false;
+							break;
+						case 'q':
+							DrawPage();
+							GoToCursor(old_col, old_row);
+							return;
+						case 0x41: //up
+							if (y > 0) y--;
+							break;
+						case 0x42: //dn
+							if (y < 21) y++;
+							break;
+						case 0x43: //rt
+							if (x < 3) x++;
+							break;
+						case 0x44: //lt
+							if (x > 0) x--;
+							break;
+						case 10: //CR
+							if (pageNum < Action::MAXNUM_PAGE)
+								{
+									indexPage = pageNum;
+									Action::GetInstance()->LoadPage(indexPage, &Page);
+									SetColor(VTANSI_FG_WHITE, VTANSI_BG_DEFAULT, VTANSI_ATTRIB_RESET);
+									GoToCursor(0, 0);
+									DrawPage();
+									GoToCursor(old_col, old_row);
+									return;
+								}
+							break;
+						}
+					pageNum = index * 88 + x * 22 + y;
+					if (pageNum < Action::MAXNUM_PAGE)
+						{
+							GoToCursor(x * width, y);
+							SetColor(cf, cb, da1);
+							printf(" |");
+							SetColor(cf2, cb, da1);
+							printf("%.3d.", pageNum);
+							SetColor(cf1, cb, da1);
+							printf("%-14.14s", table[pageNum].name);
+							SetColor(cf, cb, da1);
+							GoToCursor(x * width, y); //this cursor is at the right edge of the selected item
+						}
 				}
-			switch(ch)
-				{
-				case 'n':
-					if(index < 2)
-						{
-						index++;
-						}
-					bActive = false;
-					break;
-				case 'b':
-					if(index > 0)
-						{
-						index--;
-						}
-					bActive = false;
-					break;
-				case 'q':
-					DrawPage();
-					GoToCursor(old_col, old_row);
-					return;
-        case 0x41: //up
-          if(y>0) y--;
-          break;
-        case 0x42: //dn
-          if(y<21) y++;
-          break;
-        case 0x43: //rt
-          if(x<3) x++;
-          break;
-        case 0x44: //lt
-          if(x>0) x--;
-          break;
-				case 10: //CR
-					if(pageNum < Action::MAXNUM_PAGE)
-						{
-						indexPage = pageNum;
-						Action::GetInstance()->LoadPage(indexPage, &Page);
-						SetColor(VTANSI_FG_WHITE,VTANSI_BG_DEFAULT,VTANSI_ATTRIB_RESET);
-						GoToCursor(0,0);
-						DrawPage();
-						GoToCursor(old_col, old_row);
-						return;
-						}
-					break;
-				}
-			pageNum = index *88 + x*22 + y;
-			if(pageNum<Action::MAXNUM_PAGE)
-				{
-				GoToCursor(x*width,y);
-				SetColor(cf,cb,da1);		
-				printf(" |");
-				SetColor(cf2,cb,da1);		
-				printf("%.3d.", pageNum);
-				SetColor(cf1,cb,da1);		
-				printf("%-14.14s",table[pageNum].name);
-				SetColor(cf,cb,da1);		
-				GoToCursor(x*width,y);//this cursor is at the right edge of the selected item       
-			}
-			}
-		SetColor(VTANSI_FG_WHITE,VTANSI_BG_DEFAULT,VTANSI_ATTRIB_RESET);
+			SetColor(VTANSI_FG_WHITE, VTANSI_BG_DEFAULT, VTANSI_ATTRIB_RESET);
 		}
 }
 
-void OnOffCmd(CM730 *cm730, bool on, int num_param, int *list,char lists[30][10])
+void OnOffCmd(ArbotixPro *arbotixpro, bool on, int num_param, int *list, char lists[30][10])
 {
-	char *token,token1[30];
-	int startID,stopID,id;
-	int rl[6] = { JointData::ID_R_ANKLE_ROLL,JointData::ID_R_ANKLE_PITCH,JointData::ID_R_KNEE,JointData::ID_R_HIP_PITCH,JointData::ID_R_HIP_ROLL,JointData::ID_R_HIP_YAW };
-	int ll[6] = { JointData::ID_L_ANKLE_ROLL,JointData::ID_L_ANKLE_PITCH,JointData::ID_L_KNEE,JointData::ID_L_HIP_PITCH,JointData::ID_L_HIP_ROLL,JointData::ID_L_HIP_YAW };
-	int ra[6] = { JointData::ID_R_SHOULDER_PITCH,JointData::ID_R_SHOULDER_ROLL, JointData::ID_R_ELBOW };
-	int la[6] = { JointData::ID_L_SHOULDER_PITCH,JointData::ID_L_SHOULDER_ROLL, JointData::ID_L_ELBOW };
+	char *token, token1[30];
+	int startID, stopID, id;
+	int rl[6] = { JointData::ID_R_ANKLE_ROLL, JointData::ID_R_ANKLE_PITCH, JointData::ID_R_KNEE, JointData::ID_R_HIP_PITCH, JointData::ID_R_HIP_ROLL, JointData::ID_R_HIP_YAW };
+	int ll[6] = { JointData::ID_L_ANKLE_ROLL, JointData::ID_L_ANKLE_PITCH, JointData::ID_L_KNEE, JointData::ID_L_HIP_PITCH, JointData::ID_L_HIP_ROLL, JointData::ID_L_HIP_YAW };
+	int ra[6] = { JointData::ID_R_SHOULDER_PITCH, JointData::ID_R_SHOULDER_ROLL, JointData::ID_R_ELBOW };
+	int la[6] = { JointData::ID_L_SHOULDER_PITCH, JointData::ID_L_SHOULDER_ROLL, JointData::ID_L_ELBOW };
 	int h[3] = { JointData::ID_HEAD_PAN, JointData::ID_HEAD_TILT };
 
-	if(num_param == 0)
+	if (num_param == 0)
 		{
-		for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
-			cm730->WriteByte(id, MX28::P_TORQUE_ENABLE, (int)on, 0);
+			for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
+				arbotixpro->WriteByte(id, AXDXL::P_TORQUE_ENABLE, (int)on, 0);
 		}
 	else
 		{
-		for(int i=0; i<num_param; i++)
-			{
-			token = strtok(lists[i],"-");
-			if(token != NULL)
+			for (int i = 0; i < num_param; i++)
 				{
-				startID = atoi(token);
-				strcpy(token1,token);
-				token = strtok(0,"-");
-				if(token != NULL)
-					{
-					stopID = atoi(token);
-					if(stopID >= JointData::ID_MIN && stopID <= JointData::ID_MAX && startID >= JointData::ID_MIN && startID <= JointData::ID_MAX)
+					token = strtok(lists[i], "-");
+					if (token != NULL)
 						{
-						for(id = startID;id <= stopID;id++)
-							cm730->WriteByte(id, MX28::P_TORQUE_ENABLE, (int)on, 0);
+							startID = atoi(token);
+							strcpy(token1, token);
+							token = strtok(0, "-");
+							if (token != NULL)
+								{
+									stopID = atoi(token);
+									if (stopID >= JointData::ID_MIN && stopID <= JointData::ID_MAX && startID >= JointData::ID_MIN && startID <= JointData::ID_MAX)
+										{
+											for (id = startID; id <= stopID; id++)
+												arbotixpro->WriteByte(id, AXDXL::P_TORQUE_ENABLE, (int)on, 0);
+										}
+								}
+							else
+								{
+									if (strcmp(token1, "rl") == 0)
+										{
+											for (id = 0; id < 6; id++ )
+												arbotixpro->WriteByte(rl[id], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
+										}
+									else if (strcmp(token1, "ll") == 0)
+										{
+											for (id = 0; id < 6; id++ )
+												arbotixpro->WriteByte(ll[id], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
+										}
+									else if (strcmp(token1, "ra") == 0)
+										{
+											for (id = 0; id < 6; id++ )
+												arbotixpro->WriteByte(ra[id], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
+										}
+									else if (strcmp(token1, "la") == 0)
+										{
+											for (id = 0; id < 6; id++ )
+												arbotixpro->WriteByte(la[id], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
+										}
+									else if (strcmp(token1, "h") == 0)
+										{
+											for (id = 0; id < 3; id++ )
+												arbotixpro->WriteByte(h[id], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
+										}
+									else if (list[i] >= JointData::ID_MIN && list[i] <= JointData::ID_MAX)
+										arbotixpro->WriteByte(list[i], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
+								}
 						}
-					}
-				else 
-					{
-					if(strcmp(token1,"rl") == 0)
-						{
-						for(id = 0;id < 6; id++ )
-							cm730->WriteByte(rl[id], MX28::P_TORQUE_ENABLE, (int)on, 0);
-						}
-					else if(strcmp(token1,"ll") == 0)
-						{
-						for(id = 0;id < 6; id++ )
-							cm730->WriteByte(ll[id], MX28::P_TORQUE_ENABLE, (int)on, 0);
-						}
-					else if (strcmp(token1,"ra") == 0)
-						{
-						for(id = 0;id < 6; id++ )
-							cm730->WriteByte(ra[id], MX28::P_TORQUE_ENABLE, (int)on, 0);
-						}
-					else if (strcmp(token1,"la") == 0)
-						{
-						for(id = 0;id < 6; id++ )
-							cm730->WriteByte(la[id], MX28::P_TORQUE_ENABLE, (int)on, 0);
-						}
-					else if (strcmp(token1,"h") == 0)
-						{
-						for(id = 0;id < 3; id++ )
-							cm730->WriteByte(h[id], MX28::P_TORQUE_ENABLE, (int)on, 0);
-						}
-					else if(list[i] >= JointData::ID_MIN && list[i] <= JointData::ID_MAX)
-						cm730->WriteByte(list[i], MX28::P_TORQUE_ENABLE, (int)on, 0);
-					}
 				}
-			}
 		}
-	ReadStep(cm730);
+	ReadStep(arbotixpro);
 	DrawStep(7);
 }
 
 void WriteStepCmd(int index)
 {
-	for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
-	{
-		if(Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
-			return;
-	}
+	for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
+		{
+			if (Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
+				return;
+		}
 
-	if(index >= 0 && index < Action::MAXNUM_STEP)
-	{
-		Page.step[index] = Step;
-		DrawStep(index);
-		bEdited = true;
-	}
+	if (index >= 0 && index < Action::MAXNUM_STEP)
+		{
+			Page.step[index] = Step;
+			DrawStep(index);
+			bEdited = true;
+		}
 	else
 		PrintCmd("Invalid step index");
 }
 
 void DeleteStepCmd(int index)
 {
-	if(index >= 0 && index < Action::MAXNUM_STEP)
-	{
-		for(int i=index; i<Action::MAXNUM_STEP; i++)
+	if (index >= 0 && index < Action::MAXNUM_STEP)
 		{
-			if(i == (Action::MAXNUM_STEP - 1))
-			{
-				for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
-					Page.step[i].position[id] = Action::INVALID_BIT_MASK;
+			for (int i = index; i < Action::MAXNUM_STEP; i++)
+				{
+					if (i == (Action::MAXNUM_STEP - 1))
+						{
+							for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
+								Page.step[i].position[id] = Action::INVALID_BIT_MASK;
 
-				Page.step[i].pause = 0;
-				Page.step[i].time = 0;
-			}
-			else
-				Page.step[i] = Page.step[i + 1];
-			
-			DrawStep(i);
+							Page.step[i].pause = 0;
+							Page.step[i].time = 0;
+						}
+					else
+						Page.step[i] = Page.step[i + 1];
+
+					DrawStep(i);
+				}
+
+			if (index < Page.header.stepnum)
+				{
+					if (Page.header.stepnum != 0)
+						{
+							DrawStepLine(true);
+							Page.header.stepnum--;
+							DrawStepLine(false);
+						}
+
+					GoToCursor(PAGEPARAM_COL, STEPNUM_ROW);
+					printf( "%.3d", Page.header.stepnum );
+				}
+
+			bEdited = true;
 		}
-
-		if(index < Page.header.stepnum)
-		{
-			if(Page.header.stepnum != 0)
-			{
-				DrawStepLine(true);
-				Page.header.stepnum--;
-				DrawStepLine(false);
-			}
-
-			GoToCursor(PAGEPARAM_COL, STEPNUM_ROW);
-			printf( "%.3d", Page.header.stepnum );
-		}
-
-		bEdited = true;
-	}
 	else
 		PrintCmd("Invalid step index");
 }
 
 void InsertStepCmd(int index)
 {
-	for(int id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
-	{
-		if(Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
-		{			
-			PrintCmd("Exist invalid joint value");
-			return;
-		}
-	}
-
-	if(index >= 0 && index < Action::MAXNUM_STEP)
-	{
-		for(int i=Action::MAXNUM_STEP-1; i>index; i-- )
+	for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
 		{
-			Page.step[i] = Page.step[i-1];
-			DrawStep(i);
+			if (Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
+				{
+					PrintCmd("Exist invalid joint value");
+					return;
+				}
 		}
 
-		Page.step[index] = Step;
-		DrawStep(index);
-
-		if(index == 0 || index < Page.header.stepnum)
+	if (index >= 0 && index < Action::MAXNUM_STEP)
 		{
-			if(Page.header.stepnum != Action::MAXNUM_STEP)
-			{
-				DrawStepLine(true);
-				Page.header.stepnum++;
-				DrawStepLine(false);
-			}
+			for (int i = Action::MAXNUM_STEP - 1; i > index; i-- )
+				{
+					Page.step[i] = Page.step[i - 1];
+					DrawStep(i);
+				}
 
-			GoToCursor(PAGEPARAM_COL, STEPNUM_ROW);
-			printf( "%.3d", Page.header.stepnum );
+			Page.step[index] = Step;
+			DrawStep(index);
+
+			if (index == 0 || index < Page.header.stepnum)
+				{
+					if (Page.header.stepnum != Action::MAXNUM_STEP)
+						{
+							DrawStepLine(true);
+							Page.header.stepnum++;
+							DrawStepLine(false);
+						}
+
+					GoToCursor(PAGEPARAM_COL, STEPNUM_ROW);
+					printf( "%.3d", Page.header.stepnum );
+				}
+
+			bEdited = true;
 		}
-
-		bEdited = true;
-	}
 	else
 		PrintCmd("Invalid step index");
 }
 
 void MoveStepCmd(int src, int dst)
 {
-	if(src < 0 || src >= Action::MAXNUM_STEP)
-	{
-		PrintCmd("Invalid step index");
-		return;
-	}
+	if (src < 0 || src >= Action::MAXNUM_STEP)
+		{
+			PrintCmd("Invalid step index");
+			return;
+		}
 
-	if(dst < 0 || dst >= Action::MAXNUM_STEP)
-	{
-		PrintCmd("Invalid step index");
-		return;
-	}
+	if (dst < 0 || dst >= Action::MAXNUM_STEP)
+		{
+			PrintCmd("Invalid step index");
+			return;
+		}
 
-	if(src == dst)
+	if (src == dst)
 		return;
 
 	Action::STEP step = Page.step[src];
-	if(src < dst)
-	{
-		for(int i=src; i<dst; i++)
+	if (src < dst)
 		{
-			Page.step[i] = Page.step[i + 1];		
-			DrawStep(i);
+			for (int i = src; i < dst; i++)
+				{
+					Page.step[i] = Page.step[i + 1];
+					DrawStep(i);
+				}
 		}
-	}
 	else
-	{
-		for(int i=src; i>dst; i--)
 		{
-			Page.step[i] = Page.step[i - 1];		
-			DrawStep(i);
+			for (int i = src; i > dst; i--)
+				{
+					Page.step[i] = Page.step[i - 1];
+					DrawStep(i);
+				}
 		}
-	}
 
 	Page.step[dst] = step;
 	DrawStep(dst);
@@ -1517,14 +1518,14 @@ void MoveStepCmd(int src, int dst)
 
 void CopyCmd(int index)
 {
-	if(index == indexPage)
+	if (index == indexPage)
 		return;
 
-	if(Action::GetInstance()->LoadPage(index, &Page) == true)
-	{
-		DrawPage();
-		bEdited = true;
-	}
+	if (Action::GetInstance()->LoadPage(index, &Page) == true)
+		{
+			DrawPage();
+			bEdited = true;
+		}
 	else
 		PrintCmd("Invalid page index");
 }
@@ -1536,23 +1537,23 @@ void NewCmd()
 	bEdited = true;
 }
 
-void GoCmd(CM730 *cm730, int index)
+void GoCmd(ArbotixPro *arbotixpro, int index)
 {
-	if(index < 0 || index >= Action::MAXNUM_STEP)
-	{
-		PrintCmd("Invalid step index");
-		return;
-	}
-
-	if(index > Page.header.stepnum)
-	{
-		PrintCmd("Are you sure? (y/n)");
-		if(_getch() != 'y')
+	if (index < 0 || index >= Action::MAXNUM_STEP)
 		{
-			ClearCmd();
+			PrintCmd("Invalid step index");
 			return;
 		}
-	}
+
+	if (index > Page.header.stepnum)
+		{
+			PrintCmd("Are you sure? (y/n)");
+			if (_getch() != 'y')
+				{
+					ClearCmd();
+					return;
+				}
+		}
 
 	int id;
 	int wStartPosition;
@@ -1560,64 +1561,64 @@ void GoCmd(CM730 *cm730, int index)
 
 	Action::GetInstance()->ResetPage(&tPage);
 
-	for(id=JointData::ID_MIN; id<=JointData::ID_MAX; id++)
-	{
-		if(Page.step[index].position[id] & Action::INVALID_BIT_MASK)
-		{			
-			PrintCmd("Exist invalid joint value");
-			return;
-		}
-
-		if(cm730->ReadWord(id, MX28::P_PRESENT_POSITION_L, &wStartPosition, 0) != CM730::SUCCESS)
+	for (id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
 		{
-			PrintCmd("Failed to read position");
-			return;
+			if (Page.step[index].position[id] & Action::INVALID_BIT_MASK)
+				{
+					PrintCmd("Exist invalid joint value");
+					return;
+				}
+
+			if (arbotixpro->ReadWord(id, AXDXL::P_PRESENT_POSITION_L, &wStartPosition, 0) != ArbotixPro::SUCCESS)
+				{
+					PrintCmd("Failed to read position");
+					return;
+				}
+			MotionStatus::m_CurrentJoints.SetValue(id, wStartPosition);
+			tPage.step[0].position[id] = wStartPosition;
+			tPage.step[1].position[id] = Page.step[index].position[id];
+
 		}
-		MotionStatus::m_CurrentJoints.SetValue(id, wStartPosition);
-		tPage.step[0].position[id] = wStartPosition;
-		tPage.step[1].position[id] = Page.step[index].position[id];
-	
-	}
 	tPage.step[0].time = tPage.step[1].time = 80;
 	tPage.header.stepnum = 2;
 	tPage.header.repeat = 1;
 	Action::GetInstance()->m_Joint.SetEnableBody(true, true);
 	MotionManager::GetInstance()->SetEnable(true);
 	linuxMotionTimer.Start();
-	
-	if(Action::GetInstance()->Start(indexPage, &tPage) == false)
-	{
-		PrintCmd("Failed to play this page!");
-		MotionManager::GetInstance()->SetEnable(false);
-		return;
-	}
-	set_stdin();	
 
-	while(1)
-	{
-		if(Action::GetInstance()->IsRunning() == false)
-			break;
-
-		if(kbhit(true))
+	if (Action::GetInstance()->Start(indexPage, &tPage) == false)
 		{
-			int key = _getch();
-			GoToCursor(CMD_COL, CMD_ROW);
-			if(key == 's')
-			{
-				Action::GetInstance()->Stop();
-				fprintf(stderr, "\r] Stopping...                                  ");
-			}
-			else if(key == 'b')
-			{
-				Action::GetInstance()->Brake();
-				fprintf(stderr, "\r] Braking...                                   ");
-			}
-			else
-				fprintf(stderr, "\r] Playing... ('s' to stop, 'b' to brake)");
+			PrintCmd("Failed to play this page!");
+			MotionManager::GetInstance()->SetEnable(false);
+			return;
 		}
+	set_stdin();
 
-		usleep(1000);	
-	}
+	while (1)
+		{
+			if (Action::GetInstance()->IsRunning() == false)
+				break;
+
+			if (kbhit(true))
+				{
+					int key = _getch();
+					GoToCursor(CMD_COL, CMD_ROW);
+					if (key == 's')
+						{
+							Action::GetInstance()->Stop();
+							fprintf(stderr, "\r] Stopping...                                  ");
+						}
+					else if (key == 'b')
+						{
+							Action::GetInstance()->Brake();
+							fprintf(stderr, "\r] Braking...                                   ");
+						}
+					else
+						fprintf(stderr, "\r] Playing... ('s' to stop, 'b' to brake)");
+				}
+
+			usleep(1000);
+		}
 	reset_stdin();
 
 	MotionManager::GetInstance()->SetEnable(false);
@@ -1629,10 +1630,10 @@ void GoCmd(CM730 *cm730, int index)
 
 void SaveCmd(int pageNum)
 {
-	if(bEdited == false)
+	if (bEdited == false)
 		return;
 
-	if(Action::GetInstance()->SavePage(pageNum, &Page) == true)
+	if (Action::GetInstance()->SavePage(pageNum, &Page) == true)
 		bEdited = false;
 }
 
@@ -1642,74 +1643,74 @@ void NameCmd()
 	GoToCursor(CMD_COL, CMD_ROW);
 	printf("name: ");
 	char name[80] = {0};
-	if(fgets(name,80,stdin) != NULL)
+	if (fgets(name, 80, stdin) != NULL)
 		fflush(stdin);
-	for(int i=0; i<=Action::MAXNUM_NAME; i++)
+	for (int i = 0; i <= Action::MAXNUM_NAME; i++)
 		Page.header.name[i] = name[i];
 	DrawName();
 	bEdited = true;
 }
 
-void SetColor(int fg,int bg,int attrib)
+void SetColor(int fg, int bg, int attrib)
 {
-	printf("\x1b[%d;%d;%dm",fg,bg,attrib);	
+	printf("\x1b[%d;%d;%dm", fg, bg, attrib);
 	return;
 }
 
-void ProcessPS3(Robot::CM730 *cm730,int *apState)
+void ProcessPS3(Robot::ArbotixPro *arbotixpro, int *apState)
 {
-  int num_param=1;
-  int iparam[30];
-  char iparams[30][10];
-	
+	int num_param = 1;
+	int iparam[30];
+	char iparams[30][10];
+
 	iparam[0] = 0;
 
-	if(PS3.key.PS != 0) 
-	{
-	ToggleRobotStandby();
-	while (PS3.key.PS != 0) usleep(8000);
-	}
-  
-	if(robotInStandby == 1) return;
-	if(PS3.key.R2 != 0) 
+	if (PS3.key.PS != 0)
 		{
-		strcpy(iparams[0], "rl");
-		apState[0]++;
-		apState[0]%=2;
-		OnOffCmd(cm730, apState[0]?true:false, num_param, iparam,iparams);
-		while (PS3.key.R2 != 0) usleep(8000);
+			ToggleRobotStandby();
+			while (PS3.key.PS != 0) usleep(8000);
 		}
-	if(PS3.key.R1 != 0) 
+
+	if (robotInStandby == 1) return;
+	if (PS3.key.R2 != 0)
 		{
-		apState[1]++;
-		apState[1]%=2;
-		strcpy(iparams[0], "ra");
-		OnOffCmd(cm730, apState[1]?true:false, num_param, iparam,iparams);
-		while (PS3.key.R1 != 0) usleep(8000);
+			strcpy(iparams[0], "rl");
+			apState[0]++;
+			apState[0] %= 2;
+			OnOffCmd(arbotixpro, apState[0] ? true : false, num_param, iparam, iparams);
+			while (PS3.key.R2 != 0) usleep(8000);
 		}
-	if(PS3.key.L2 != 0) 
+	if (PS3.key.R1 != 0)
 		{
-		apState[2]++;
-		apState[2]%=2;
-		strcpy(iparams[0], "ll");
-		OnOffCmd(cm730, apState[2]?true:false, num_param, iparam,iparams);
-		while (PS3.key.L2 != 0) usleep(8000);
+			apState[1]++;
+			apState[1] %= 2;
+			strcpy(iparams[0], "ra");
+			OnOffCmd(arbotixpro, apState[1] ? true : false, num_param, iparam, iparams);
+			while (PS3.key.R1 != 0) usleep(8000);
 		}
-	if(PS3.key.L1 != 0) 
+	if (PS3.key.L2 != 0)
 		{
-		apState[3]++;
-		apState[3]%=2;
-		strcpy(iparams[0], "la");
-		OnOffCmd(cm730, apState[3]?true:false, num_param, iparam,iparams);
-		while (PS3.key.L1 != 0) usleep(8000);
+			apState[2]++;
+			apState[2] %= 2;
+			strcpy(iparams[0], "ll");
+			OnOffCmd(arbotixpro, apState[2] ? true : false, num_param, iparam, iparams);
+			while (PS3.key.L2 != 0) usleep(8000);
 		}
-	if(PS3.key.Up != 0) 
+	if (PS3.key.L1 != 0)
 		{
-		apState[4]++;
-		apState[4]%=2;
-		strcpy(iparams[0], "h");
-		OnOffCmd(cm730, apState[4]?true:false, num_param, iparam,iparams);
-		while (PS3.key.Up != 0) usleep(8000);
+			apState[3]++;
+			apState[3] %= 2;
+			strcpy(iparams[0], "la");
+			OnOffCmd(arbotixpro, apState[3] ? true : false, num_param, iparam, iparams);
+			while (PS3.key.L1 != 0) usleep(8000);
+		}
+	if (PS3.key.Up != 0)
+		{
+			apState[4]++;
+			apState[4] %= 2;
+			strcpy(iparams[0], "h");
+			OnOffCmd(arbotixpro, apState[4] ? true : false, num_param, iparam, iparams);
+			while (PS3.key.Up != 0) usleep(8000);
 		}
 	return;
 }
