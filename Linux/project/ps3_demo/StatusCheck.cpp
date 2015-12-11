@@ -87,7 +87,6 @@ void StatusCheck::Check(ArbotixPro &arbotixpro)
 //////////////////////////////////////////////////////////////////////////////////////
 	if (PS3.key.Cross != 0)
 		{
-			resetLEDs(arbotixpro);
 			Walking::GetInstance()->Stop();
 			while (Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 			m_is_started    = 0;
@@ -113,7 +112,7 @@ void StatusCheck::Check(ArbotixPro &arbotixpro)
 				{
 					arbotixpro.DXLPowerOn(true);
 				}
-			resetLEDs(arbotixpro);
+
 			Walking::GetInstance()->Stop();
 			while (Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 			int lastMode = m_cur_mode;
