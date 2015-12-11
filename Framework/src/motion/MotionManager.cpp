@@ -60,7 +60,7 @@ bool MotionManager::Initialize(ArbotixPro *arbotixpro, bool fadeIn)
     if (m_ArbotixPro->Connect() == false)
         {
             if (DEBUG_PRINT == true)
-                fprintf(stderr, "Fail to connect CM-730\n");
+                fprintf(stderr, "Fail to connect Arbotix Pro\n");
             return false;
         }
 

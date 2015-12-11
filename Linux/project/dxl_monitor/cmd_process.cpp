@@ -71,7 +71,7 @@ const char *GetIDString(int id)
 			return "HEAD_TILT";
 
 		case ArbotixPro::ID_CM:
-			return "SUB_BOARD";
+			return "ARBOTIX_PRO";
 
 //	case JointData::ID_TORSO_ROTATE:
 //		return "TORSO_ROTATE";
@@ -110,7 +110,7 @@ void Help()
 	printf( " exit : Exits the program\n" );
 	printf( " scan : Outputs the current status of all Dynamixels\n" );
 	printf( " id [ID] : Go to [ID]\n" );
-	printf( " d : Dumps the current control table of CM-730 and all Dynamixels\n" );
+	printf( " d : Dumps the current control table of Arbotix Pro and all Dynamixels\n" );
 	printf( " reset : Defaults the value of current Dynamixel\n" );
 	printf( " reset all : Defaults the value of all Dynamixels\n" );
 	printf( " wr [ADDR] [VALUE] : Writes value [VALUE] to address [ADDR] of current Dynamixel\n" );

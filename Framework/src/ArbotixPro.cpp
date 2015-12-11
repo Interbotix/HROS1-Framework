@@ -487,7 +487,7 @@ bool ArbotixPro::Connect()
 	if (m_Platform->OpenPort() == false)
 		{
 			fprintf(stderr, "\n Fail to open port\n");
-			fprintf(stderr, " CM-730 is used by another program or do not have root privileges.\n\n");
+			fprintf(stderr, " Arbotix Pro is used by another program or do not have root privileges.\n\n");
 			return false;
 		}
 

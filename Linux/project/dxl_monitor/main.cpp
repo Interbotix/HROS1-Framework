@@ -208,7 +208,7 @@ int main()
 				}
 		}
 	else
-		printf("Failed to connect CM-730!");
+		printf("Failed to connect Arbotix Pro!");
 
 	printf("\nTerminated DXL Manager.\n");
 	return 0;
