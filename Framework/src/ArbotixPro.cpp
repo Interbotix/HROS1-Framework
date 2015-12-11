@@ -1,12 +1,12 @@
 /*
- *   CM730.cpp
+ *   ArbotixPro.cpp
  *
  *   Author: ROBOTIS
  *
  */
 #include <stdio.h>
 #include "FSR.h"
-#include "CM730.h"
+#include "ArbotixPro.h"
 #include "MotionStatus.h"
 #include <stdlib.h>
 
@@ -50,13 +50,13 @@ int BulkReadData::ReadByte(int address)
 int BulkReadData::ReadWord(int address)
 {
 	if (address >= start_address && address < (start_address + length))
-		return CM730::MakeWord(table[address], table[address + 1]);
+		return ArbotixPro::MakeWord(table[address], table[address + 1]);
 
 	return 0;
 }
 
 
-CM730::CM730(PlatformCM730 *platform)
+ArbotixPro::ArbotixPro(PlatformArbotixPro *platform)
 {
 	m_Platform = platform;
 	DEBUG_PRINT = false;
@@ -67,13 +67,13 @@ CM730::CM730(PlatformCM730 *platform)
 		m_BulkReadData[i] = BulkReadData();
 }
 
-CM730::~CM730()
+ArbotixPro::~ArbotixPro()
 {
 	Disconnect();
 	exit(0);
 }
 
-int CM730::TxRxPacket(unsigned char *txpacket, unsigned char *rxpacket, int priority)
+int ArbotixPro::TxRxPacket(unsigned char *txpacket, unsigned char *rxpacket, int priority)
 {
 	if (priority > 1)
 		m_Platform->LowPriorityWait();
@@ -383,7 +383,7 @@ int CM730::TxRxPacket(unsigned char *txpacket, unsigned char *rxpacket, int prio
 	return res;
 }
 
-unsigned char CM730::CalculateChecksum(unsigned char *packet)
+unsigned char ArbotixPro::CalculateChecksum(unsigned char *packet)
 {
 	unsigned char checksum = 0x00;
 	for (int i = 2; i < packet[LENGTH] + 3; i++ )
@@ -391,7 +391,7 @@ unsigned char CM730::CalculateChecksum(unsigned char *packet)
 	return (~checksum);
 }
 
-void CM730::MakeBulkReadPacket()
+void ArbotixPro::MakeBulkReadPacket()
 {
 	int number = 0;
 
@@ -399,11 +399,11 @@ void CM730::MakeBulkReadPacket()
 	m_BulkReadTxPacket[INSTRUCTION]     = INST_BULK_READ;
 	m_BulkReadTxPacket[PARAMETER]       = (unsigned char)0x0;
 
-	//if(Ping(CM730::ID_CM, 0) == SUCCESS)
+	//if(Ping(ArbotixPro::ID_CM, 0) == SUCCESS)
 	{
 		m_BulkReadTxPacket[PARAMETER + 3 * number + 1] = 30;
-		m_BulkReadTxPacket[PARAMETER + 3 * number + 2] = CM730::ID_CM;
-		m_BulkReadTxPacket[PARAMETER + 3 * number + 3] = CM730::P_DXL_POWER;
+		m_BulkReadTxPacket[PARAMETER + 3 * number + 2] = ArbotixPro::ID_CM;
+		m_BulkReadTxPacket[PARAMETER + 3 * number + 3] = ArbotixPro::P_DXL_POWER;
 		number++;
 	}
 
@@ -452,7 +452,7 @@ void CM730::MakeBulkReadPacket()
 	m_BulkReadTxPacket[LENGTH]          = (number * 3) + 3;
 }
 
-int CM730::BulkRead()
+int ArbotixPro::BulkRead()
 {
 	unsigned char rxpacket[MAXNUM_RXPARAM + 10] = {0, };
 
@@ -465,7 +465,7 @@ int CM730::BulkRead()
 		}
 }
 
-int CM730::SyncWrite(int start_addr, int each_length, int number, int *pParam)
+int ArbotixPro::SyncWrite(int start_addr, int each_length, int number, int *pParam)
 {
 	unsigned char txpacket[MAXNUM_TXPARAM + 10] = {0, };
 	unsigned char rxpacket[MAXNUM_RXPARAM + 10] = {0, };
@@ -482,7 +482,7 @@ int CM730::SyncWrite(int start_addr, int each_length, int number, int *pParam)
 	return TxRxPacket(txpacket, rxpacket, 0);
 }
 
-bool CM730::Connect()
+bool ArbotixPro::Connect()
 {
 	if (m_Platform->OpenPort() == false)
 		{
@@ -494,7 +494,7 @@ bool CM730::Connect()
 	return DXLPowerOn();
 }
 
-bool CM730::ChangeBaud(int baud)
+bool ArbotixPro::ChangeBaud(int baud)
 {
 	if (m_Platform->SetBaud(baud) == false)
 		{
@@ -505,14 +505,14 @@ bool CM730::ChangeBaud(int baud)
 	return DXLPowerOn();
 }
 
-bool CM730::DXLPowerOn(bool state)
+bool ArbotixPro::DXLPowerOn(bool state)
 {
-	if (WriteByte(CM730::ID_CM, CM730::P_DXL_POWER, state == true ? 1 : 0, 0) == CM730::SUCCESS)
+	if (WriteByte(ArbotixPro::ID_CM, ArbotixPro::P_DXL_POWER, state == true ? 1 : 0, 0) == ArbotixPro::SUCCESS)
 		{
 			if (DEBUG_PRINT == true)
 				fprintf(stderr, " Succeed to change Dynamixel power!\n");
 
-			WriteWord(CM730::ID_CM, CM730::P_LED_HEAD_L, state == true ? MakeColor(1, 1, 1) : MakeColor(0, 0, 0), 0);
+			WriteWord(ArbotixPro::ID_CM, ArbotixPro::P_LED_HEAD_L, state == true ? MakeColor(1, 1, 1) : MakeColor(0, 0, 0), 0);
 			m_Platform->Sleep(300); // about 300msec
 		}
 	else
@@ -525,27 +525,27 @@ bool CM730::DXLPowerOn(bool state)
 	return true;
 }
 
-void CM730::Disconnect()
+void ArbotixPro::Disconnect()
 {
 	// Make the Head LED to green
-	//WriteWord(CM730::ID_CM, CM730::P_LED_HEAD_L, MakeColor(0, 255, 0), 0);
+	//WriteWord(ArbotixPro::ID_CM, ArbotixPro::P_LED_HEAD_L, MakeColor(0, 255, 0), 0);
 	unsigned char txpacket[] = {0xFF, 0xFF, 0xC8, 0x05, 0x03, 0x1A, 0xE0, 0x03, 0x32};
 	m_Platform->WritePort(txpacket, 9);
 
 	m_Platform->ClosePort();
 }
 
-int CM730::WriteByte(int address, int value, int *error)
+int ArbotixPro::WriteByte(int address, int value, int *error)
 {
 	return WriteByte(ID_CM, address, value, error);
 }
 
-int CM730::WriteWord(int address, int value, int *error)
+int ArbotixPro::WriteWord(int address, int value, int *error)
 {
 	return WriteWord(ID_CM, address, value, error);
 }
 
-void CM730::WriteWordDelayed(int address, int value)
+void ArbotixPro::WriteWordDelayed(int address, int value)
 {
 	if (m_DelayedWords > 9) return;
 
@@ -555,7 +555,7 @@ void CM730::WriteWordDelayed(int address, int value)
 	return;
 }
 
-int CM730::Ping(int id, int *error)
+int ArbotixPro::Ping(int id, int *error)
 {
 	unsigned char txpacket[MAXNUM_TXPARAM + 10] = {0, };
 	unsigned char rxpacket[MAXNUM_RXPARAM + 10] = {0, };
@@ -575,7 +575,7 @@ int CM730::Ping(int id, int *error)
 	return result;
 }
 
-int CM730::ReadByte(int id, int address, int *pValue, int *error)
+int ArbotixPro::ReadByte(int id, int address, int *pValue, int *error)
 {
 	unsigned char txpacket[MAXNUM_TXPARAM + 10] = {0, };
 	unsigned char rxpacket[MAXNUM_RXPARAM + 10] = {0, };
@@ -598,7 +598,7 @@ int CM730::ReadByte(int id, int address, int *pValue, int *error)
 	return result;
 }
 
-int CM730::ReadWord(int id, int address, int *pValue, int *error)
+int ArbotixPro::ReadWord(int id, int address, int *pValue, int *error)
 {
 	unsigned char txpacket[MAXNUM_TXPARAM + 10] = {0, };
 	unsigned char rxpacket[MAXNUM_RXPARAM + 10] = {0, };
@@ -622,7 +622,7 @@ int CM730::ReadWord(int id, int address, int *pValue, int *error)
 	return result;
 }
 
-int CM730::ReadTable(int id, int start_addr, int end_addr, unsigned char *table, int *error)
+int ArbotixPro::ReadTable(int id, int start_addr, int end_addr, unsigned char *table, int *error)
 {
 	unsigned char txpacket[MAXNUM_TXPARAM + 10] = {0, };
 	unsigned char rxpacket[MAXNUM_RXPARAM + 10] = {0, };
@@ -648,7 +648,7 @@ int CM730::ReadTable(int id, int start_addr, int end_addr, unsigned char *table,
 	return result;
 }
 
-int CM730::WriteByte(int id, int address, int value, int *error)
+int ArbotixPro::WriteByte(int id, int address, int value, int *error)
 {
 	unsigned char txpacket[MAXNUM_TXPARAM + 10] = {0, };
 	unsigned char rxpacket[MAXNUM_RXPARAM + 10] = {0, };
@@ -670,7 +670,7 @@ int CM730::WriteByte(int id, int address, int value, int *error)
 	return result;
 }
 
-int CM730::WriteWord(int id, int address, int value, int *error)
+int ArbotixPro::WriteWord(int id, int address, int value, int *error)
 {
 	unsigned char txpacket[MAXNUM_TXPARAM + 10] = {0, };
 	unsigned char rxpacket[MAXNUM_RXPARAM + 10] = {0, };
@@ -693,7 +693,7 @@ int CM730::WriteWord(int id, int address, int value, int *error)
 	return result;
 }
 
-int CM730::MakeWord(int lowbyte, int highbyte)
+int ArbotixPro::MakeWord(int lowbyte, int highbyte)
 {
 	unsigned short word;
 
@@ -704,14 +704,14 @@ int CM730::MakeWord(int lowbyte, int highbyte)
 	return (int)word;
 }
 
-int CM730::GetLowByte(int word)
+int ArbotixPro::GetLowByte(int word)
 {
 	unsigned short temp;
 	temp = word & 0xff;
 	return (int)temp;
 }
 
-int CM730::GetHighByte(int word)
+int ArbotixPro::GetHighByte(int word)
 {
 	unsigned short temp;
 	temp = word & 0xff00;
@@ -719,7 +719,7 @@ int CM730::GetHighByte(int word)
 }
 
 // 5 bits per color
-int CM730::MakeColor(int red, int green, int blue)
+int ArbotixPro::MakeColor(int red, int green, int blue)
 {
 	int r = red & 0x1F;
 	int g = green & 0x1F;

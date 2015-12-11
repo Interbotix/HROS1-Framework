@@ -8,7 +8,7 @@
 #ifndef _DARWIN_H_
 #define _DARWIN_H_
 
-#include "CM730.h"
+#include "ArbotixPro.h"
 #include "MX28.h"
 #include "MotionModule.h"
 #include "MotionManager.h"

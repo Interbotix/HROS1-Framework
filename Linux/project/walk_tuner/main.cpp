@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
 
     change_current_dir();
 
-    LinuxCM730 linux_cm730("/dev/ttyUSB0");
-    CM730 cm730(&linux_cm730);
+    LinuxArbotixPro linux_arbotixpro("/dev/ttyUSB0");
+    ArbotixPro arbotixpro(&linux_arbotixpro);
     minIni* ini;
     if (argc == 2)
         ini = new minIni(argv[1]);
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     httpd::ini = ini;
 
     //////////////////// Framework Initialize ////////////////////////////
-    if (MotionManager::GetInstance()->Initialize(&cm730) == false)
+    if (MotionManager::GetInstance()->Initialize(&arbotixpro) == false)
         {
             printf("Fail to initialize Motion Manager!\n");
             return 0;
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     linuxMotionTimer.Start();
     /////////////////////////////////////////////////////////////////////
 
-    DrawIntro(&cm730);
+    DrawIntro(&arbotixpro);
     MotionManager::GetInstance()->SetEnable(true);
     MotionManager::GetInstance()->ResetGyroCalibration();
     while (1)

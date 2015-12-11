@@ -35,7 +35,7 @@ minIni* StatusCheck::m_ini1;
 
 //#define Southpaw
 
-void StatusCheck::Check(CM730 &cm730)
+void StatusCheck::Check(ArbotixPro &arbotixpro)
 {
 	int value = 0;
 
@@ -64,7 +64,7 @@ void StatusCheck::Check(CM730 &cm730)
 		 if(MotionStatus::FALLEN != STANDUP && (m_cur_mode == SOCCER) && m_is_started == 1)
 	   	{
 	     Walking::GetInstance()->Stop();
-		 	resetLEDs(cm730);
+		 	resetLEDs(arbotixpro);
 		 	while(Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 
 	     Action::GetInstance()->m_Joint.SetEnableBody(true, true);
@@ -87,7 +87,7 @@ void StatusCheck::Check(CM730 &cm730)
 //////////////////////////////////////////////////////////////////////////////////////
 	if (PS3.key.Cross != 0)
 		{
-			resetLEDs(cm730);
+			resetLEDs(arbotixpro);
 			Walking::GetInstance()->Stop();
 			while (Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 			m_is_started    = 0;
@@ -111,9 +111,9 @@ void StatusCheck::Check(CM730 &cm730)
 		{
 			if (m_is_started == 0)
 				{
-					cm730.DXLPowerOn(true);
+					arbotixpro.DXLPowerOn(true);
 				}
-			resetLEDs(cm730);
+			resetLEDs(arbotixpro);
 			Walking::GetInstance()->Stop();
 			while (Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 			int lastMode = m_cur_mode;
@@ -380,7 +380,7 @@ void StatusCheck::Check(CM730 &cm730)
 	if (Walking::GetInstance()->IsRunning() == true && PS3.key.Down != 0)
 		{
 			fprintf(stderr, "STOPPING WALKING GAIT\n");
-			resetLEDs(cm730);
+			resetLEDs(arbotixpro);
 			Walking::GetInstance()->Stop();
 			while (Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 		}
@@ -529,9 +529,9 @@ void StatusCheck::mPlay(int motion_page, int mode, int wait)
 	return;
 }
 
-void StatusCheck::resetLEDs(CM730 &cm730)
+void StatusCheck::resetLEDs(ArbotixPro &arbotixpro)
 {
-	cm730.WriteWordDelayed(CM730::P_LED_EYE_L, cm730.MakeColor(3, 3, 3)); //cm730.MakeColor(31,0,18));
-	cm730.WriteWordDelayed(CM730::P_LED_HEAD_L, cm730.MakeColor(1, 1, 1));
+	arbotixpro.WriteWordDelayed(ArbotixPro::P_LED_EYE_L, arbotixpro.MakeColor(3, 3, 3)); //arbotixpro.MakeColor(31,0,18));
+	arbotixpro.WriteWordDelayed(ArbotixPro::P_LED_HEAD_L, arbotixpro.MakeColor(1, 1, 1));
 	return;
 }
