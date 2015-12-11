@@ -15,8 +15,8 @@
 
 using namespace Robot;
 
-LinuxCM730 linux_cm730("/dev/ttyUSB0");
-CM730 cm730(&linux_cm730);
+LinuxArbotixPro linux_arbotixpro("/dev/ttyUSB0");
+ArbotixPro arbotixpro(&linux_arbotixpro);
 LinuxMotionTimer linuxMotionTimer;
 
 
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 
     //    PS3Controller_Start();
     //////////////////// Framework Initialize ////////////////////////////
-    if (MotionManager::GetInstance()->Initialize(&cm730) == false)
+    if (MotionManager::GetInstance()->Initialize(&arbotixpro) == false)
         {
             printf("Initializing Motion Manager failed!\n");
             exit(0);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     //MotionManager::GetInstance()->StopThread();
     /////////////////////////////////////////////////////////////////////
 
-    DrawIntro(&cm730);
+    DrawIntro(&arbotixpro);
 
     char input[128] = {0,};
     char *token;
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 
     while (1)
         {
-            // while(!kbhit(true)) ProcessPS3(&cm730,apState);
+            // while(!kbhit(true)) ProcessPS3(&arbotixpro,apState);
             ch = _getch();
 
             if (ch == 0x1b)
@@ -125,15 +125,15 @@ int main(int argc, char *argv[])
                         }
                 }
             else if ( ch == '[' )
-                UpDownValue(&cm730, -1);
+                UpDownValue(&arbotixpro, -1);
             else if ( ch == ']' )
-                UpDownValue(&cm730, 1);
+                UpDownValue(&arbotixpro, 1);
             else if ( ch == '{' )
-                UpDownValue(&cm730, -10);
+                UpDownValue(&arbotixpro, -10);
             else if ( ch == '}' )
-                UpDownValue(&cm730, 10);
+                UpDownValue(&arbotixpro, 10);
             else if ( ch == ' ' )
-                ToggleTorque(&cm730);
+                ToggleTorque(&arbotixpro);
             else if ((ch >= 'a' && ch <= 'z' ) || ( ch >= '0' && ch <= '9') )
                 {
 
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
 
                     while (1)
                         {
-                            //while(!kbhit(true))   ProcessPS3(&cm730,apState);
+                            //while(!kbhit(true))   ProcessPS3(&arbotixpro,apState);
                             ch = _getch();
                             if ( ch == 0x0A ) // newline
                                 break;
@@ -208,16 +208,16 @@ int main(int argc, char *argv[])
                                     else if (strcmp(cmd, "mon") == 0)
                                         {
                                             linuxMotionTimer.Start();
-                                            cm730.m_bIncludeTempData = true;
-                                            cm730.MakeBulkReadPacket();// force packet to get rebuilt
+                                            arbotixpro.m_bIncludeTempData = true;
+                                            arbotixpro.MakeBulkReadPacket();// force packet to get rebuilt
                                             while (!kbhit(true))
                                                 {
-                                                    MonitorServos(&cm730);
+                                                    MonitorServos(&arbotixpro);
                                                     usleep(10000);
                                                 }
                                             linuxMotionTimer.Stop();
-                                            cm730.m_bIncludeTempData = false;
-                                            cm730.MakeBulkReadPacket();// force packet to be rebuilt
+                                            arbotixpro.m_bIncludeTempData = false;
+                                            arbotixpro.MakeBulkReadPacket();// force packet to be rebuilt
                                             GoToCursor(CMD_COL, CMD_ROW);
                                         }
                                     else if (strcmp(cmd, "page") == 0)
@@ -230,23 +230,23 @@ int main(int argc, char *argv[])
                                     else if (strcmp(cmd, "play") == 0)
                                         {
                                             if (num_param > 0)
-                                                PlayCmd(&cm730, iparam[0]);
+                                                PlayCmd(&arbotixpro, iparam[0]);
                                             else
-                                                PlayCmd(&cm730, IndexPage());
+                                                PlayCmd(&arbotixpro, IndexPage());
                                         }
                                     else if (strcmp(cmd, "set") == 0)
                                         {
                                             if (num_param > 0)
-                                                SetValue(&cm730, iparam[0]);
+                                                SetValue(&arbotixpro, iparam[0]);
                                             else
                                                 PrintCmd("Need parameter");
                                         }
                                     else if (strcmp(cmd, "list") == 0)
                                         ListCmd();
                                     else if (strcmp(cmd, "on") == 0)
-                                        OnOffCmd(&cm730, true, num_param, iparam, iparams);
+                                        OnOffCmd(&arbotixpro, true, num_param, iparam, iparams);
                                     else if (strcmp(cmd, "off") == 0)
-                                        OnOffCmd(&cm730, false, num_param, iparam, iparams);
+                                        OnOffCmd(&arbotixpro, false, num_param, iparam, iparams);
                                     else if (strcmp(cmd, "w") == 0)
                                         {
                                             if (num_param > 0)
@@ -287,17 +287,17 @@ int main(int argc, char *argv[])
                                     else if (strcmp(cmd, "g") == 0)
                                         {
                                             if (num_param > 0)
-                                                GoCmd(&cm730, iparam[0]);
+                                                GoCmd(&arbotixpro, iparam[0]);
                                             else
                                                 PrintCmd("Need parameter");
                                         }
                                     else if (strcmp(cmd, "poweroff") == 0)
                                         {
-                                            cm730.DXLPowerOn(false);
+                                            arbotixpro.DXLPowerOn(false);
                                         }
                                     else if (strcmp(cmd, "poweron") == 0)
                                         {
-                                            cm730.DXLPowerOn(true);
+                                            arbotixpro.DXLPowerOn(true);
                                         }
                                     else if (strcmp(cmd, "save") == 0)
                                         {

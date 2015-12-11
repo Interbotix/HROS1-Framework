@@ -15,7 +15,7 @@
 #include "mjpg_streamer.h"
 #include "LinuxDARwIn.h"
 
-#ifdef MX28_1024
+#ifdef AXDXL_1024
 #define MOTION_FILE_PATH    ((char *)"../../../Data/motion_1024.bin")
 #else
 #define MOTION_FILE_PATH    ((char *)"../../../Data/motion_4096.bin")
@@ -29,8 +29,8 @@
 #define U2D_DEV_NAME1       "/dev/ttyUSB1"
 
 int isRunning = 1;
-LinuxCM730 linux_cm730(U2D_DEV_NAME0);
-CM730 cm730(&linux_cm730);
+LinuxArbotixPro linux_arbotixpro(U2D_DEV_NAME0);
+ArbotixPro arbotixpro(&linux_arbotixpro);
 
 // Define the exit signal handler
 void signal_callback_handler(int signum)
@@ -71,10 +71,10 @@ int main(void)
     BallTracker tracker = BallTracker();
 
 //////////////////// Framework Initialize ////////////////////////////
-    if (MotionManager::GetInstance()->Initialize(&cm730) == false)
+    if (MotionManager::GetInstance()->Initialize(&arbotixpro) == false)
         {
-            linux_cm730.SetPortName(U2D_DEV_NAME1);
-            if (MotionManager::GetInstance()->Initialize(&cm730) == false)
+            linux_arbotixpro.SetPortName(U2D_DEV_NAME1);
+            if (MotionManager::GetInstance()->Initialize(&arbotixpro) == false)
                 {
                     printf("Fail to initialize Motion Manager!\n");
                     return 0;

@@ -59,7 +59,7 @@ void MoveLeftCursor();
 void MoveRightCursor();
 
 // Disp & Drawing
-void DrawIntro(Robot::CM730 *cm730);
+void DrawIntro(Robot::ArbotixPro *arbotixpro);
 void DrawEnding();
 void DrawScreen();
 void ClearCmd();

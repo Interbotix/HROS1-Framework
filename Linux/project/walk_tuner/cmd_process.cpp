@@ -131,7 +131,7 @@ void MoveRightCursor()
 {
 }
 
-void DrawIntro(CM730 *cm730)
+void DrawIntro(ArbotixPro *arbotixpro)
 {
 	int n = 0;
 	int param[JointData::NUMBER_OF_JOINTS * 5];
@@ -151,13 +151,13 @@ void DrawIntro(CM730 *cm730)
 				wDistance = 8;
 
 			param[n++] = id;
-			param[n++] = CM730::GetLowByte(wGoalPosition);
-			param[n++] = CM730::GetHighByte(wGoalPosition);
-			param[n++] = CM730::GetLowByte(wDistance);
-			param[n++] = CM730::GetHighByte(wDistance);
+			param[n++] = ArbotixPro::GetLowByte(wGoalPosition);
+			param[n++] = ArbotixPro::GetHighByte(wGoalPosition);
+			param[n++] = ArbotixPro::GetLowByte(wDistance);
+			param[n++] = ArbotixPro::GetHighByte(wDistance);
 		}
 
-	cm730->SyncWrite(MX28::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);
+	arbotixpro->SyncWrite(AXDXL::P_GOAL_POSITION_L, 5, JointData::NUMBER_OF_JOINTS - 1, param);
 
 	int nrows, ncolumns;
 	setupterm(NULL, fileno(stdout), (int *)0);

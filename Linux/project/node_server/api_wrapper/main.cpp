@@ -22,10 +22,10 @@
 #include "Action.h"
 #include "Head.h"
 #include "Walking.h"
-#include "MX28.h"
+#include "AXDXL.h"
 #include "MotionManager.h"
 #include "LinuxMotionTimer.h"
-#include "LinuxCM730.h"
+#include "LinuxArbotixPro.h"
 #include "LinuxActionScript.h"
 
 // defines config file path which contain walk tuning params,
@@ -39,8 +39,8 @@
 #define U2D_DEV_NAME1       "/dev/ttyUSB1"
 
 // instatiate subcontroller object with dev assignment
-LinuxCM730 linux_cm730(U2D_DEV_NAME0);
-CM730 cm730(&linux_cm730);
+LinuxArbotixPro linux_arbotixpro(U2D_DEV_NAME0);
+ArbotixPro arbotixpro(&linux_arbotixpro);
 // instatiate system timer
 LinuxMotionTimer linuxMotionTimer;
 
@@ -69,11 +69,11 @@ bool Initialize()
 
     // check if on dev 0
     // Motion manager initialize queries all servos
-    if (MotionManager::GetInstance()->Initialize(&cm730) == false)
+    if (MotionManager::GetInstance()->Initialize(&arbotixpro) == false)
         {
             // if not try dev 1
-            linux_cm730.SetPortName(U2D_DEV_NAME1);
-            if (MotionManager::GetInstance()->Initialize(&cm730) == false)
+            linux_arbotixpro.SetPortName(U2D_DEV_NAME1);
+            if (MotionManager::GetInstance()->Initialize(&arbotixpro) == false)
                 {
                     printf("\n The Framework has encountered a connection error to the subcontroller!\n");
                     printf("Failed to initialize Motion Manager! Meaning the program is unable to communicate with Subcontroller.\n");
@@ -111,12 +111,12 @@ void ServoShutdown()
     WalkToggle(false);  // turn off walking if is walking
     PlayAction(4);  // sit robot
     // shutdown
-    cm730.DXLPowerOn(false);
+    arbotixpro.DXLPowerOn(false);
 }
 
 void ServoStartup()
 {
-    cm730.DXLPowerOn(true);
+    arbotixpro.DXLPowerOn(true);
 }
 
 /**************************************
@@ -156,7 +156,7 @@ void PlayAction(std::string name) {
 
 // turn on/off motors
 // TODO(anyone)
-void ServoPower(Robot::CM730 *cm730, bool on, int num_param,
+void ServoPower(Robot::ArbotixPro *arbotixpro, bool on, int num_param,
                 int *list, char lists[30][10])
 {
 }
@@ -293,11 +293,11 @@ int BatteryVoltLevel()
 {
     int voltage;
 
-    if (cm730.ReadByte(CM730::ID_CM, CM730::P_VOLTAGE, &voltage, 0) == CM730::SUCCESS)
+    if (arbotixpro.ReadByte(ArbotixPro::ID_CM, ArbotixPro::P_VOLTAGE, &voltage, 0) == ArbotixPro::SUCCESS)
         {
             return voltage;
         }
-    // failed, no read from cm730
+    // failed, no read from arbotixpro
     return -1;
 }
 

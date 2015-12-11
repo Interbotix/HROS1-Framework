@@ -10,7 +10,7 @@
 
 #include "DARwIn.h"
 #include "LinuxMotionTimer.h"
-#include "LinuxCM730.h"
+#include "LinuxArbotixPro.h"
 #include "LinuxCamera.h"
 #include "LinuxNetwork.h"
 #include "LinuxActionScript.h"

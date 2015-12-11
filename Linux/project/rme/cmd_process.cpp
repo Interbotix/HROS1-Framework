@@ -116,18 +116,18 @@ void reset_stdin(void)
 	tcsetattr(0, TCSANOW, &oldterm);
 }
 
-void ReadStep(CM730 *cm730)
+void ReadStep(ArbotixPro *arbotixpro)
 {
 	int value;
 	for (int id = 0; id < 31; id++)
 		{
 			if (id >= JointData::ID_MIN && id <= JointData::ID_MAX)
 				{
-					if (cm730->ReadByte(id, MX28::P_TORQUE_ENABLE, &value, 0) == CM730::SUCCESS)
+					if (arbotixpro->ReadByte(id, AXDXL::P_TORQUE_ENABLE, &value, 0) == ArbotixPro::SUCCESS)
 						{
 							if (value == 1)
 								{
-									if (cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
+									if (arbotixpro->ReadWord(id, AXDXL::P_GOAL_POSITION_L, &value, 0) == ArbotixPro::SUCCESS)
 										Step.position[id] = value;
 									else
 										Step.position[id] = Action::INVALID_BIT_MASK;
@@ -298,7 +298,7 @@ void MoveRightCursor()
 		}
 }
 
-void DrawIntro(CM730 *cm730)
+void DrawIntro(ArbotixPro *arbotixpro)
 {
 	int res, nrows, ncolumns;
 	setupterm(NULL, fileno(stdout), (int *)0);
@@ -320,7 +320,7 @@ void DrawIntro(CM730 *cm730)
 	Action::GetInstance()->LoadPage(indexPage, &Page);
 
 	SetColor(VTANSI_FG_WHITE, VTANSI_BG_DEFAULT, VTANSI_ATTRIB_BOLD);
-	ReadStep(cm730);
+	ReadStep(arbotixpro);
 	Step.pause = 0;
 	Step.time = 0;
 
@@ -583,9 +583,9 @@ void PrintCmd(const char *message)
 	GoToCursor(len + 2, CMD_ROW);
 }
 
-void UpDownValue(CM730 *cm730, int offset)
+void UpDownValue(ArbotixPro *arbotixpro, int offset)
 {
-	SetValue(cm730, GetValue() + offset);
+	SetValue(arbotixpro, GetValue() + offset);
 }
 
 int GetValue()
@@ -678,7 +678,7 @@ int GetValue()
 	return -1;
 }
 
-void SetValue(CM730 *cm730, int value)
+void SetValue(ArbotixPro *arbotixpro, int value)
 {
 	int col;
 	int row;
@@ -717,14 +717,14 @@ void SetValue(CM730 *cm730, int value)
 				}
 			else
 				{
-					if (value >= 0 && value <= MX28::MAX_VALUE)
+					if (value >= 0 && value <= AXDXL::MAX_VALUE)
 						{
 							if (!(Step.position[row + 1] & Action::INVALID_BIT_MASK) && !(Step.position[row + 1] & Action::TORQUE_OFF_BIT_MASK))
 								{
 									int error;
-									if (cm730->WriteWord(row + 1, MX28::P_GOAL_POSITION_L, value, &error) == CM730::SUCCESS)
+									if (arbotixpro->WriteWord(row + 1, AXDXL::P_GOAL_POSITION_L, value, &error) == ArbotixPro::SUCCESS)
 										{
-											if (!(error & CM730::ANGLE_LIMIT))
+											if (!(error & ArbotixPro::ANGLE_LIMIT))
 												{
 													Step.position[row + 1] = value;
 													printf( "%.4d", value );
@@ -790,7 +790,7 @@ void SetValue(CM730 *cm730, int value)
 			else
 				{
 					//	printf("value = %d\n\n",Page.step[i].position[row + 1]);
-					if (value >= 0 && value <= MX28::MAX_VALUE)
+					if (value >= 0 && value <= AXDXL::MAX_VALUE)
 						{
 							if (!(Page.step[i].position[row + 1] & Action::INVALID_BIT_MASK))
 								{
@@ -894,7 +894,7 @@ void SetValue(CM730 *cm730, int value)
 	GoToCursor(col, row);
 }
 
-void ToggleTorque(CM730 *cm730)
+void ToggleTorque(ArbotixPro *arbotixpro)
 {
 	if (Col != STP7_COL || Row > ID_20_ROW)
 		return;
@@ -903,11 +903,11 @@ void ToggleTorque(CM730 *cm730)
 
 	if (Step.position[id] & Action::TORQUE_OFF_BIT_MASK)
 		{
-			if (cm730->WriteByte(id, MX28::P_TORQUE_ENABLE, 1, 0) != CM730::SUCCESS)
+			if (arbotixpro->WriteByte(id, AXDXL::P_TORQUE_ENABLE, 1, 0) != ArbotixPro::SUCCESS)
 				return;
 
 			int value;
-			if (cm730->ReadWord(id, MX28::P_PRESENT_POSITION_L, &value, 0) != CM730::SUCCESS)
+			if (arbotixpro->ReadWord(id, AXDXL::P_PRESENT_POSITION_L, &value, 0) != ArbotixPro::SUCCESS)
 				return;
 
 			Step.position[id] = value;
@@ -915,7 +915,7 @@ void ToggleTorque(CM730 *cm730)
 		}
 	else
 		{
-			if (cm730->WriteByte(id, MX28::P_TORQUE_ENABLE, 0, 0) != CM730::SUCCESS)
+			if (arbotixpro->WriteByte(id, AXDXL::P_TORQUE_ENABLE, 0, 0) != ArbotixPro::SUCCESS)
 				return;
 
 			Step.position[id] = Action::TORQUE_OFF_BIT_MASK;
@@ -1026,7 +1026,7 @@ void SpeedCmd()
 	DrawPage();
 }
 
-void MonitorServos(CM730 *cm730)
+void MonitorServos(ArbotixPro *arbotixpro)
 {
 	int value, j;
 	int colors[] = {VTANSI_FG_BLUE, VTANSI_FG_CYAN, VTANSI_FG_YELLOW, VTANSI_FG_RED};
@@ -1049,7 +1049,7 @@ void MonitorServos(CM730 *cm730)
 	GoToCursor(CMD_COL, CMD_ROW);
 }
 
-void PlayCmd(CM730 *cm730, int pageNum)
+void PlayCmd(ArbotixPro *arbotixpro, int pageNum)
 {
 	int value, oldIndex = 0;
 	Action::PAGE page;
@@ -1080,16 +1080,16 @@ void PlayCmd(CM730 *cm730, int pageNum)
 
 	for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
 		{
-			if (cm730->ReadByte(id, MX28::P_TORQUE_ENABLE, &value, 0) == CM730::SUCCESS)
+			if (arbotixpro->ReadByte(id, AXDXL::P_TORQUE_ENABLE, &value, 0) == ArbotixPro::SUCCESS)
 				{
 					if (value == 0)
 						{
-							if (cm730->ReadWord(id, MX28::P_PRESENT_POSITION_L, &value, 0) == CM730::SUCCESS)
+							if (arbotixpro->ReadWord(id, AXDXL::P_PRESENT_POSITION_L, &value, 0) == ArbotixPro::SUCCESS)
 								MotionStatus::m_CurrentJoints.SetValue(id, value);
 						}
 					else
 						{
-							if (cm730->ReadWord(id, MX28::P_GOAL_POSITION_L, &value, 0) == CM730::SUCCESS)
+							if (arbotixpro->ReadWord(id, AXDXL::P_GOAL_POSITION_L, &value, 0) == ArbotixPro::SUCCESS)
 								MotionStatus::m_CurrentJoints.SetValue(id, value);
 						}
 				}
@@ -1150,7 +1150,7 @@ void PlayCmd(CM730 *cm730, int pageNum)
 			indexPage = oldIndex;
 		}
 
-	ReadStep(cm730);
+	ReadStep(arbotixpro);
 	DrawStep(7);
 }
 
@@ -1307,7 +1307,7 @@ void ListCmd()
 		}
 }
 
-void OnOffCmd(CM730 *cm730, bool on, int num_param, int *list, char lists[30][10])
+void OnOffCmd(ArbotixPro *arbotixpro, bool on, int num_param, int *list, char lists[30][10])
 {
 	char *token, token1[30];
 	int startID, stopID, id;
@@ -1320,7 +1320,7 @@ void OnOffCmd(CM730 *cm730, bool on, int num_param, int *list, char lists[30][10
 	if (num_param == 0)
 		{
 			for (int id = JointData::ID_MIN; id <= JointData::ID_MAX; id++)
-				cm730->WriteByte(id, MX28::P_TORQUE_ENABLE, (int)on, 0);
+				arbotixpro->WriteByte(id, AXDXL::P_TORQUE_ENABLE, (int)on, 0);
 		}
 	else
 		{
@@ -1338,7 +1338,7 @@ void OnOffCmd(CM730 *cm730, bool on, int num_param, int *list, char lists[30][10
 									if (stopID >= JointData::ID_MIN && stopID <= JointData::ID_MAX && startID >= JointData::ID_MIN && startID <= JointData::ID_MAX)
 										{
 											for (id = startID; id <= stopID; id++)
-												cm730->WriteByte(id, MX28::P_TORQUE_ENABLE, (int)on, 0);
+												arbotixpro->WriteByte(id, AXDXL::P_TORQUE_ENABLE, (int)on, 0);
 										}
 								}
 							else
@@ -1346,35 +1346,35 @@ void OnOffCmd(CM730 *cm730, bool on, int num_param, int *list, char lists[30][10
 									if (strcmp(token1, "rl") == 0)
 										{
 											for (id = 0; id < 6; id++ )
-												cm730->WriteByte(rl[id], MX28::P_TORQUE_ENABLE, (int)on, 0);
+												arbotixpro->WriteByte(rl[id], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
 										}
 									else if (strcmp(token1, "ll") == 0)
 										{
 											for (id = 0; id < 6; id++ )
-												cm730->WriteByte(ll[id], MX28::P_TORQUE_ENABLE, (int)on, 0);
+												arbotixpro->WriteByte(ll[id], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
 										}
 									else if (strcmp(token1, "ra") == 0)
 										{
 											for (id = 0; id < 6; id++ )
-												cm730->WriteByte(ra[id], MX28::P_TORQUE_ENABLE, (int)on, 0);
+												arbotixpro->WriteByte(ra[id], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
 										}
 									else if (strcmp(token1, "la") == 0)
 										{
 											for (id = 0; id < 6; id++ )
-												cm730->WriteByte(la[id], MX28::P_TORQUE_ENABLE, (int)on, 0);
+												arbotixpro->WriteByte(la[id], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
 										}
 									else if (strcmp(token1, "h") == 0)
 										{
 											for (id = 0; id < 3; id++ )
-												cm730->WriteByte(h[id], MX28::P_TORQUE_ENABLE, (int)on, 0);
+												arbotixpro->WriteByte(h[id], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
 										}
 									else if (list[i] >= JointData::ID_MIN && list[i] <= JointData::ID_MAX)
-										cm730->WriteByte(list[i], MX28::P_TORQUE_ENABLE, (int)on, 0);
+										arbotixpro->WriteByte(list[i], AXDXL::P_TORQUE_ENABLE, (int)on, 0);
 								}
 						}
 				}
 		}
-	ReadStep(cm730);
+	ReadStep(arbotixpro);
 	DrawStep(7);
 }
 
@@ -1537,7 +1537,7 @@ void NewCmd()
 	bEdited = true;
 }
 
-void GoCmd(CM730 *cm730, int index)
+void GoCmd(ArbotixPro *arbotixpro, int index)
 {
 	if (index < 0 || index >= Action::MAXNUM_STEP)
 		{
@@ -1569,7 +1569,7 @@ void GoCmd(CM730 *cm730, int index)
 					return;
 				}
 
-			if (cm730->ReadWord(id, MX28::P_PRESENT_POSITION_L, &wStartPosition, 0) != CM730::SUCCESS)
+			if (arbotixpro->ReadWord(id, AXDXL::P_PRESENT_POSITION_L, &wStartPosition, 0) != ArbotixPro::SUCCESS)
 				{
 					PrintCmd("Failed to read position");
 					return;
@@ -1657,7 +1657,7 @@ void SetColor(int fg, int bg, int attrib)
 	return;
 }
 
-void ProcessPS3(Robot::CM730 *cm730, int *apState)
+void ProcessPS3(Robot::ArbotixPro *arbotixpro, int *apState)
 {
 	int num_param = 1;
 	int iparam[30];
@@ -1677,7 +1677,7 @@ void ProcessPS3(Robot::CM730 *cm730, int *apState)
 			strcpy(iparams[0], "rl");
 			apState[0]++;
 			apState[0] %= 2;
-			OnOffCmd(cm730, apState[0] ? true : false, num_param, iparam, iparams);
+			OnOffCmd(arbotixpro, apState[0] ? true : false, num_param, iparam, iparams);
 			while (PS3.key.R2 != 0) usleep(8000);
 		}
 	if (PS3.key.R1 != 0)
@@ -1685,7 +1685,7 @@ void ProcessPS3(Robot::CM730 *cm730, int *apState)
 			apState[1]++;
 			apState[1] %= 2;
 			strcpy(iparams[0], "ra");
-			OnOffCmd(cm730, apState[1] ? true : false, num_param, iparam, iparams);
+			OnOffCmd(arbotixpro, apState[1] ? true : false, num_param, iparam, iparams);
 			while (PS3.key.R1 != 0) usleep(8000);
 		}
 	if (PS3.key.L2 != 0)
@@ -1693,7 +1693,7 @@ void ProcessPS3(Robot::CM730 *cm730, int *apState)
 			apState[2]++;
 			apState[2] %= 2;
 			strcpy(iparams[0], "ll");
-			OnOffCmd(cm730, apState[2] ? true : false, num_param, iparam, iparams);
+			OnOffCmd(arbotixpro, apState[2] ? true : false, num_param, iparam, iparams);
 			while (PS3.key.L2 != 0) usleep(8000);
 		}
 	if (PS3.key.L1 != 0)
@@ -1701,7 +1701,7 @@ void ProcessPS3(Robot::CM730 *cm730, int *apState)
 			apState[3]++;
 			apState[3] %= 2;
 			strcpy(iparams[0], "la");
-			OnOffCmd(cm730, apState[3] ? true : false, num_param, iparam, iparams);
+			OnOffCmd(arbotixpro, apState[3] ? true : false, num_param, iparam, iparams);
 			while (PS3.key.L1 != 0) usleep(8000);
 		}
 	if (PS3.key.Up != 0)
@@ -1709,7 +1709,7 @@ void ProcessPS3(Robot::CM730 *cm730, int *apState)
 			apState[4]++;
 			apState[4] %= 2;
 			strcpy(iparams[0], "h");
-			OnOffCmd(cm730, apState[4] ? true : false, num_param, iparam, iparams);
+			OnOffCmd(arbotixpro, apState[4] ? true : false, num_param, iparam, iparams);
 			while (PS3.key.Up != 0) usleep(8000);
 		}
 	return;

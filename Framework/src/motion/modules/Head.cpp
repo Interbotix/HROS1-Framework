@@ -6,7 +6,7 @@
  */
 
 #include <stdio.h>
-#include "MX28.h"
+#include "AXDXL.h"
 #include "Kinematics.h"
 #include "MotionStatus.h"
 #include "Head.h"
@@ -21,7 +21,7 @@ Head::Head()
 	m_Pan_p_gain = 0.1;
 	m_Pan_d_gain = 0.18;
 
-    m_Tilt_p_gain = 0.1;
+	m_Tilt_p_gain = 0.1;
 	m_Tilt_d_gain = 0.18;
 
 	m_LeftLimit = 70;
@@ -50,15 +50,15 @@ Head::~Head()
 
 void Head::CheckLimit()
 {
-	if(m_PanAngle > m_LeftLimit)
+	if (m_PanAngle > m_LeftLimit)
 		m_PanAngle = m_LeftLimit;
-	else if(m_PanAngle < m_RightLimit)
+	else if (m_PanAngle < m_RightLimit)
 		m_PanAngle = m_RightLimit;
 
-	if(m_TiltAngle > m_TopLimit)
+	if (m_TiltAngle > m_TopLimit)
 		m_TiltAngle = m_TopLimit;
-	else if(m_TiltAngle < m_BottomLimit)
-		m_TiltAngle = m_BottomLimit;	
+	else if (m_TiltAngle < m_BottomLimit)
+		m_TiltAngle = m_BottomLimit;
 }
 
 void Head::Initialize()
@@ -73,49 +73,49 @@ void Head::Initialize()
 
 void Head::LoadINISettings(minIni* ini)
 {
-    LoadINISettings(ini, HEAD_SECTION);
+	LoadINISettings(ini, HEAD_SECTION);
 }
 
 void Head::LoadINISettings(minIni* ini, const std::string &section)
 {
-    double value = INVALID_VALUE;
+	double value = INVALID_VALUE;
 
-    if((value = ini->getd(section, "pan_p_gain", INVALID_VALUE)) != INVALID_VALUE)  m_Pan_p_gain = value;
-    if((value = ini->getd(section, "pan_d_gain", INVALID_VALUE)) != INVALID_VALUE)  m_Pan_d_gain = value;
-    if((value = ini->getd(section, "tilt_p_gain", INVALID_VALUE)) != INVALID_VALUE) m_Tilt_p_gain = value;
-    if((value = ini->getd(section, "tilt_d_gain", INVALID_VALUE)) != INVALID_VALUE) m_Tilt_d_gain = value;
-    if((value = ini->getd(section, "left_limit", INVALID_VALUE)) != INVALID_VALUE)  m_LeftLimit = value;
-    if((value = ini->getd(section, "right_limit", INVALID_VALUE)) != INVALID_VALUE) m_RightLimit = value;
-    if((value = ini->getd(section, "top_limit", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit = value;
-    if((value = ini->getd(section, "bottom_limit", INVALID_VALUE)) != INVALID_VALUE)m_BottomLimit = value;
-    if((value = ini->getd(section, "pan_home", INVALID_VALUE)) != INVALID_VALUE)    m_Pan_Home = value;
-    if((value = ini->getd(section, "tilt_home", INVALID_VALUE)) != INVALID_VALUE)   m_Tilt_Home = value;
+	if ((value = ini->getd(section, "pan_p_gain", INVALID_VALUE)) != INVALID_VALUE)  m_Pan_p_gain = value;
+	if ((value = ini->getd(section, "pan_d_gain", INVALID_VALUE)) != INVALID_VALUE)  m_Pan_d_gain = value;
+	if ((value = ini->getd(section, "tilt_p_gain", INVALID_VALUE)) != INVALID_VALUE) m_Tilt_p_gain = value;
+	if ((value = ini->getd(section, "tilt_d_gain", INVALID_VALUE)) != INVALID_VALUE) m_Tilt_d_gain = value;
+	if ((value = ini->getd(section, "left_limit", INVALID_VALUE)) != INVALID_VALUE)  m_LeftLimit = value;
+	if ((value = ini->getd(section, "right_limit", INVALID_VALUE)) != INVALID_VALUE) m_RightLimit = value;
+	if ((value = ini->getd(section, "top_limit", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit = value;
+	if ((value = ini->getd(section, "bottom_limit", INVALID_VALUE)) != INVALID_VALUE)m_BottomLimit = value;
+	if ((value = ini->getd(section, "pan_home", INVALID_VALUE)) != INVALID_VALUE)    m_Pan_Home = value;
+	if ((value = ini->getd(section, "tilt_home", INVALID_VALUE)) != INVALID_VALUE)   m_Tilt_Home = value;
 
-		if((value = ini->getd(section, "top_limit_line_following", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit_line_following = value;
-    if((value = ini->getd(section, "top_limit_robot_following", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit_robot_following = value;
-    if((value = ini->getd(section, "top_limit_soccer", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit_soccer = value;
+	if ((value = ini->getd(section, "top_limit_line_following", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit_line_following = value;
+	if ((value = ini->getd(section, "top_limit_robot_following", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit_robot_following = value;
+	if ((value = ini->getd(section, "top_limit_soccer", INVALID_VALUE)) != INVALID_VALUE)   m_TopLimit_soccer = value;
 }
 
 void Head::SaveINISettings(minIni* ini)
 {
-    SaveINISettings(ini, HEAD_SECTION);
+	SaveINISettings(ini, HEAD_SECTION);
 }
 
 void Head::SaveINISettings(minIni* ini, const std::string &section)
 {
-    ini->put(section,   "pan_p_gain",   m_Pan_p_gain);
-    ini->put(section,   "pan_d_gain",   m_Pan_d_gain);
-    ini->put(section,   "tilt_p_gain",  m_Tilt_p_gain);
-    ini->put(section,   "tilt_d_gain",  m_Tilt_d_gain);
-    ini->put(section,   "left_limit",   m_LeftLimit);
-    ini->put(section,   "right_limit",  m_RightLimit);
-    ini->put(section,   "top_limit",    m_TopLimit);
-    ini->put(section,   "bottom_limit", m_BottomLimit);
-    ini->put(section,   "pan_home",     m_Pan_Home);
-    ini->put(section,   "tilt_home",    m_Tilt_Home);
-    ini->put(section,   "top_limit_line_following",    m_TopLimit_line_following);
-    ini->put(section,   "top_limit_robot_following",    m_TopLimit_robot_following);
-    ini->put(section,   "top_limit_soccer",    m_TopLimit_soccer);
+	ini->put(section,   "pan_p_gain",   m_Pan_p_gain);
+	ini->put(section,   "pan_d_gain",   m_Pan_d_gain);
+	ini->put(section,   "tilt_p_gain",  m_Tilt_p_gain);
+	ini->put(section,   "tilt_d_gain",  m_Tilt_d_gain);
+	ini->put(section,   "left_limit",   m_LeftLimit);
+	ini->put(section,   "right_limit",  m_RightLimit);
+	ini->put(section,   "top_limit",    m_TopLimit);
+	ini->put(section,   "bottom_limit", m_BottomLimit);
+	ini->put(section,   "pan_home",     m_Pan_Home);
+	ini->put(section,   "tilt_home",    m_Tilt_Home);
+	ini->put(section,   "top_limit_line_following",    m_TopLimit_line_following);
+	ini->put(section,   "top_limit_robot_following",    m_TopLimit_robot_following);
+	ini->put(section,   "top_limit_soccer",    m_TopLimit_soccer);
 }
 
 void Head::MoveToHome()
@@ -132,7 +132,7 @@ void Head::MoveByAngle(double pan, double tilt)
 }
 
 void Head::MoveByAngleOffset(double pan, double tilt)
-{	
+{
 	MoveByAngle(m_PanAngle + pan, m_TiltAngle + tilt);
 }
 
@@ -145,7 +145,7 @@ void Head::InitTracking()
 }
 
 void Head::MoveTracking(Point2D err)
-{	
+{
 	m_Pan_err_diff = err.X - m_Pan_err;
 	m_Pan_err = err.X;
 
@@ -161,21 +161,21 @@ void Head::MoveTracking()
 
 	pOffset = m_Pan_err * m_Pan_p_gain;
 	pOffset *= pOffset;
-	if(m_Pan_err < 0)
+	if (m_Pan_err < 0)
 		pOffset = -pOffset;
 	dOffset = m_Pan_err_diff * m_Pan_d_gain;
 	dOffset *= dOffset;
-	if(m_Pan_err_diff < 0)
+	if (m_Pan_err_diff < 0)
 		dOffset = -dOffset;
 	m_PanAngle += (pOffset + dOffset);
 
 	pOffset = m_Tilt_err * m_Tilt_p_gain;
 	pOffset *= pOffset;
-	if(m_Tilt_err < 0)
+	if (m_Tilt_err < 0)
 		pOffset = -pOffset;
 	dOffset = m_Tilt_err_diff * m_Tilt_d_gain;
 	dOffset *= dOffset;
-	if(m_Tilt_err_diff < 0)
+	if (m_Tilt_err_diff < 0)
 		dOffset = -dOffset;
 	m_TiltAngle += (pOffset + dOffset);
 
@@ -184,36 +184,36 @@ void Head::MoveTracking()
 
 void Head::Process()
 {
-	if(m_Joint.GetEnable(JointData::ID_HEAD_PAN) == true)
+	if (m_Joint.GetEnable(JointData::ID_HEAD_PAN) == true)
 		m_Joint.SetAngle(JointData::ID_HEAD_PAN, m_PanAngle);
 
-	if(m_Joint.GetEnable(JointData::ID_HEAD_TILT) == true)
+	if (m_Joint.GetEnable(JointData::ID_HEAD_TILT) == true)
 		m_Joint.SetAngle(JointData::ID_HEAD_TILT, m_TiltAngle);
 }
 
 void Head::LookAround()
 {
-    double pan,tilt;
-    pan = MotionStatus::m_CurrentJoints.GetAngle(JointData::ID_HEAD_PAN);
-    tilt = MotionStatus::m_CurrentJoints.GetAngle(JointData::ID_HEAD_TILT);
+	double pan, tilt;
+	pan = MotionStatus::m_CurrentJoints.GetAngle(JointData::ID_HEAD_PAN);
+	tilt = MotionStatus::m_CurrentJoints.GetAngle(JointData::ID_HEAD_TILT);
 
-    if ( tilt > ( m_TopLimit - m_LookTiltRate ) )
-    {
-        m_LookTiltDirection = -m_LookTiltRate;
-    }
-    else if ( tilt < ( m_BottomLimit + m_LookTiltRate ) )
-    {
-        m_LookTiltDirection = m_LookTiltRate;
-    }
+	if ( tilt > ( m_TopLimit - m_LookTiltRate ) )
+		{
+			m_LookTiltDirection = -m_LookTiltRate;
+		}
+	else if ( tilt < ( m_BottomLimit + m_LookTiltRate ) )
+		{
+			m_LookTiltDirection = m_LookTiltRate;
+		}
 
-    if ( pan < ( m_RightLimit + m_LookPanRate ) )
-    {
-        m_LookPanDirection = m_LookPanRate;
-    }
-    else if ( pan > ( m_LeftLimit - m_LookPanRate ) )
-    {
-        m_LookPanDirection = -m_LookPanRate;
-    }
+	if ( pan < ( m_RightLimit + m_LookPanRate ) )
+		{
+			m_LookPanDirection = m_LookPanRate;
+		}
+	else if ( pan > ( m_LeftLimit - m_LookPanRate ) )
+		{
+			m_LookPanDirection = -m_LookPanRate;
+		}
 
-    MoveByAngleOffset( m_LookPanDirection, m_LookTiltDirection );
+	MoveByAngleOffset( m_LookPanDirection, m_LookTiltDirection );
 }

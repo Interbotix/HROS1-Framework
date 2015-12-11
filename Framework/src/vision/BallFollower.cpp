@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include "ImgProcess.h"
-#include "MX28.h"
+#include "AXDXL.h"
 #include "Head.h"
 #include "Action.h"
 #include "Walking.h"
@@ -92,7 +92,7 @@ void BallFollower::Process(Point2D ball_pos)
 
 			if (pan > m_KickRightAngle && pan < m_KickLeftAngle)
 				{
-					if (tilt <= (tilt_min + MX28::RATIO_VALUE2ANGLE))
+					if (tilt <= (tilt_min + AXDXL::RATIO_VALUE2ANGLE))
 						{
 							if (ball_pos.Y < m_KickTopAngle)
 								{

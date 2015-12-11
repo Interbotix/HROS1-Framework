@@ -19,7 +19,7 @@ CXXFLAGS += -fPIC -shared -O2 -DLINUX -D_GNU_SOURCE -Wall -g $(INCLUDE_DIRS)
 #CXXFLAGS += -O2 -DDEBUG -DLINUX -D_GNU_SOURCE -Wall -shared $(INCLUDE_DIRS)
 LFLAGS += -g -lpthread -ldl -lbluetooth -lncurses
 
-OBJS =  ../../Framework/src/CM730.o     	\
+OBJS =  ../../Framework/src/ArbotixPro.o     	\
         ../../Framework/src/math/Matrix.o   \
         ../../Framework/src/math/Plane.o    \
         ../../Framework/src/math/Point.o    \
@@ -52,7 +52,7 @@ OBJS =  ../../Framework/src/CM730.o     	\
         streamer/mjpg_streamer.o   \
         LinuxActionScript.o   \
         LinuxCamera.o   \
-        LinuxCM730.o    \
+        LinuxArbotixPro.o    \
         LinuxMotionTimer.o    \
         LinuxNetwork.o
 

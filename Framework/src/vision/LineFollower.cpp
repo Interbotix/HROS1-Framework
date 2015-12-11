@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "ImgProcess.h"
-#include "MX28.h"
+#include "AXDXL.h"
 #include "Head.h"
 #include "Action.h"
 #include "Walking.h"
@@ -155,7 +155,7 @@ void LineFollower::Process(BallTracker &tracker)
 				{
 					//tracker.bMotionEnable = false;
 					//Head::GetInstance()->MoveByAngle();
-					if (tilt <= (tilt_min + MX28::RATIO_VALUE2ANGLE))
+					if (tilt <= (tilt_min + AXDXL::RATIO_VALUE2ANGLE))
 						{
 							if (tracker.ball_position.Y < m_TopAngle)
 								{

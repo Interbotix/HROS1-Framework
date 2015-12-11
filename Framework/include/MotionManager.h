@@ -13,7 +13,7 @@
 #include <iostream>
 #include "MotionStatus.h"
 #include "MotionModule.h"
-#include "CM730.h"
+#include "ArbotixPro.h"
 #include "minIni.h"
 #include "AngleEstimator.h"
 
@@ -27,7 +27,7 @@ namespace Robot
 		private:
 			static MotionManager* m_UniqueInstance;
 			std::list<MotionModule*> m_Modules;
-			CM730 *m_CM730;
+			ArbotixPro *m_ArbotixPro;
 			bool m_ProcessEnable;
 			bool m_Enabled;
 			int m_FBGyroCenter;
@@ -63,7 +63,7 @@ namespace Robot
 
 			static MotionManager* GetInstance() { return m_UniqueInstance; }
 
-			bool Initialize(CM730 *cm730, bool fadeIn = true);
+			bool Initialize(ArbotixPro *arbotixpro, bool fadeIn = true);
 			bool Reinitialize();
 			void Process();
 			void SetEnable(bool enable);
