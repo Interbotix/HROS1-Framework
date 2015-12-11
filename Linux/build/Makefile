@@ -1,7 +1,7 @@
 ###############################################################
 #
-# Purpose: Makefile for "DARwIn Linux Framework"
-# Author.: robotis
+# Purpose: Makefile for "DARwIn/HROS Linux Framework"
+# Author.: robotis & interbotix
 # Version: 0.1
 # License: GPL
 #
@@ -46,7 +46,6 @@ OBJS =  ../../Framework/src/ArbotixPro.o     	\
         ../../Framework/src/vision/ImgProcess.o 	\
         ../../Framework/src/minIni/minIni.o	\
         ../../Framework/src/controller/PS3Controller.o	\
-        ../../Framework/src/commander/SerialInputCommander.o	\
         streamer/httpd.o           \
         streamer/jpeg_utils.o      \
         streamer/mjpg_streamer.o   \
@@ -65,6 +64,4 @@ all: $(TARGET)
 
 clean:
 	rm -f $(OBJS) ../lib/$(TARGET)
-
-
 

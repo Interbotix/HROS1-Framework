@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
 
 			Walking::GetInstance()->LoadINISettings(m_ini);
 
-	    arbotixpro.WriteByte(ArbotixPro::P_LED_PANNEL, 0x01|0x02|0x04, NULL);
+
 
 	    PS3Controller_Start();
 			LinuxActionScript::PlayMP3("../../../Data/mp3/ready.mp3");
@@ -182,11 +182,11 @@ int main(int argc, char *argv[])
 	MotionManager::GetInstance()->SetEnable(true);
 
 
-	arbotixpro.WriteByte(ArbotixPro::P_LED_PANNEL, 0x02, NULL);
+
 
 	if (PS3Controller_Start() == 0)
 		printf("PS3 controller not installed.\n");
-	arbotixpro.WriteWord(ArbotixPro::P_LED_HEAD_L, arbotixpro.MakeColor(1, 1, 1), 0);
+
 	//determine current position
 	StatusCheck::m_cur_mode = GetCurrentPosition(arbotixpro);
 	//LinuxActionScript::PlayMP3("../../../Data/mp3/ready.mp3");

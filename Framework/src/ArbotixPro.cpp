@@ -512,7 +512,6 @@ bool ArbotixPro::DXLPowerOn(bool state)
 			if (DEBUG_PRINT == true)
 				fprintf(stderr, " Succeed to change Dynamixel power!\n");
 
-			WriteWord(ArbotixPro::ID_CM, ArbotixPro::P_LED_HEAD_L, state == true ? MakeColor(1, 1, 1) : MakeColor(0, 0, 0), 0);
 			m_Platform->Sleep(300); // about 300msec
 		}
 	else
@@ -527,8 +526,7 @@ bool ArbotixPro::DXLPowerOn(bool state)
 
 void ArbotixPro::Disconnect()
 {
-	// Make the Head LED to green
-	//WriteWord(ArbotixPro::ID_CM, ArbotixPro::P_LED_HEAD_L, MakeColor(0, 255, 0), 0);
+// do action upon disconnect
 	unsigned char txpacket[] = {0xFF, 0xFF, 0xC8, 0x05, 0x03, 0x1A, 0xE0, 0x03, 0x32};
 	m_Platform->WritePort(txpacket, 9);
 
@@ -718,12 +716,3 @@ int ArbotixPro::GetHighByte(int word)
 	return (int)(temp >> 8);
 }
 
-// 5 bits per color
-int ArbotixPro::MakeColor(int red, int green, int blue)
-{
-	int r = red & 0x1F;
-	int g = green & 0x1F;
-	int b = blue & 0x1F;
-
-	return (int)(r | (g << 5) | (b << 10));
-}

@@ -64,11 +64,10 @@ void StatusCheck::Check(ArbotixPro &arbotixpro)
 		 if(MotionStatus::FALLEN != STANDUP && (m_cur_mode == SOCCER) && m_is_started == 1)
 	   	{
 	     Walking::GetInstance()->Stop();
-		 	resetLEDs(arbotixpro);
+
 		 	while(Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 
 	     Action::GetInstance()->m_Joint.SetEnableBody(true, true);
-
 
 	    if(MotionStatus::FALLEN == FORWARD)
 	        Action::GetInstance()->Start(1);   // FORWARD GETUP 10
@@ -87,7 +86,6 @@ void StatusCheck::Check(ArbotixPro &arbotixpro)
 //////////////////////////////////////////////////////////////////////////////////////
 	if (PS3.key.Cross != 0)
 		{
-			resetLEDs(arbotixpro);
 			Walking::GetInstance()->Stop();
 			while (Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 			m_is_started    = 0;
@@ -113,7 +111,7 @@ void StatusCheck::Check(ArbotixPro &arbotixpro)
 				{
 					arbotixpro.DXLPowerOn(true);
 				}
-			resetLEDs(arbotixpro);
+
 			Walking::GetInstance()->Stop();
 			while (Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 			int lastMode = m_cur_mode;
@@ -380,7 +378,7 @@ void StatusCheck::Check(ArbotixPro &arbotixpro)
 	if (Walking::GetInstance()->IsRunning() == true && PS3.key.Down != 0)
 		{
 			fprintf(stderr, "STOPPING WALKING GAIT\n");
-			resetLEDs(arbotixpro);
+
 			Walking::GetInstance()->Stop();
 			while (Walking::GetInstance()->IsRunning() == 1) usleep(8000);
 		}
@@ -526,12 +524,5 @@ void StatusCheck::mPlay(int motion_page, int mode, int wait)
 					Walking::GetInstance()->m_Joint.SetEnableBodyWithoutHead(true, true);
 				}
 		}
-	return;
-}
-
-void StatusCheck::resetLEDs(ArbotixPro &arbotixpro)
-{
-	arbotixpro.WriteWordDelayed(ArbotixPro::P_LED_EYE_L, arbotixpro.MakeColor(3, 3, 3)); //arbotixpro.MakeColor(31,0,18));
-	arbotixpro.WriteWordDelayed(ArbotixPro::P_LED_HEAD_L, arbotixpro.MakeColor(1, 1, 1));
 	return;
 }

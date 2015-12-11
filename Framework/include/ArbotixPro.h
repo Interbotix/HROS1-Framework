@@ -203,7 +203,6 @@ namespace Robot
 			static int MakeWord(int lowbyte, int highbyte);
 			static int GetLowByte(int word);
 			static int GetHighByte(int word);
-			static int MakeColor(int red, int green, int blue);
 	};
 }
 

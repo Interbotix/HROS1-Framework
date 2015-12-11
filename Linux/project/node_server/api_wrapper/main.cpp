@@ -1,5 +1,5 @@
 /******************************
- Author: Daniel Alner & Andrew Alter
+ Author: Daniel Alner & Andrew Dresner
   --21CRobot API
   --Include wrapper around 21CRobot for Javascript API, can include other API's
 *****************************/
