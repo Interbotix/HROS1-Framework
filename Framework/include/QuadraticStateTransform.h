@@ -4,24 +4,24 @@
 
 class QuadraticStateTransform
 {
-public:
+	public:
 
-	QuadraticStateTransform();
-	~QuadraticStateTransform(){};
+		QuadraticStateTransform();
+		~QuadraticStateTransform() {};
 
-	void setA(double A);
-	void setStartState(double x, double v);
-	void setTargetState(double x, double v);
+		void setA(double A);
+		void setStartState(double x, double v);
+		void setTargetState(double x, double v);
 
-	MotionState evaluateAt(double t);
-	double totalTime();
+		MotionState evaluateAt(double t);
+		double totalTime();
 
-	double A;
-	MotionState startState;
-	MotionState targetState;
+		double A;
+		MotionState startState;
+		MotionState targetState;
 
-private:
-	void transformState(double a, double t, MotionState& st);
+	private:
+		void transformState(double a, double t, MotionState& st);
 };
 
 #endif // QUADRATICSTATETRANSFORM_H_

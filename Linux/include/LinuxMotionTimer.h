@@ -23,7 +23,7 @@ namespace Robot
       bool timer_running;
       MotionManager *manager;// reference to the motion manager class.
 
-		protected:
+    protected:
       static void *motion_timing(void *param);// thread function
       void update_time(int interval_ns);
     public:

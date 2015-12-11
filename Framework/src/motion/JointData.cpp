@@ -13,15 +13,15 @@ using namespace Robot;
 
 JointData::JointData()
 {
-    for(int i=0; i<NUMBER_OF_JOINTS; i++)
-    {
-        m_Enable[i] = true;
-        m_Value[i] = MX28::CENTER_VALUE;
-        m_Angle[i] = 0.0;
-        m_CWSlope[i] = SLOPE_HARD;
-        m_CCWSlope[i] = SLOPE_HARD;
-		m_Temp[i] = TEMP_DEFAULT;
-    }
+    for (int i = 0; i < NUMBER_OF_JOINTS; i++)
+        {
+            m_Enable[i] = true;
+            m_Value[i] = MX28::CENTER_VALUE;
+            m_Angle[i] = 0.0;
+            m_CWSlope[i] = SLOPE_HARD;
+            m_CCWSlope[i] = SLOPE_HARD;
+            m_Temp[i] = TEMP_DEFAULT;
+        }
 }
 
 JointData::~JointData()
@@ -35,7 +35,7 @@ void JointData::SetEnable(int id, bool enable)
 
 void JointData::SetEnable(int id, bool enable, bool exclusive)
 {
-    if(enable && exclusive) MotionManager::GetInstance()->SetJointDisable(id);
+    if (enable && exclusive) MotionManager::GetInstance()->SetJointDisable(id);
     m_Enable[id] = enable;
 }
 
@@ -46,8 +46,8 @@ void JointData::SetEnableHeadOnly(bool enable)
 
 void JointData::SetEnableHeadOnly(bool enable, bool exclusive)
 {
-	SetEnable(ID_HEAD_PAN,          enable, exclusive);
-	SetEnable(ID_HEAD_TILT,         enable, exclusive);
+    SetEnable(ID_HEAD_PAN,          enable, exclusive);
+    SetEnable(ID_HEAD_TILT,         enable, exclusive);
 }
 
 void JointData::SetEnableRightArmOnly(bool enable)
@@ -157,9 +157,9 @@ bool JointData::GetEnable(int id)
 
 void JointData::SetValue(int id, int value)
 {
-    if(value < MX28::MIN_VALUE)
+    if (value < MX28::MIN_VALUE)
         value = MX28::MIN_VALUE;
-    else if(value >= MX28::MAX_VALUE)
+    else if (value >= MX28::MAX_VALUE)
         value = MX28::MAX_VALUE;
 
     m_Value[id] = value;
@@ -173,9 +173,9 @@ int JointData::GetValue(int id)
 
 void JointData::SetAngle(int id, double angle)
 {
-    if(angle < MX28::MIN_ANGLE)
+    if (angle < MX28::MIN_ANGLE)
         angle = MX28::MIN_ANGLE;
-    else if(angle > MX28::MAX_ANGLE)
+    else if (angle > MX28::MAX_ANGLE)
         angle = MX28::MAX_ANGLE;
 
     m_Angle[id] = angle;

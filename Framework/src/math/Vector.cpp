@@ -45,13 +45,13 @@ Vector3D::~Vector3D()
 
 double Vector3D::Length()
 {
-	return sqrt(X*X + Y*Y + Z*Z);
+	return sqrt(X * X + Y * Y + Z * Z);
 }
 
 void Vector3D::Normalize()
 {
 	double length = Length();
-	
+
 	X = X / length;
 	Y = Y / length;
 	Z = Z / length;
@@ -59,28 +59,28 @@ void Vector3D::Normalize()
 
 double Vector3D::Dot(const Vector3D &vector)
 {
-	return (X*vector.X + Y*vector.Y + Z*vector.Z);
+	return (X * vector.X + Y * vector.Y + Z * vector.Z);
 }
 
 Vector3D Vector3D::Cross(const Vector3D &vector)
 {
 	Vector3D res;
-	res.X = Y*vector.Z - Z*vector.Y;
-	res.Y = Z*vector.X - X*vector.Z;
-	res.Z = X*vector.Y - Y*vector.X;
+	res.X = Y * vector.Z - Z * vector.Y;
+	res.Y = Z * vector.X - X * vector.Z;
+	res.Z = X * vector.Y - Y * vector.X;
 	return res;
 }
 
 double Vector3D::AngleBetween(Vector3D &vector)
 {
-	return acos((X*vector.X + Y*vector.Y + Z*vector.Z) / (Length() * vector.Length())) * (180.0 / 3.141592);
+	return acos((X * vector.X + Y * vector.Y + Z * vector.Z) / (Length() * vector.Length())) * (180.0 / 3.141592);
 }
 
 double Vector3D::AngleBetween(Vector3D &vector, Vector3D &axis)
 {
 	double angle = AngleBetween(vector);
 	Vector3D cross = Cross(vector);
-	if(cross.Dot(axis) < 0.0)
+	if (cross.Dot(axis) < 0.0)
 		angle *= -1.0;
 
 	return angle;

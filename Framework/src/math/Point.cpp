@@ -61,7 +61,7 @@ Point2D & Point2D::operator -= (const Point2D &point)
 	return *this;
 }
 
-Point2D & Point2D::operator += (double value) 
+Point2D & Point2D::operator += (double value)
 {
 	X += value;
 	Y += value;

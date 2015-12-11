@@ -10,70 +10,70 @@
 
 
 namespace Robot
-{	
+{
 	class Point2D
 	{
-	private:
+		private:
 
-	protected:
+		protected:
 
-	public:
-		double X;
-		double Y;
+		public:
+			double X;
+			double Y;
 
-		Point2D();
-		Point2D(double x, double y);
-		Point2D(const Point2D &point);		
-		~Point2D();
+			Point2D();
+			Point2D(double x, double y);
+			Point2D(const Point2D &point);
+			~Point2D();
 
-		static double Distance(Point2D &pt1, Point2D &pt2);
+			static double Distance(Point2D &pt1, Point2D &pt2);
 
-		Point2D & operator = (const Point2D &point);
-		Point2D & operator += (const Point2D &point);
-		Point2D & operator -= (const Point2D &point);
-		Point2D & operator += (double value);
-		Point2D & operator -= (double value);
-		Point2D & operator *= (double value);
-		Point2D & operator /= (double value);
-		Point2D operator + (const Point2D &point);
-		Point2D operator - (const Point2D &point);
-		Point2D operator + (double value) const;
-		Point2D operator - (double value) const;
-		Point2D operator * (double value) const;
-		Point2D operator / (double value) const;
+			Point2D & operator = (const Point2D &point);
+			Point2D & operator += (const Point2D &point);
+			Point2D & operator -= (const Point2D &point);
+			Point2D & operator += (double value);
+			Point2D & operator -= (double value);
+			Point2D & operator *= (double value);
+			Point2D & operator /= (double value);
+			Point2D operator + (const Point2D &point);
+			Point2D operator - (const Point2D &point);
+			Point2D operator + (double value) const;
+			Point2D operator - (double value) const;
+			Point2D operator * (double value) const;
+			Point2D operator / (double value) const;
 	};
 
 	class Point3D
 	{
-	private:
+		private:
 
-	protected:
+		protected:
 
-	public:
-		double X;
-		double Y;
-		double Z;
-		
-		Point3D();
-		Point3D(double x, double y, double z);
-		Point3D(const Point3D &point);
-		~Point3D();
+		public:
+			double X;
+			double Y;
+			double Z;
 
-		static double Distance(Point3D &pt1, Point3D &pt2);
+			Point3D();
+			Point3D(double x, double y, double z);
+			Point3D(const Point3D &point);
+			~Point3D();
 
-		Point3D & operator = (Point3D &point);
-		Point3D & operator += (Point3D &point);
-		Point3D & operator -= (Point3D &point);
-		Point3D & operator += (double value);
-		Point3D & operator -= (double value);
-		Point3D & operator *= (double value);
-		Point3D & operator /= (double value);
-		Point3D operator + (Point3D &point);
-		Point3D operator - (Point3D &point);
-		Point3D operator + (double value);
-		Point3D operator - (double value);
-		Point3D operator * (double value);
-		Point3D operator / (double value);
+			static double Distance(Point3D &pt1, Point3D &pt2);
+
+			Point3D & operator = (Point3D &point);
+			Point3D & operator += (Point3D &point);
+			Point3D & operator -= (Point3D &point);
+			Point3D & operator += (double value);
+			Point3D & operator -= (double value);
+			Point3D & operator *= (double value);
+			Point3D & operator /= (double value);
+			Point3D operator + (Point3D &point);
+			Point3D operator - (Point3D &point);
+			Point3D operator + (double value);
+			Point3D operator - (double value);
+			Point3D operator * (double value);
+			Point3D operator / (double value);
 	};
 }
 

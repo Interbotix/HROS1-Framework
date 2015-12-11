@@ -12,30 +12,30 @@
 using namespace Robot;
 
 Image::Image(int width, int height, int pixelsize) :
-        m_Width(width),
-        m_Height(height),
-        m_PixelSize(pixelsize),
-        m_NumberOfPixels(m_Width*m_Height),
-        m_WidthStep(m_Width*m_PixelSize),
-        m_ImageSize(m_Height*m_WidthStep)
+    m_Width(width),
+    m_Height(height),
+    m_PixelSize(pixelsize),
+    m_NumberOfPixels(m_Width * m_Height),
+    m_WidthStep(m_Width * m_PixelSize),
+    m_ImageSize(m_Height * m_WidthStep)
 {
     m_ImageData = new unsigned char[m_ImageSize];
-		y_table = new unsigned int[height];
-		for(int y=0;y<height;y++)
-			y_table[y] += width;
+    y_table = new unsigned int[height];
+    for (int y = 0; y < height; y++)
+        y_table[y] += width;
 }
 
 Image::~Image()
 {
-	delete[] m_ImageData;
-	delete[] y_table;
-  m_ImageData = 0;
+    delete[] m_ImageData;
+    delete[] y_table;
+    m_ImageData = 0;
 }
 
 Image& Image::operator = (Image &img)
 {
-	memcpy(m_ImageData, img.m_ImageData, m_ImageSize);
-	return *this;
+    memcpy(m_ImageData, img.m_ImageData, m_ImageSize);
+    return *this;
 }
 
 

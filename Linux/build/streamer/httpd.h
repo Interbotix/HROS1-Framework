@@ -71,79 +71,82 @@
                    "Expires: Mon, 3 Jan 2000 12:34:56 GMT\r\n"
 
 
-typedef enum{
-    IN_CMD_UNKNOWN = 0,
-    IN_CMD_HELLO,
-    IN_CMD_RELOAD,
-    IN_CMD_SAVE,
-    IN_CMD_GAIN_PLUS,
-    IN_CMD_GAIN_MINUS,
-    IN_CMD_EXPOSURE_PLUS,
-    IN_CMD_EXPOSURE_MINUS,
-    IN_CMD_HUE_SET,
-    IN_CMD_HUE_PLUS,
-    IN_CMD_HUE_MINUS,
-    IN_CMD_TOLERANCE_SET,
-    IN_CMD_TOLERANCE_PLUS,
-    IN_CMD_TOLERANCE_MINUS,
-    IN_CMD_MIN_SATURATION_SET,
-    IN_CMD_MIN_SATURATION_PLUS,
-    IN_CMD_MIN_SATURATION_MINUS,
-    IN_CMD_MAX_SATURATION_SET,
-    IN_CMD_MAX_SATURATION_PLUS,
-    IN_CMD_MAX_SATURATION_MINUS,
-    IN_CMD_MIN_VALUE_SET,
-    IN_CMD_MIN_VALUE_PLUS,
-    IN_CMD_MIN_VALUE_MINUS,
-		    /* walk tuner */
-    IN_CMD_WALK_MODE,
-    IN_CMD_WALK_SAVE,
-    IN_CMD_WALK_X_OFFSET,
-    IN_CMD_WALK_Y_OFFSET,
-    IN_CMD_WALK_Z_OFFSET,
-    IN_CMD_WALK_ROLL_OFFSET,
-    IN_CMD_WALK_PITCH_OFFSET,
-    IN_CMD_WALK_YAW_OFFSET,
-    IN_CMD_WALK_HIP_OFFSET,
-    IN_CMD_WALK_AUTO_BALANCE,
-    IN_CMD_WALK_PERIOD_TIME,
-    IN_CMD_WALK_DSP_RATIO,
-    IN_CMD_WALK_STEP_FB_RATIO,
-    IN_CMD_WALK_STEP_FB,
-    IN_CMD_WALK_STEP_RL,
-    IN_CMD_WALK_STEP_DIR,
-    IN_CMD_WALK_TURN_AIM,
-    IN_CMD_WALK_FOOT_HEIGHT,
-    IN_CMD_WALK_SWING_RL,
-    IN_CMD_WALK_SWING_TD,
-    IN_CMD_WALK_PELVIS_OFFSET,
-    IN_CMD_WALK_ARM_SWING_GAIN,
-    IN_CMD_WALK_B_KNEE_GAIN,
-    IN_CMD_WALK_B_ANKLE_PITCH_GAIN,
-    IN_CMD_WALK_B_HIP_ROLL_GAIN,
-    IN_CMD_WALK_B_ANKLE_ROLL_GAIN,
-    IN_CMD_WALK_P_GAIN,
-    IN_CMD_WALK_I_GAIN,
-    IN_CMD_WALK_D_GAIN,
+typedef enum
+{
+  IN_CMD_UNKNOWN = 0,
+  IN_CMD_HELLO,
+  IN_CMD_RELOAD,
+  IN_CMD_SAVE,
+  IN_CMD_GAIN_PLUS,
+  IN_CMD_GAIN_MINUS,
+  IN_CMD_EXPOSURE_PLUS,
+  IN_CMD_EXPOSURE_MINUS,
+  IN_CMD_HUE_SET,
+  IN_CMD_HUE_PLUS,
+  IN_CMD_HUE_MINUS,
+  IN_CMD_TOLERANCE_SET,
+  IN_CMD_TOLERANCE_PLUS,
+  IN_CMD_TOLERANCE_MINUS,
+  IN_CMD_MIN_SATURATION_SET,
+  IN_CMD_MIN_SATURATION_PLUS,
+  IN_CMD_MIN_SATURATION_MINUS,
+  IN_CMD_MAX_SATURATION_SET,
+  IN_CMD_MAX_SATURATION_PLUS,
+  IN_CMD_MAX_SATURATION_MINUS,
+  IN_CMD_MIN_VALUE_SET,
+  IN_CMD_MIN_VALUE_PLUS,
+  IN_CMD_MIN_VALUE_MINUS,
+  /* walk tuner */
+  IN_CMD_WALK_MODE,
+  IN_CMD_WALK_SAVE,
+  IN_CMD_WALK_X_OFFSET,
+  IN_CMD_WALK_Y_OFFSET,
+  IN_CMD_WALK_Z_OFFSET,
+  IN_CMD_WALK_ROLL_OFFSET,
+  IN_CMD_WALK_PITCH_OFFSET,
+  IN_CMD_WALK_YAW_OFFSET,
+  IN_CMD_WALK_HIP_OFFSET,
+  IN_CMD_WALK_AUTO_BALANCE,
+  IN_CMD_WALK_PERIOD_TIME,
+  IN_CMD_WALK_DSP_RATIO,
+  IN_CMD_WALK_STEP_FB_RATIO,
+  IN_CMD_WALK_STEP_FB,
+  IN_CMD_WALK_STEP_RL,
+  IN_CMD_WALK_STEP_DIR,
+  IN_CMD_WALK_TURN_AIM,
+  IN_CMD_WALK_FOOT_HEIGHT,
+  IN_CMD_WALK_SWING_RL,
+  IN_CMD_WALK_SWING_TD,
+  IN_CMD_WALK_PELVIS_OFFSET,
+  IN_CMD_WALK_ARM_SWING_GAIN,
+  IN_CMD_WALK_B_KNEE_GAIN,
+  IN_CMD_WALK_B_ANKLE_PITCH_GAIN,
+  IN_CMD_WALK_B_HIP_ROLL_GAIN,
+  IN_CMD_WALK_B_ANKLE_ROLL_GAIN,
+  IN_CMD_WALK_P_GAIN,
+  IN_CMD_WALK_I_GAIN,
+  IN_CMD_WALK_D_GAIN,
 
-}in_cmd_type;
+} in_cmd_type;
 
 /* commands which can be send to the input plugin */
-typedef enum {
+typedef enum
+{
   OUT_CMD_UNKNOWN = 0,
   OUT_CMD_HELLO
-}out_cmd_type;
+} out_cmd_type;
 
 
 typedef struct _globals globals;
-struct _globals {
-    /* signal fresh frames */
-    pthread_mutex_t db;
-    pthread_cond_t  db_update;
+struct _globals
+{
+  /* signal fresh frames */
+  pthread_mutex_t db;
+  pthread_cond_t  db_update;
 
-    /* global JPG frame, this is more or less the "database" */
-    unsigned char* buf;
-    int size;
+  /* global JPG frame, this is more or less the "database" */
+  unsigned char* buf;
+  int size;
 };
 
 
@@ -155,10 +158,12 @@ struct _globals {
  * Other filetypes are simply ignored!
  * This table is a 1:1 mapping of files extension to a certain mimetype.
  */
-static const struct {
+static const struct
+{
   const char *dot_extension;
   const char *mimetype;
-} mimetypes[] = {
+} mimetypes[] =
+{
   { ".html", "text/html" },
   { ".htm",  "text/html" },
   { ".css",  "text/css" },
@@ -178,10 +183,12 @@ static const struct {
  * mapping between command string and command type
  * it is used to find the command for a certain string
  */
-static const struct {
+static const struct
+{
   const char *string;
   const in_cmd_type cmd;
-} in_cmd_mapping[] = {
+} in_cmd_mapping[] =
+{
   { "reload", IN_CMD_RELOAD },
   { "save", IN_CMD_SAVE },
   { "gain_plus", IN_CMD_GAIN_PLUS },
@@ -203,8 +210,8 @@ static const struct {
   { "min_value_set", IN_CMD_MIN_VALUE_SET },
   { "min_value_plus", IN_CMD_MIN_VALUE_PLUS },
   { "min_value_minus", IN_CMD_MIN_VALUE_MINUS },
- 
-	{ "walk_mode", IN_CMD_WALK_MODE },
+
+  { "walk_mode", IN_CMD_WALK_MODE },
   { "walk_save", IN_CMD_WALK_SAVE },
   { "walk_x_offset", IN_CMD_WALK_X_OFFSET },
   { "walk_y_offset", IN_CMD_WALK_Y_OFFSET },
@@ -238,10 +245,12 @@ static const struct {
 
 
 /* mapping between command string and command type */
-static const struct {
+static const struct
+{
   const char *string;
   const out_cmd_type cmd;
-} out_cmd_mapping[] = {
+} out_cmd_mapping[] =
+{
   { "hello_output", OUT_CMD_HELLO }
 };
 
@@ -252,7 +261,8 @@ typedef enum { A_UNKNOWN, A_SNAPSHOT, A_STREAM, A_COMMAND, A_FILE } answer_t;
  * the client sends information with each request
  * this structure is used to store the important parts
  */
-typedef struct {
+typedef struct
+{
   answer_t type;
   char *parameter;
   char *client;
@@ -260,13 +270,15 @@ typedef struct {
 } request;
 
 /* the iobuffer structure is used to read from the HTTP-client */
-typedef struct {
+typedef struct
+{
   int level;              /* how full is the buffer */
   char buffer[IO_BUFFER]; /* the data */
 } iobuffer;
 
 /* store configuration for each server instance */
-typedef struct {
+typedef struct
+{
   int port;
   char *credentials;
   char *www_folder;
@@ -274,7 +286,8 @@ typedef struct {
 } config;
 
 /* context of each server thread */
-typedef struct {
+typedef struct
+{
   int sd;
   globals *pglobal;
   pthread_t threadID;
@@ -286,7 +299,8 @@ typedef struct {
  * this struct is just defined to allow passing all necessary details to a worker thread
  * "cfd" is for connected/accepted filedescriptor
  */
-typedef struct {
+typedef struct
+{
   context *pc;
   int fd;
 } cfd;
@@ -297,7 +311,7 @@ using namespace Robot;
 
 class httpd
 {
-private:
+  private:
     static globals* pglobal;
     static context* server;
 
@@ -315,7 +329,7 @@ private:
     static void server_cleanup(void *arg);
     static void *client_thread( void *arg );
 
-public:
+  public:
     static ColorFinder* finder;
     static char*        ini_section;
     static ColorFinder* ball_finder;
@@ -324,7 +338,7 @@ public:
     static ColorFinder* blue_finder;
     static ColorFinder* line_finder;
     static minIni*      ini;
-	static bool ClientRequest;
+    static bool ClientRequest;
 
     static void *server_thread( void *arg );
     static void send_error(int fd, int which, char *message);
