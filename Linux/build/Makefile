@@ -45,7 +45,7 @@ OBJS =  ../../Framework/src/ArbotixPro.o     	\
         ../../Framework/src/vision/Image.o  		\
         ../../Framework/src/vision/ImgProcess.o 	\
         ../../Framework/src/minIni/minIni.o	\
-        ../../Framework/src/controller/PS3Controller.o	\
+        ../../Framework/src/controller/JoystickController.o	\
         streamer/httpd.o           \
         streamer/jpeg_utils.o      \
         streamer/mjpg_streamer.o   \

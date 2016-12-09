@@ -44,7 +44,7 @@ all:	depend $(TARGET)
 # add additional .o files to the end of the line
 #
 
-SRCS	= PS3Controller.cpp 
+SRCS	= JoystickController.cpp
 OBJS	= $(SRCS:.cpp=.o)
 
 $(TARGET) : $(OBJS)

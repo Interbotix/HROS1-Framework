@@ -10,6 +10,7 @@
 
 #include "ArbotixPro.h"
 #include "minIni.h"
+#include "JoystickController.h"
 
 #define SCRIPT_FILE_PATH_TRIANGLE    "action_scripts/Triangle.asc"
 #define SCRIPT_FILE_PATH_CIRCLE   "action_scripts/Circle.asc"
@@ -62,7 +63,6 @@ namespace Robot
 		private:
 			static int m_old_btn;
 			static void mPlay(int motion_page, int mode = SOCCER, int wait = WAIT);
-			static void resetLEDs(ArbotixPro &arbotixpro);
 		public:
 			static int m_cur_mode;
 			static int m_is_started;
@@ -70,7 +70,7 @@ namespace Robot
 			static minIni* m_ini;
 			static minIni* m_ini1;
 
-			static void Check(ArbotixPro &arbotixpro);
+			static void Check(LinuxJoy &ljoy, ArbotixPro &arbotixpro);
 
 	};
 }

@@ -28,7 +28,7 @@
 #include "Matrix.h"
 #include "Plane.h"
 #include "minIni.h"
-#include "PS3Controller.h"
+#include "JoystickController.h"
 #include "PS3BallFollower.h"
 #include "LineFollower.h"
 #include "RobotFollower.h"
