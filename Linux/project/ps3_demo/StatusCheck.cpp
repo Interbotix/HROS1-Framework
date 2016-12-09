@@ -321,7 +321,7 @@ void StatusCheck::Check(LinuxJoy &ljoy, ArbotixPro &arbotixpro)
         static double speedAdjSum = 0;
 
         rx = ljoy.axis(JOYSTICK_AXES::LX) / 256;
-        ry = ljoy.axis(JOYSTICK_AXES::LY) / 256;
+        ry = -(ljoy.axis(JOYSTICK_AXES::LY) / 256);
 
 
 //          fprintf(stderr, " (X:%d Y:%d)\n", rx, ry);
@@ -481,8 +481,8 @@ void StatusCheck::Check(LinuxJoy &ljoy, ArbotixPro &arbotixpro)
         tilt = MotionStatus::m_CurrentJoints.GetAngle(JointData::ID_HEAD_TILT);
         Point2D pos = Point2D(pan, tilt);
 
-        lx = ljoy.axis(JOYSTICK_AXES::RX) / 256;
-        ly = ljoy.axis(JOYSTICK_AXES::RY) / 256;
+        lx = -(ljoy.axis(JOYSTICK_AXES::RX) / 256);
+        ly = -(ljoy.axis(JOYSTICK_AXES::RY) / 256);
 
         if (abs(lx) > dead_band || abs(ly) > dead_band)
         {
