@@ -7,7 +7,7 @@ Contributions & authoring to codebase provided by Farrell Robotics, Interbotix, 
 
 A special thanks to Farrell Robotics, a massive contributor to humanoid robotics & continued development to the Darwin-OP framework. 
 
-All code within project is GPL GNU v3.
+All code within project is GPL GNU v3 unless marked otherwise in header.
 
 Original source code can be found here:
 https://sourceforge.net/projects/darwinop/
