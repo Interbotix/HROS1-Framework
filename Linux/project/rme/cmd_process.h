@@ -115,6 +115,6 @@ void NameCmd();
 void MonitorServos(Robot::ArbotixPro *arbotixpro);
 void SetColor(int fg, int bg, int attrib);
 int kbhit(bool bPushed);
-void ProcessPS3(Robot::ArbotixPro *arbotixpro, int *apState);
+//void ProcessPS3(Robot::ArbotixPro *arbotixpro, int *apState);
 
 #endif
