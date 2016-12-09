@@ -1157,7 +1157,7 @@ void PlayCmd(ArbotixPro *arbotixpro, int pageNum)
 struct DIR_RECORD
 {
 	char	name[20];
-	byte	pageNum;
+	int	pageNum;
 };
 
 void ListCmd()
