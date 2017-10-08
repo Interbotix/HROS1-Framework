@@ -37,6 +37,52 @@ void sighandler(int sig)
     exit(0);
 }
 
+static void AutoCreateMovements(Robot::ArbotixPro *arbotixpro, int num_param, int *list, char lists[30][10])
+{
+    char cmd;
+    bool done = false;
+    int column_num = 0;
+
+    fflush(stdin);
+
+    while (!done) {
+        /* Initialize to off */
+        OnOffCmd(arbotixpro, false, num_param, list, lists);
+        /* Receive input after robot is moved to position */
+        cmd = getchar();
+        fflush(stdin);
+
+        switch (cmd) {
+            /* Done creating movements */
+            case 'd':
+                break;
+            /* Press enter to perform movement save */
+            default:
+                OnOffCmd(arbotixpro, true, num_param, list, lists);
+                WriteStepCmd(column_num);
+                SaveCmd(IndexPage());
+
+                /* Increment Page step count */
+                DrawStepLine(true);
+                Page.header.stepnum = column_num + 1;
+                DrawStepLine(false);
+                printf( "%.3d", value );
+
+                /* Increments the column we are saving to */
+                ++column_num;
+
+                /* Check if all columns are full */
+                if (column_num > 6) {
+                    NextCmd();
+                    column_num = 0;
+                }
+        }
+    }
+
+    /* Turn off servos on the way out */
+    OnOffCmd(arbotixpro, false, num_param, list, lists);
+}
+
 int main(int argc, char *argv[])
 {
     signal(SIGABRT, &sighandler);
@@ -192,6 +238,10 @@ int main(int argc, char *argv[])
                                         {
                                             if (AskSave() == false)
                                                 break;
+                                        }
+                                    else if (strcmp(cmd, "autorecord") == 0)
+                                        {
+                                            AutoCreateMovements(&arbotixpro, num_param, iparam, iparams);
                                         }
                                     else if (strcmp(cmd, "re") == 0)
                                         DrawPage();
