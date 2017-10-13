@@ -18,7 +18,7 @@ using namespace Robot;
 LinuxArbotixPro linux_arbotixpro("/dev/ttyUSB0");
 ArbotixPro arbotixpro(&linux_arbotixpro);
 LinuxMotionTimer linuxMotionTimer;
-
+extern Action::PAGE Page;
 
 void change_current_dir()
 {
@@ -52,30 +52,27 @@ static void AutoCreateMovements(Robot::ArbotixPro *arbotixpro, int num_param, in
         cmd = getchar();
         fflush(stdin);
 
-        switch (cmd) {
-            /* Done creating movements */
-            case 'd':
-                break;
-            /* Press enter to perform movement save */
-            default:
-                OnOffCmd(arbotixpro, true, num_param, list, lists);
-                WriteStepCmd(column_num);
-                SaveCmd(IndexPage());
-
-                /* Increment Page step count */
-                DrawStepLine(true);
-                Page.header.stepnum = column_num + 1;
-                DrawStepLine(false);
-                printf( "%.3d", value );
-
-                /* Increments the column we are saving to */
-                ++column_num;
-
-                /* Check if all columns are full */
-                if (column_num > 6) {
-                    NextCmd();
-                    column_num = 0;
-                }
+        /* Done creating movements */
+        if (cmd == 'd') {
+            done = true;
+        } else {
+            OnOffCmd(arbotixpro, true, num_param, list, lists);
+            WriteStepCmd(column_num);
+            SaveCmd(IndexPage());
+            /* Increment Page step count */
+#if 0
+            DrawStepLine(true);
+            Page.header.stepnum = column_num + 1;
+            DrawStepLine(false);
+            printf( "%.3d", value );
+#endif
+            /* Increments the column we are saving to */
+            ++column_num;
+            /* Check if all columns are full */
+            if (column_num > 6) {
+                NextCmd();
+                column_num = 0;
+            }
         }
     }
 
