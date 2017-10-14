@@ -686,13 +686,13 @@ void* JoyMixer(void *param)
 					// y mixing
 					x = PS3.key.RJoyX - 128;
 					y = PS3.key.RJoyY - 128;
-					if (abs(x) > 10 || abs(y) > 10)
-						{
+					// if (abs(x) > 10 || abs(y) > 10)
+					// 	{
 							//RLTurn = 20*(x)/256;
 							//FBStep = 25*(y)/256;
 							//Walking::GetInstance()->X_MOVE_AMPLITUDE = FBStep;
 							//Walking::GetInstance()->A_MOVE_AMPLITUDE = RLTurn;
-						}
+					// 	}
 				}
 			if (gLeftJoyStickEnable == 1)
 				{
