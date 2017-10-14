@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <termios.h>
-#include <term.h>
-#include <fcntl.h>
-#include <ncurses.h>
 #include "cmd_process.h"
 
 using namespace Robot;
@@ -45,6 +38,8 @@ int Old_Row;
 bool bBeginCommandMode = false;
 bool bEdited = false;
 int indexPage = 1;
+
+
 Action::PAGE Page;
 Action::STEP Step;
 
@@ -56,6 +51,20 @@ int	ca = VTANSI_ATTRIB_BOLD;//bold for value that can be edited
 int	df = VTANSI_FG_WHITE;//return set
 int	db = VTANSI_BG_BLACK;
 int	da = VTANSI_ATTRIB_DIM;//dim for fixed vaules
+
+
+
+
+
+Action::PAGE * get_page(){
+
+
+return &Page;
+
+}
+
+
+
 
 int _getch()
 {

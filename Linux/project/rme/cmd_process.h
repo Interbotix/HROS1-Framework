@@ -3,7 +3,13 @@
 
 
 #include "LinuxDARwIn.h"
-
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <termios.h>
+#include <term.h>
+#include <fcntl.h>
+#include <ncurses.h>
 
 #define PROGRAM_VERSION		"v1.00"
 #define SCREEN_COL			80
@@ -63,9 +69,10 @@
 #define SEQCOUNT_ROW 9
 
 
+
+
 int _getch();
 bool AskSave();
-
 
 // Move cursor
 void GoToCursor(int col, int row);

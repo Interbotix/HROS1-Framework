@@ -18,7 +18,7 @@ using namespace Robot;
 LinuxArbotixPro linux_arbotixpro("/dev/ttyUSB0");
 ArbotixPro arbotixpro(&linux_arbotixpro);
 LinuxMotionTimer linuxMotionTimer;
-extern Action::PAGE Page;
+
 
 void change_current_dir()
 {
@@ -37,12 +37,17 @@ void sighandler(int sig)
     exit(0);
 }
 
+/*
+ * This will automate saving a movement
+ */
 static void AutoCreateMovements(Robot::ArbotixPro *arbotixpro, int num_param, int *list, char lists[30][10])
 {
     char cmd;
     bool done = false;
     int column_num = 0;
-
+//	Action::PAGE * Page = get_page();
+    
+    /* Flush "autorecord" command */    
     fflush(stdin);
 
     while (!done) {
@@ -52,32 +57,31 @@ static void AutoCreateMovements(Robot::ArbotixPro *arbotixpro, int num_param, in
         cmd = getchar();
         fflush(stdin);
 
-        /* Done creating movements */
         if (cmd == 'd') {
-            done = true;
-        } else {
-            OnOffCmd(arbotixpro, true, num_param, list, lists);
-            WriteStepCmd(column_num);
-            SaveCmd(IndexPage());
-            /* Increment Page step count */
-#if 0
-            DrawStepLine(true);
-            Page.header.stepnum = column_num + 1;
-            DrawStepLine(false);
-            printf( "%.3d", value );
-#endif
-            /* Increments the column we are saving to */
-            ++column_num;
-            /* Check if all columns are full */
-            if (column_num > 6) {
-                NextCmd();
-                column_num = 0;
-            }
+            
+		done = true;
         }
-    }
+	else{  /* Press any key and enter to perform movement save */
+                OnOffCmd(arbotixpro, true, num_param, list, lists);
+                WriteStepCmd(column_num);
+                SaveCmd(IndexPage());
+		DrawPage();
+                /* Increment Page step count */
+  //              DrawStepLine(true);
+//Page.header.stepnum = column_num + 1;
+    //            DrawStepLine(false);
+      //          printf( "%.3d", value );
 
-    /* Turn off servos on the way out */
-    OnOffCmd(arbotixpro, false, num_param, list, lists);
+                /* Increments the column we are saving to */
+                ++column_num;
+                
+                /* Check if all columns are full */
+                if (column_num > 6) {
+                    NextCmd();
+                    column_num = 0;
+                }
+        }
+  }
 }
 
 int main(int argc, char *argv[])
@@ -237,9 +241,9 @@ int main(int argc, char *argv[])
                                                 break;
                                         }
                                     else if (strcmp(cmd, "autorecord") == 0)
-                                        {
-                                            AutoCreateMovements(&arbotixpro, num_param, iparam, iparams);
-                                        }
+                                    {
+                                        AutoCreateMovements(&arbotixpro, num_param, iparam, iparams);
+                                    }
                                     else if (strcmp(cmd, "re") == 0)
                                         DrawPage();
                                     else if (strcmp(cmd, "help") == 0)
@@ -288,7 +292,7 @@ int main(int argc, char *argv[])
                                             else
                                                 PrintCmd("Need parameter");
                                         }
-                                    else if (strcmp(cmd, "list") == 0)
+                                    else if (strcmp(cmd, "ls") == 0)
                                         ListCmd();
                                     else if (strcmp(cmd, "on") == 0)
                                         OnOffCmd(&arbotixpro, true, num_param, iparam, iparams);
