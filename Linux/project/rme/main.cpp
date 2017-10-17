@@ -38,7 +38,8 @@ void sighandler(int sig)
 }
 
 /*
- * This will automate saving a movement
+ * This will automate saving a movement.
+ * Page Step will also automatically increment
  */
 static void AutoCreateMovements(Robot::ArbotixPro *arbotixpro, int num_param, int *list, char lists[30][10])
 {
@@ -51,29 +52,29 @@ static void AutoCreateMovements(Robot::ArbotixPro *arbotixpro, int num_param, in
     fflush(stdin);
 
     while (!done) {
+		
+		/* Clean command entry line */
+		ClearCmd();
         /* Initialize to off */
         OnOffCmd(arbotixpro, false, num_param, list, lists);
         /* Receive input after robot is moved to position */
         cmd = getchar();
         fflush(stdin);
 
-        if (cmd == 'd') {
-            
-		done = true;
+        if (cmd == 'd') 
+		{
+			done = true;
         }
 	else{  /* Press any key and enter to perform movement save */
                 OnOffCmd(arbotixpro, true, num_param, list, lists);
                 WriteStepCmd(column_num);
                 SaveCmd(IndexPage());
-		DrawPage();
-                /* Increment Page step count */
-  //              DrawStepLine(true);
-//Page.header.stepnum = column_num + 1;
-    //            DrawStepLine(false);
-      //          printf( "%.3d", value );
 
                 /* Increments the column we are saving to */
                 ++column_num;
+				
+			    /* Increment Page step count */
+				Increment_Step(column_num);
                 
                 /* Check if all columns are full */
                 if (column_num > 6) {
@@ -244,6 +245,18 @@ int main(int argc, char *argv[])
                                     {
                                         AutoCreateMovements(&arbotixpro, num_param, iparam, iparams);
                                     }
+									else if(strcmp(cmd, "playc") == 0)
+										Set_PlayCount(iparam[0]);
+									else if(strcmp(cmd, "pstep") == 0)
+										Set_PageStep(iparam[0]);
+									else if(strcmp(cmd, "pspeed") == 0)
+										Set_PageSpeed(iparam[0]);
+									else if(strcmp(cmd, "accel") == 0)
+										Set_AccelTime(iparam[0]);
+									else if(strcmp(cmd, "l2n") == 0)
+										Set_Link2Next(iparam[0]);
+									else if(strcmp(cmd, "l2e") == 0)
+										Set_Link2Exit(iparam[0]);
                                     else if (strcmp(cmd, "re") == 0)
                                         DrawPage();
                                     else if (strcmp(cmd, "help") == 0)
@@ -292,7 +305,7 @@ int main(int argc, char *argv[])
                                             else
                                                 PrintCmd("Need parameter");
                                         }
-                                    else if (strcmp(cmd, "ls") == 0)
+                                    else if (strcmp(cmd, "list") == 0)
                                         ListCmd();
                                     else if (strcmp(cmd, "on") == 0)
                                         OnOffCmd(&arbotixpro, true, num_param, iparam, iparams);
