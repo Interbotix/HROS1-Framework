@@ -15,7 +15,7 @@ TARGET = darwin.a
 
 INCLUDE_DIRS = -I../include -I../../Framework/include 
 
-CXXFLAGS += -fPIC -shared -O2 -DLINUX -D_GNU_SOURCE -Wall -g $(INCLUDE_DIRS) 
+CXXFLAGS += -std=c++0x -fPIC -shared -O2 -DLINUX -D_GNU_SOURCE -Wall -g $(INCLUDE_DIRS)
 #CXXFLAGS += -O2 -DDEBUG -DLINUX -D_GNU_SOURCE -Wall -shared $(INCLUDE_DIRS)
 LFLAGS += -g -lpthread -ldl -lbluetooth -lncurses
 
