@@ -37,6 +37,54 @@ void sighandler(int sig)
     exit(0);
 }
 
+/*
+ * This will automate saving a movement.
+ * Page Step will also automatically increment
+ */
+static void AutoCreateMovements(Robot::ArbotixPro *arbotixpro, int num_param, int *list, char lists[30][10])
+{
+    char cmd;
+    bool done = false;
+    int column_num = 0;
+//	Action::PAGE * Page = get_page();
+    
+    /* Flush "autorecord" command */    
+    fflush(stdin);
+
+    while (!done) {
+		
+		/* Clean command entry line */
+		ClearCmd();
+        /* Initialize to off */
+        OnOffCmd(arbotixpro, false, num_param, list, lists);
+        /* Receive input after robot is moved to position */
+        cmd = getchar();
+        fflush(stdin);
+
+        if (cmd == 'd') 
+		{
+			done = true;
+        }
+	else{  /* Press any key and enter to perform movement save */
+                OnOffCmd(arbotixpro, true, num_param, list, lists);
+                WriteStepCmd(column_num);
+                SaveCmd(IndexPage());
+
+                /* Increments the column we are saving to */
+                ++column_num;
+				
+			    /* Increment Page step count */
+				Increment_Step(column_num);
+                
+                /* Check if all columns are full */
+                if (column_num > 6) {
+                    NextCmd();
+                    column_num = 0;
+                }
+        }
+  }
+}
+
 int main(int argc, char *argv[])
 {
     signal(SIGABRT, &sighandler);
@@ -193,6 +241,22 @@ int main(int argc, char *argv[])
                                             if (AskSave() == false)
                                                 break;
                                         }
+                                    else if (strcmp(cmd, "autorecord") == 0)
+                                    {
+                                        AutoCreateMovements(&arbotixpro, num_param, iparam, iparams);
+                                    }
+									else if(strcmp(cmd, "playc") == 0)
+										Set_PlayCount(iparam[0]);
+									else if(strcmp(cmd, "pstep") == 0)
+										Set_PageStep(iparam[0]);
+									else if(strcmp(cmd, "pspeed") == 0)
+										Set_PageSpeed(iparam[0]);
+									else if(strcmp(cmd, "accel") == 0)
+										Set_AccelTime(iparam[0]);
+									else if(strcmp(cmd, "l2n") == 0)
+										Set_Link2Next(iparam[0]);
+									else if(strcmp(cmd, "l2e") == 0)
+										Set_Link2Exit(iparam[0]);
                                     else if (strcmp(cmd, "re") == 0)
                                         DrawPage();
                                     else if (strcmp(cmd, "help") == 0)

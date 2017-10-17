@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <termios.h>
-#include <term.h>
-#include <fcntl.h>
-#include <ncurses.h>
 #include "cmd_process.h"
 
 using namespace Robot;
@@ -45,6 +38,8 @@ int Old_Row;
 bool bBeginCommandMode = false;
 bool bEdited = false;
 int indexPage = 1;
+
+
 Action::PAGE Page;
 Action::STEP Step;
 
@@ -56,6 +51,20 @@ int	ca = VTANSI_ATTRIB_BOLD;//bold for value that can be edited
 int	df = VTANSI_FG_WHITE;//return set
 int	db = VTANSI_BG_BLACK;
 int	da = VTANSI_ATTRIB_DIM;//dim for fixed vaules
+
+
+
+
+
+Action::PAGE * get_page(){
+
+
+return &Page;
+
+}
+
+
+
 
 int _getch()
 {
@@ -969,7 +978,18 @@ void HelpCmd()
 	printf(" on/off             Turn On/Off torque from ALL actuators.\n");
 	printf(" on/off [index1] [index2] ...  \n" \
 	       "        [index1]-[index2] ...  from one index to another\n" \
-	       "        ra la rl ll h ... right arm, left arm, right leg, left leg, head\n");
+	       "        ra la rl ll h ... right arm, left arm, right leg, left leg, head\n\n");
+	printf(" playc [value]      Change value of Play Count. Number of times to loop this page.\n");
+	printf(" pstep [value]      Change value of Page Step. Up to what STP to play of this page.\n");
+	printf(" pspeed [value]     Change value of Play Speed. Affects speed this page is played at.\n");
+	printf(" accel [value]      Change value of Accel Time.\n");
+	printf(" l2n [index]        Change value of Link to Next. Index of page to play next after this page.\n");
+	printf("\n");
+	printf(" autorecord         Starts autorecord mode. Saves current servo values\n"
+		   "                    starting from STP0 to STP7 and will continue to the\n"
+		   "                    next page.\n"
+		   "                    Exit this mode with d. Any other button will record\n"
+		   "                    and save.\n");
 	printf("\n");
 	printf(" Press any key to continue...");
 	_getch();
@@ -980,11 +1000,96 @@ void HelpCmd()
 void NextCmd()
 {
 	PageCmd(indexPage + 1);
+	DrawPage();
 }
 
 int IndexPage(void)
 {
 	return indexPage;
+}
+
+// Increment Page Step as you save movements
+void Increment_Step(int col)
+{
+	if(col > Page.header.stepnum)
+	{
+		GoToCursor(PAGEPARAM_COL,STEPNUM_ROW);
+		DrawStepLine(true);
+		Page.header.stepnum++;
+        DrawStepLine(false);
+		printf("%.3d",Page.header.stepnum);
+	}
+}
+
+void Set_PlayCount(int value)
+{
+	if(value >= 0 && value <= 255)
+	{
+		GoToCursor(PAGEPARAM_COL,PLAYCOUNT_ROW);
+		Page.header.repeat = value;
+		printf( "%.3d", value );
+		bEdited = true;
+	}
+		
+}
+
+void Set_PageStep(int value)
+{
+	if(value >= 0 && value <= Action::MAXNUM_STEP)
+	{	
+		if(Page.header.stepnum != value)
+		{
+			GoToCursor(PAGEPARAM_COL,STEPNUM_ROW);
+			DrawStepLine(true);
+			Page.header.stepnum = value;
+			DrawStepLine(false);
+			printf("%.3d", value);
+			bEdited = true;
+		}
+	}
+}
+
+void Set_PageSpeed(int value)
+{
+	if(value >= 0 && value <= 255)
+	{
+		GoToCursor(PAGEPARAM_COL,PLAYSPEED_ROW);
+		Page.header.speed = value;
+		printf( "%.3d", value );
+		bEdited = true;
+	}
+}
+
+void Set_AccelTime(int value)
+{
+	if (value >= 0 && value <= 255)
+	{
+		GoToCursor(PAGEPARAM_COL,ACCEL_ROW);
+		Page.header.next = value;
+		printf( "%.3d", value );
+		bEdited = true;
+	}
+}
+
+void Set_Link2Next(int value)
+{
+	if (value >= 0 && value <= 255)
+	{
+		GoToCursor(PAGEPARAM_COL,NEXT_ROW);
+		Page.header.next = value;
+		printf( "%.3d", value );
+		bEdited = true;
+	}
+}
+void Set_Link2Exit(int value)
+{
+	if (value >= 0 && value <= 255)
+	{
+		GoToCursor(PAGEPARAM_COL,EXIT_ROW);
+		Page.header.exit = value;
+		printf( "%.3d", value );
+		bEdited = true;
+	}
 }
 
 void PrevCmd()
