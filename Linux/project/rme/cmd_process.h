@@ -97,6 +97,15 @@ void SetValue(Robot::ArbotixPro *arbotixpro, int value);
 int GetValue();
 void ToggleTorque(Robot::ArbotixPro *arbotixpro);
 int IndexPage(void);
+void Increment_Step(int col);
+
+// Edit Page Parameters
+void Set_PlayCount(int value);
+void Set_PageStep(int value);
+void Set_PageSpeed(int value);
+void Set_AccelTime(int value);
+void Set_Link2Next(int value);
+void Set_Link2Exit(int value);
 
 // Command process
 void BeginCommandMode();
