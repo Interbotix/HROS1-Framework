@@ -305,7 +305,7 @@ int main(int argc, char *argv[])
                                             else
                                                 PrintCmd("Need parameter");
                                         }
-                                    else if (strcmp(cmd, "list") == 0)
+                                    else if (strcmp(cmd, "ls") == 0)
                                         ListCmd();
                                     else if (strcmp(cmd, "on") == 0)
                                         OnOffCmd(&arbotixpro, true, num_param, iparam, iparams);
