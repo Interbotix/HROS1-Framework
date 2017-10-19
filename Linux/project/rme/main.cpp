@@ -79,6 +79,7 @@ static void AutoCreateMovements(Robot::ArbotixPro *arbotixpro, int num_param, in
                 /* Check if all columns are full */
                 if (column_num > 6) {
                     NextCmd();
+					DrawPage();
                     column_num = 0;
                 }
         }
@@ -305,7 +306,7 @@ int main(int argc, char *argv[])
                                             else
                                                 PrintCmd("Need parameter");
                                         }
-                                    else if (strcmp(cmd, "ls") == 0)
+                                    else if (strcmp(cmd, "list") == 0)
                                         ListCmd();
                                     else if (strcmp(cmd, "on") == 0)
                                         OnOffCmd(&arbotixpro, true, num_param, iparam, iparams);
