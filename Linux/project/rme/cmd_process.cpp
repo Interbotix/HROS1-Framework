@@ -1,5 +1,7 @@
 #include "cmd_process.h"
 
+#include <sys/time.h>
+
 using namespace Robot;
 
 #define VTANSI_ATTRIB_RESET 0
@@ -1156,8 +1158,13 @@ void MonitorServos(ArbotixPro *arbotixpro)
 
 void PlayCmd(ArbotixPro *arbotixpro, int pageNum)
 {
+  char *timestring;
 	int value, oldIndex = 0;
+  struct timeval t1, t2;
 	Action::PAGE page;
+
+  // start timer
+  gettimeofday(&t1, NULL);
 
 	oldIndex = indexPage;
 	if (pageNum != indexPage)
@@ -1246,7 +1253,21 @@ void PlayCmd(ArbotixPro *arbotixpro, int pageNum)
 	//MotionManager::GetInstance()->StopThread();
 
 	GoToCursor(CMD_COL, CMD_ROW);
-	PrintCmd("Done.");
+
+  // stop timer
+  gettimeofday(&t2, NULL);
+
+  if (((t2.tv_usec - t1.tv_usec) / ((double)1000.0)) < 0) {
+    t2.tv_sec -= 1;
+    t1.tv_usec += 1000.0;
+  }
+
+  asprintf(&timestring, "Done. Took %d s %f ms.",
+      (t2.tv_sec - t1.tv_sec),
+      (t2.tv_usec - t1.tv_usec) / ((double)1000.0)
+      );
+	PrintCmd(timestring);
+  free(timestring);
 
 	usleep(10000);
 	if (oldIndex != indexPage)
