@@ -3,7 +3,13 @@
 
 
 #include "LinuxDARwIn.h"
-
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <termios.h>
+#include <term.h>
+#include <fcntl.h>
+#include <ncurses.h>
 
 #define PROGRAM_VERSION		"v1.00"
 #define SCREEN_COL			80
@@ -63,9 +69,10 @@
 #define SEQCOUNT_ROW 9
 
 
+
+
 int _getch();
 bool AskSave();
-
 
 // Move cursor
 void GoToCursor(int col, int row);
@@ -90,6 +97,15 @@ void SetValue(Robot::ArbotixPro *arbotixpro, int value);
 int GetValue();
 void ToggleTorque(Robot::ArbotixPro *arbotixpro);
 int IndexPage(void);
+void Increment_Step(int col);
+
+// Edit Page Parameters
+void Set_PlayCount(int value);
+void Set_PageStep(int value);
+void Set_PageSpeed(int value);
+void Set_AccelTime(int value);
+void Set_Link2Next(int value);
+void Set_Link2Exit(int value);
 
 // Command process
 void BeginCommandMode();
